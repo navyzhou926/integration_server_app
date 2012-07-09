@@ -1,0 +1,84 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BOARD_RATE	uart.h	26;"	d
+CloseCom	uart.c	/^int CloseCom(int Device)$/;"	f
+ClrCom	uart.c	/^int ClrCom(int Device)$/;"	f
+DEBUG	entrance_guard.c	11;"	d	file:
+DEBUG	main.c	23;"	d	file:
+DEBUG	net.c	8;"	d	file:
+HANDSHAKE_DELAY_TIME	net.h	22;"	d
+IS_CLOSED	entrance_guard.h	5;"	d
+IS_OPENED	entrance_guard.h	4;"	d
+InitCom	uart.c	/^int InitCom(char *UART_DEVICE_ttySx, int speed)$/;"	f
+MAX_RECV_SIZE	uart.h	13;"	d
+NO	global.h	5;"	d
+PATH_HOME	main.c	31;"	d	file:
+RECV_BUFFER_SIZE	net.h	24;"	d
+RECV_TIMEOUT	uart.h	14;"	d
+RecvDataFromCom	uart.c	/^int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime)$/;"	f
+SERVER_ACCEPT_TIMEOUT_MICROSECOND	net.h	17;"	d
+SERVER_ACCEPT_TIMEOUT_SECOND	net.h	16;"	d
+SERVER_PORT_TCP	net.h	14;"	d
+SERVER_RECV_TIMEOUT_MICROSECOND	net.h	20;"	d
+SERVER_RECV_TIMEOUT_SECOND	net.h	19;"	d
+SendDataToCom	uart.c	/^int SendDataToCom(int Device ,unsigned char * DataBuf ,int DataLen)$/;"	f
+UART_DEVICE_ttyS0	uart.h	5;"	d
+UART_DEVICE_ttyS1	uart.h	6;"	d
+UART_DEVICE_ttyS2	uart.h	7;"	d
+UART_DEVICE_ttyS3	uart.h	8;"	d
+UART_DEVICE_ttyS4	uart.h	9;"	d
+UART_DEVICE_ttyS5	uart.h	10;"	d
+UART_DEVICE_ttyS6	uart.h	11;"	d
+UART_DEVICE_ttyUSB0	uart.h	4;"	d
+YES	global.h	4;"	d
+_CK2316_ALARM_H_H	ck2316_alarm.h	2;"	d
+_ENTRANCE_GUARD_H	entrance_guard.h	2;"	d
+_GLOABL_H	global.h	2;"	d
+_MAIN_H	main.h	2;"	d
+_MATRIX_CONTROL_H	matrix_control.h	2;"	d
+_NET_H	net.h	2;"	d
+__UART_H__	uart.h	2;"	d
+client_sock_tcp	main.c	/^int server_sock_tcp, client_sock_tcp;$/;"	v
+close_door_code	entrance_guard.c	/^unsigned char close_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc3,0x7e,0x3a};$/;"	v
+counter_mutex	net.c	/^pthread_mutex_t counter_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v
+door_status	entrance_guard.h	/^    unsigned char door_status;$/;"	m	struct:__anon1
+entrance_guard_arg	entrance_guard.h	/^}entrance_guard_arg;$/;"	t	typeref:struct:__anon1
+entrance_guard_data	entrance_guard.c	/^entrance_guard_arg entrance_guard_data = {NO, NO, NO, IS_CLOSED};$/;"	v
+entrance_guard_mutex	entrance_guard.c	/^pthread_mutex_t entrance_guard_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v
+flag	main.c	/^int flag = 0;$/;"	v
+get_local_ip	net.c	/^int get_local_ip(char *out_ip, char *out_mac)$/;"	f
+if_close_door	entrance_guard.h	/^    char if_close_door;$/;"	m	struct:__anon1
+if_disconnect_client	net.c	/^int if_disconnect_client = NO;$/;"	v
+if_entrance_guard_alive	entrance_guard.h	/^    char if_entrance_guard_alive;$/;"	m	struct:__anon1
+if_open_door	entrance_guard.h	/^    char if_open_door; $/;"	m	struct:__anon1
+ip	net.c	/^char ip[36] = {0};$/;"	v
+mac	net.c	/^char mac[36] = {0};$/;"	v
+main	main.c	/^int main(int argc, char *argv[])$/;"	f
+open_door_code	entrance_guard.c	/^unsigned char open_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc2,0x6e,0x1b};$/;"	v
+printf_debug	ck2316_alarm.c	10;"	d	file:
+printf_debug	ck2316_alarm.c	8;"	d	file:
+printf_debug	entrance_guard.c	13;"	d	file:
+printf_debug	entrance_guard.c	15;"	d	file:
+printf_debug	main.c	26;"	d	file:
+printf_debug	main.c	28;"	d	file:
+printf_debug	matrix_control.c	7;"	d	file:
+printf_debug	matrix_control.c	9;"	d	file:
+printf_debug	net.c	11;"	d	file:
+printf_debug	net.c	13;"	d	file:
+pthread_ck2316_alarm	ck2316_alarm.c	/^void *pthread_ck2316_alarm(void *arg)$/;"	f
+pthread_entrance_guard	entrance_guard.c	/^void *pthread_entrance_guard(void *arg)$/;"	f
+pthread_entrance_guard_handshake	entrance_guard.c	/^void *pthread_entrance_guard_handshake(void *arg)$/;"	f
+pthread_get_local_ip	main.c	/^void *pthread_get_local_ip(void *arg)$/;"	f
+pthread_handshake	net.c	/^void *pthread_handshake(void *arg)$/;"	f
+pthread_matrix_control	matrix_control.c	/^void *pthread_matrix_control(void *arg)$/;"	f
+recv_buffer	net.c	/^char recv_buffer[RECV_BUFFER_SIZE + 1] = {0};$/;"	v
+return_search_entrance_guard_code	entrance_guard.c	/^unsigned char return_search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc3,0x7e,0x3a};$/;"	v
+return_setup_success_code	entrance_guard.c	/^unsigned char return_setup_success_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x81,0x6d,0xbc};$/;"	v
+search_entrance_guard_code	entrance_guard.c	/^unsigned char search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x02,0xcc,0x57};$/;"	v
+server_sock_tcp	main.c	/^int server_sock_tcp, client_sock_tcp;$/;"	v
+tcp_server_recv	net.c	/^int tcp_server_recv(int *server_sock_tcp, int *client_sock_tcp)$/;"	f
+waiting_for_client_connect	net.c	/^int waiting_for_client_connect(int *server_sock_tcp, struct sockaddr_in *server_tcp, int *client_sock_tcp, struct sockaddr_in *client_tcp) $/;"	f
