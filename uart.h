@@ -10,8 +10,8 @@
 #define UART_DEVICE_ttyS5 "/dev/ttyS5"
 #define UART_DEVICE_ttyS6 "/dev/ttyS6"
 
-#define MAX_RECV_SIZE 19
 #define RECV_TIMEOUT  3000  //3 seconds, the units is ms
+#define RECV_OVER_TIME 400000
 
 
 //0 115200
@@ -28,7 +28,8 @@
 /*int InitCom(int speed);*/
 int InitCom(char *UART_DEVICE_ttySx, int speed);
 int SendDataToCom(int Device ,unsigned char * DataBuf ,int DataLen);
-int RecvDataFromCom(int DeviceNo,unsigned char *DataBuf,unsigned int *Len,unsigned int OverTime);
+//int RecvDataFromCom(int DeviceNo,unsigned char *DataBuf,unsigned int *Len,unsigned int OverTime);
+int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime, unsigned int recv_over_time);
 int CloseCom(int Device);
 int ClrCom(int Device);
 

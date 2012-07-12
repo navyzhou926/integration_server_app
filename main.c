@@ -30,6 +30,8 @@
 
 #define PATH_HOME "/home"
 
+unsigned char net_recv_verify_code[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55};
+
 int flag = 0;
 int server_sock_tcp, client_sock_tcp;
 
@@ -189,41 +191,75 @@ start:
         //接收客户端发过来的数据
         ret = tcp_server_recv(&server_sock_tcp, &client_sock_tcp);
 
-        if (ret != RECV_BUFFER_SIZE) 
+        if (ret != NET_RECV_BUFFER_SIZE) 
         {
             printf_debug("FUNC[%s] LINE[%d]\tReceived %d bytes data, didn't receive enough data\t\n",__FUNCTION__, __LINE__,ret);
             break;
         }
         else 
         {
-            #if 1
-            if (strcmp(recv_buffer, "opendoor") == 0) 
+            if (strncmp(net_recv_buffer, net_recv_verify_code, 30) == 0) 
             {
+                switch(net_recv_buffer[31])
+                {
+                    case 0x01: //开门 
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_OPEN_DOOR;
+                        break;
+                    case 0x02: //关门
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_CLOSE_DOOR;
+                        break;
+                    case 0x03: //门锁继电器常开
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_RELAY_OPEN_DOOR;
+                        break;
+                    case 0x04: //门锁继电器常闭
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_RELAY_CLOSE_DOOR;
+                        break;
+                    case 0x05: //客户端设置门保持时间
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_CLIENT_SET_DOOR_HOLD_TIME;
+                        entrance_guard_data.client_set_door_hold_time = net_recv_buffer[30];
+                        break;
+                    case 0x06: //开门按钮设置门保持时间
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_BUTTON_SET_DOOR_HOLD_TIME;
+                        entrance_guard_data.button_set_door_hold_time = net_recv_buffer[30];
+                        break;
+                    case 0x07: //获取普通消息
+                        //entrance_guard_data.setup_command_set = ENTRANCE_GUARD_GET_NORMAL_MESSAGE;
+                        break;
+                    case 0x08: //获取报警消息
+                        //entrance_guard_data.setup_command_set = ENTRANCE_GUARD_GET_ALARM_MESSAGE;
+                    case 0x09: //门磁状态设置(常开)
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_OPEN;
+                        break;
+                    case 0x0a: //门磁状态设置(常闭)(默认)
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE;
+                        break;
+                    default:   //无效指令
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
+                        break;
+                }
+                #if 0
                 pthread_mutex_lock(&counter_mutex);
                 send(client_sock_tcp, "opendoor\r\n", 10, 0);
                 pthread_mutex_unlock(&counter_mutex);
-                entrance_guard_data.if_open_door = YES;
-            }
-            else if(strcmp(recv_buffer, "closdoor") == 0)
-            {
+                entrance_guard_data.if_open_or_close_door = OPEN_DOOR;
+                entrance_guard_data.if_is_setup_command = YES;
+
                 pthread_mutex_lock(&counter_mutex);
                 send(client_sock_tcp, "closdoor\r\n", 10, 0);
                 pthread_mutex_unlock(&counter_mutex);
-                entrance_guard_data.if_close_door = YES;
+                entrance_guard_data.if_open_or_close_door = CLOSE_DOOR;
+                entrance_guard_data.if_is_setup_command = YES;
+                #endif
             }
-            #else
-                pthread_mutex_lock(&counter_mutex);
-                send(client_sock_tcp, "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n", 27, 0);
-                pthread_mutex_unlock(&counter_mutex);
-            #endif
+
             printf_debug("length: %d   recv_data: ",ret);
             //for (i = 0; i < RECV_BUFFER_SIZE; i++) 
             #if 1
-            printf_debug("%s\n",recv_buffer);
+            printf_debug("%s\n",net_recv_buffer);
             #else
             for (i = 0; i < ret; i++) 
             {
-                printf_debug("%c ",recv_buffer[i]);
+                printf_debug("%c ",net_recv_buffer[i]);
             }
             printf("\n");
             #endif

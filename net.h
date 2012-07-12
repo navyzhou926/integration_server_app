@@ -19,13 +19,13 @@
 #define SERVER_RECV_TIMEOUT_SECOND          6000
 #define SERVER_RECV_TIMEOUT_MICROSECOND     0
 
-#define HANDSHAKE_DELAY_TIME                10
+#define NET_HANDSHAKE_DELAY_TIME            10
 
-#define RECV_BUFFER_SIZE	    8
+#define NET_RECV_BUFFER_SIZE           	    32
 
 extern char ip[36];
 extern char mac[36];
-extern char recv_buffer[RECV_BUFFER_SIZE + 1];
+extern char net_recv_buffer[NET_RECV_BUFFER_SIZE + 1];
 extern int if_disconnect_client;
 extern pthread_mutex_t counter_mutex;
 

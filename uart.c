@@ -32,9 +32,9 @@
 int InitCom(char *UART_DEVICE_ttySx, int speed)
 {
     int fd ;
-    int int_ret;
+    //int int_ret;
     struct termios attr;
-    unsigned char buf[20];
+    //unsigned char buf[20];
     int speed_arr[] ={B115200,B57600,B38400,B19200,B9600,B4800,B2400,B1200,B300};
 
     //fd = open(UART_DEVICE_ttyS1, O_RDWR| O_NOCTTY | O_NDELAY);
@@ -95,7 +95,7 @@ OverTime:超时时间(单位毫秒)
 -1-超时，Len:实际接收字符数
  ********************************************************************/
 
-int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime)
+int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime, unsigned int recv_over_time)
 {
     fd_set fds;
     struct timeval tv;
@@ -112,7 +112,8 @@ int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, uns
         return -1;
     }
     tv.tv_sec = 0;
-    tv.tv_usec = 300000;
+    //tv.tv_usec = 300000;
+    tv.tv_usec = recv_over_time;
 
     Num=*Len;
     while(Num)
@@ -132,7 +133,7 @@ int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, uns
         *DataBuf++=Chr;
         Num--;
     }
-out:
+//out:
     *Len-=Num;
     if(!Num)
         return 0;
@@ -156,5 +157,6 @@ int CloseCom(int Device)
 int ClrCom(int Device)
 {
     tcflush(Device,TCIFLUSH);
+    return 0; 
 }
 

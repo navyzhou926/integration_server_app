@@ -16,7 +16,7 @@
 char ip[36] = {0};
 char mac[36] = {0};
 
-char recv_buffer[RECV_BUFFER_SIZE + 1] = {0};
+char net_recv_buffer[NET_RECV_BUFFER_SIZE + 1] = {0};
 
 int if_disconnect_client = NO;
 
@@ -28,7 +28,7 @@ void *pthread_handshake(void *arg)
 
     while (1) 
     {
-        sleep(HANDSHAKE_DELAY_TIME);
+        sleep(NET_HANDSHAKE_DELAY_TIME);
         pthread_mutex_lock(&counter_mutex);
         send(client_sock_tcp, "*********handshake@@@@@@@@\n", 27, 0);
         pthread_mutex_unlock(&counter_mutex);
@@ -156,7 +156,7 @@ int tcp_server_recv(int *server_sock_tcp, int *client_sock_tcp)
     struct timeval tm;
     int ret = 0;
 
-    while (sum_length < RECV_BUFFER_SIZE)
+    while (sum_length < NET_RECV_BUFFER_SIZE)
     {
         tm.tv_sec = SERVER_RECV_TIMEOUT_SECOND; 
         tm.tv_usec = SERVER_RECV_TIMEOUT_MICROSECOND;
@@ -178,7 +178,7 @@ int tcp_server_recv(int *server_sock_tcp, int *client_sock_tcp)
             if (FD_ISSET(*client_sock_tcp, &rset)) 
             {
                 //if ((length = recv(*client_sock_tcp, recv_buffer, RECV_BUFFER_SIZE, 0)) > 0)
-                if ((length = recv(*client_sock_tcp, recv_buffer + sum_length, RECV_BUFFER_SIZE-sum_length, 0)) > 0)
+                if ((length = recv(*client_sock_tcp, net_recv_buffer + sum_length, NET_RECV_BUFFER_SIZE-sum_length, 0)) > 0)
                 {
                     sum_length += length;
                 #if 0
