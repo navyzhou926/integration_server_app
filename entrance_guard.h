@@ -6,14 +6,17 @@
 #define OPEN_DOOR       1
 #define CLOSE_DOOR      0
 
-#define MAX_RECV_SIZE                      29
-#define SEARCH_ENTRANCE_GUARD_RECV_SIZE    29
-#define HANDSHAKE_SETUP_RECV_SIZE          256
+#define CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT         21
+#define BUTTON_CONTROL_DOOR_HOLD_TIME_COUNT         17     
 
-#define MATCH_HANDSHAKE_TIMEOUT            300000
+#define MAX_RECV_SIZE                               29
+#define SEARCH_ENTRANCE_GUARD_RECV_SIZE             29
+#define HANDSHAKE_SETUP_RECV_SIZE                   256
+
+#define MATCH_HANDSHAKE_TIMEOUT                     300000
 
 
-#define ENTRANCE_GUARD_CONFIG_FILE         "entrance_guard.config"
+#define ENTRANCE_GUARD_CONFIG_FILE                  "entrance_guard.config"
 
 #define ENTRANCE_GUARD_NO_VALID_COMMAND             0x00
 #define ENTRANCE_GUARD_OPEN_DOOR                    0x01
@@ -39,6 +42,8 @@ typedef struct
     字节4：保留(高字节)
     字节3：保留
     字节2：保留
+    9：门磁状态设置(常闭)(默认)
+    8：门磁状态设置(常开)
     字节1：
     7：获取报警消息
     6：获取普通消息
@@ -51,6 +56,7 @@ typedef struct
     unsigned int setup_command_set;         //存储设置命令(低16位，每一位表示一个命令) 
     unsigned char client_set_door_hold_time;//客户端设置门保持时间
     unsigned char button_set_door_hold_time;//开门按钮设置门保持时间
+    unsigned char if_set_door_hold_time_is_valid;//设置门保持时间是否合法
 }entrance_guard_arg;
 
 
