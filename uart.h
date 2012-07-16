@@ -10,7 +10,7 @@
 #define UART_DEVICE_ttyS5 "/dev/ttyS5"
 #define UART_DEVICE_ttyS6 "/dev/ttyS6"
 
-#define RECV_TIMEOUT  3000  //3 seconds, the units is ms
+#define RECV_TIMEOUT  2000  //1.8 seconds, the units is ms
 #define RECV_OVER_TIME 400000
 
 

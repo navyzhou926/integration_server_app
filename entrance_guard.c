@@ -17,7 +17,7 @@
 
 pthread_mutex_t entrance_guard_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-entrance_guard_arg entrance_guard_data = {NO, IS_OPENED, IS_OPENED, 0, 0, 5, 5};
+entrance_guard_arg entrance_guard_data = {NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 0, 5, 5, NO, NO, 0, 0};
 
 //host code
 unsigned char search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x02,0xcc,0x57};
@@ -30,8 +30,10 @@ unsigned char close_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc3,
 unsigned char door_contact_default_open_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x00,0x08,0x89,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x9b,0xb9};
 //门磁  常闭+短路检测模式+扫描间隔为0秒 (推荐)
 unsigned char door_contact_default_close_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x00,0x08,0xc9,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x6d,0x69};
-//出门按钮  常开+普通消息+无检测模式+扫描间隔0秒+联动对象：***门锁
-unsigned char door_button_default_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x01,0x08,0x88,0x00,0x42,0x00,0xb0,0x00,0x00,0x00,0xa3,0xae};
+//出门按钮 常开+不产生消息+无检测模式+扫描间隔0秒+联动对象：***门锁 (推荐+默认) 
+unsigned char door_button_default_setup_code_1[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x01,0x08,0x80,0x00,0x42,0x00,0xb0,0x00,0x00,0x00,0xbd,0x74};
+//出门按钮 常开+普通消息+无检测模式+扫描间隔0秒+联动对象：***门锁 
+unsigned char door_button_default_setup_code_2[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x01,0x08,0x88,0x00,0x42,0x00,0xb0,0x00,0x00,0x00,0xa3,0xae};
 //门锁  输出点状态---常开+普通消息+连续输出+5秒+无联动对象（默认）
 unsigned char door_lock_default_open_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0xbe,0xfd};
 //门锁  输出点状态---常闭+普通消息+连续输出+5秒+无联动对象
@@ -68,18 +70,19 @@ unsigned char return_door_contact_open_alarm_upload_code_1[] = {0xfa,0xfa,0xfa,0
 //门禁报警上传---门磁开路数据+报警消息
 unsigned char return_door_contact_open_alarm_upload_code_2[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11,0x00,0x00,0x00,0x00,0x93,0x00,0x00,0x00,0x00,0x00,0x0c};
 
-void *pthread_entrance_guard_setup(void *arg);
 int search_entrance_guard(int *com_fd);
-int entrance_guard_handshake_and_setup(int *com_fd);
+int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file, FILE *fp_alarm_message_file, FILE *fp_message_count_file, FILE *fp_config_file);
 void print_string(char *string, unsigned char *buffer, unsigned int len);
 
 void *pthread_entrance_guard(void *arg)
 {
     int com_fd;
     int recv_ret = 0;
-    pthread_t tid_handshake;
 
-    FILE *fp;
+    FILE *fp_normal_message_file;
+    FILE *fp_alarm_message_file;
+    FILE *fp_message_count_file;
+    FILE *fp_config_file;
 
     com_fd = InitCom(UART_DEVICE_ttyS1, BOARD_RATE);
     //com_fd = InitCom(UART_DEVICE_ttyUSB0, BOARD_RATE);
@@ -89,15 +92,90 @@ void *pthread_entrance_guard(void *arg)
         exit(1);
     }
 
-    if ((fp = fopen(ENTRANCE_GUARD_CONFIG_FILE, "w+")) == NULL)
+    //打开存储普通消息的文件
+    if ((fp_normal_message_file = fopen(ENTRANCE_GUARD_NORMAL_MESSAGE_FILE, "a+")) == NULL)
+    {
+        printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_NORMAL_MESSAGE_FILE);
+        exit(1);
+    }
+    //打开存储报警消息的文件
+    if ((fp_alarm_message_file = fopen(ENTRANCE_GUARD_ALARM_MESSAGE_FILE, "a+")) == NULL)
+    {
+        printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_ALARM_MESSAGE_FILE);
+        exit(1);
+    }
+
+    //打开存储普通消息和报警消息计数的文件
+    if ((fp_message_count_file = fopen(ENTRANCE_GUARD_MESSAGE_COUNT_FILE, "a+")) == NULL)
+    {
+        printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_ALARM_MESSAGE_FILE);
+        exit(1);
+    }
+    fseek(fp_message_count_file, 0, SEEK_SET);
+    //if ((fscanf(fp_message_count_file, "%03d %03d\n",&entrance_guard_data.current_normal_message_num, &entrance_guard_data.current_alarm_message_num)) != 2)
+    if ((fscanf(fp_message_count_file, "%03d ",&entrance_guard_data.current_normal_message_num)) != 1)
+    {
+        entrance_guard_data.current_normal_message_num = 0;
+    }
+    if ((fscanf(fp_message_count_file, "%03d\n",&entrance_guard_data.current_alarm_message_num)) != 1)
+    {
+        entrance_guard_data.current_alarm_message_num = 0;
+    }
+    fclose(fp_message_count_file);
+    if ((fp_message_count_file = fopen(ENTRANCE_GUARD_MESSAGE_COUNT_FILE, "w+")) == NULL)
+    {
+        printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_ALARM_MESSAGE_FILE);
+        exit(1);
+    }
+    fseek(fp_message_count_file, 0, SEEK_SET);
+    fprintf(fp_message_count_file, "%03d %03d\n",entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
+    fflush(fp_message_count_file);
+
+    //打开存储门禁控制器一些参数的文件
+    //一共存储5个参数，从上到下顺序为：
+    //door_lock_relay_status_setup (1:常开, 0:常闭)   
+    //door_contact_detection_mode_setup (1:开路，0:短路)
+    //door_status (1:开门，0:关门)
+    //client_set_door_hold_time (0-255s)
+    //button_set_door_hold_time (0-255s)
+    if ((fp_config_file = fopen(ENTRANCE_GUARD_CONFIG_FILE, "a+")) == NULL)
     {
         printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_CONFIG_FILE);
         exit(1);
     }
+    fseek(fp_config_file, 0, SEEK_SET);
+    if ((fscanf(fp_config_file, "%d ",&entrance_guard_data.door_lock_relay_status_setup)) != 1)
+    {
+        entrance_guard_data.door_lock_relay_status_setup = IS_OPENED;
+    }
+    if ((fscanf(fp_config_file, "%d ",&entrance_guard_data.door_contact_detection_mode_setup)) != 1)
+    {
+        entrance_guard_data.door_contact_detection_mode_setup = IS_CLOSED;
+    }
+    if ((fscanf(fp_config_file, "%d ",&entrance_guard_data.door_status)) != 1)
+    {
+        entrance_guard_data.door_status = IS_OPENED;
+    }
+    if ((fscanf(fp_config_file, "%03d ",&entrance_guard_data.client_set_door_hold_time)) != 1)
+    {
+        entrance_guard_data.client_set_door_hold_time = 5;
+    }
+    if ((fscanf(fp_config_file, "%03d ",&entrance_guard_data.button_set_door_hold_time)) != 1)
+    {
+        entrance_guard_data.button_set_door_hold_time = 5;
+    }
+    fclose(fp_config_file);
+    if ((fp_config_file = fopen(ENTRANCE_GUARD_CONFIG_FILE, "w+")) == NULL)
+    {
+        printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_CONFIG_FILE);
+        exit(1);
+    }
+    printf_debug("\n\nEntrance guard initial status info: %d %d %d %03d %03d\n\n",entrance_guard_data.door_lock_relay_status_setup, entrance_guard_data.door_contact_detection_mode_setup, entrance_guard_data.door_status, entrance_guard_data.client_set_door_hold_time, entrance_guard_data.button_set_door_hold_time);
+    fprintf(fp_config_file, "%d %d %d %03d %03d",entrance_guard_data.door_lock_relay_status_setup, entrance_guard_data.door_contact_detection_mode_setup, entrance_guard_data.door_status, entrance_guard_data.client_set_door_hold_time, entrance_guard_data.button_set_door_hold_time);
+    fflush(fp_config_file);
 
-
-#if 1
 SEARCH_ENTRANCE_GUARD:
+#if 0
     // Send search code //FA FA FA 2A 01 00 02 CC 57
     usleep(100000); //100ms
     if (search_entrance_guard(&com_fd) != 1)
@@ -107,31 +185,25 @@ SEARCH_ENTRANCE_GUARD:
     usleep(300000); //300ms
 #endif
 
-#if 0
-    if (pthread_create(&tid_handshake, NULL, pthread_entrance_guard_setup, &com_fd) != 0) 
-    {
-        printf("FUNC[%s] LINE[%d]\tCan't create entrance guard setup thread !\n",__FUNCTION__, __LINE__);
-        exit(1);
-    }
-#endif
-
-    recv_ret = entrance_guard_handshake_and_setup(&com_fd);
+    recv_ret = entrance_guard_handshake_and_setup(&com_fd, fp_normal_message_file, fp_alarm_message_file, fp_message_count_file, fp_config_file);
     if (recv_ret == -1) 
     {
-        exit(1);
+        sleep(30);
+        goto SEARCH_ENTRANCE_GUARD;
+        //exit(1);
     }
-#if 0
-    else if (recv_ret = 0) 
+    else if (recv_ret == 0) 
     {
         goto SEARCH_ENTRANCE_GUARD;
     }
-#endif
 
     return (void *)1;
 }
 
-int entrance_guard_handshake_and_setup(int *com_fd)
+int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file, FILE *fp_alarm_message_file, FILE *fp_message_count_file, FILE *fp_config_file)
 {
+    time_t tm;
+    struct tm *t;
     int i = 0;
     int recv_ret = 0;
     unsigned int recv_size = 0;
@@ -191,6 +263,7 @@ int entrance_guard_handshake_and_setup(int *com_fd)
                 {
                     send_buffer = handshake_base_code;
                     send_size = 11;
+                    entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
                     printf("FUNC[%s] LINE[%d]\tSet door hold time is not valid!\n",__FUNCTION__, __LINE__);
                     //navy 网络发送设置门保持时间不合法反馈包
                 }
@@ -211,6 +284,7 @@ int entrance_guard_handshake_and_setup(int *com_fd)
                 {
                     send_buffer = handshake_base_code;
                     send_size = 11;
+                    entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
                     printf("FUNC[%s] LINE[%d]\tSet door hold time is not valid!\n",__FUNCTION__, __LINE__);
                     //navy 网络发送设置门保持时间不合法反馈包
                 }
@@ -262,10 +336,17 @@ int entrance_guard_handshake_and_setup(int *com_fd)
                     }
                     else
                     {
-                        printf_debug("FUNC[%s] LINE[%d]\tTimeout, ditn't receive entrance guard handshake code!\n",__FUNCTION__, __LINE__);
+                        printf("FUNC[%s] LINE[%d]\tTimeout, ditn't receive entrance guard handshake code!\n",__FUNCTION__, __LINE__);
                     }
                     entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
-                    usleep(1000000);
+                    entrance_guard_data.if_entrance_guard_alive = NO;
+                    entrance_guard_data.if_has_delete_offline_alarm = NO;
+                #if 1
+                    usleep(100000);
+                #else
+                    recv_size = HANDSHAKE_SETUP_RECV_SIZE;
+                    recv_ret = RecvDataFromCom(*com_fd, recv_buffer, &recv_size, 500, 300000);
+                #endif
                     break;
                 }
                 else
@@ -277,24 +358,52 @@ int entrance_guard_handshake_and_setup(int *com_fd)
                     if ((strncmp(return_handshake_code_1, recv_buffer, 12) == 0) || (strncmp(return_handshake_code_2, recv_buffer, 12) == 0)) 
                     {
                         printf_debug("FUNC[%s] LINE[%d]\tHandshake code: %x %x %x\n",__FUNCTION__, __LINE__, handshake_base_code[8], handshake_base_code[9], handshake_base_code[10]);
+                            entrance_guard_data.if_has_delete_offline_alarm = YES;
                         //return 1;
                     }
                     else if (strncmp(return_setup_success_code, recv_buffer, 9) == 0) 
                     {
                         switch(entrance_guard_data.setup_command_set)
                         {
+                        //navy 
                             case ENTRANCE_GUARD_NO_VALID_COMMAND:  //没有合法的命令，则发送握手码   
+                            //navy 网络发送消息“无效命令”
                                 break;
                             case ENTRANCE_GUARD_OPEN_DOOR:         //门状态设置(开门)
-                                printf_debug("FUNC[%s] LINE[%d]\tThe door is opened!\n",__FUNCTION__, __LINE__);
+                                if (entrance_guard_data.door_status == IS_OPENED) 
+                                {
+                                    printf_debug("FUNC[%s] LINE[%d]\tRepeat open the door!\n",__FUNCTION__, __LINE__);
+                                    //navy 网络发送消息“重复打开门”
+                                    
+                                }
+                                else
+                                {
+                                    printf_debug("FUNC[%s] LINE[%d]\tThe door is opened!\n",__FUNCTION__, __LINE__);
+                                    entrance_guard_data.door_status = IS_OPENED;
+
+                                    //navy 网络发送消息“成功打开门”
+                                }
                                 break;
                             case ENTRANCE_GUARD_CLOSE_DOOR:        //门状态设置(关门) 
-                                printf_debug("FUNC[%s] LINE[%d]\tThe door is closed!\n",__FUNCTION__, __LINE__);
+                                if (entrance_guard_data.door_status == IS_CLOSED) 
+                                {
+                                    printf_debug("FUNC[%s] LINE[%d]\tRepeat close the door!\n",__FUNCTION__, __LINE__);
+                                    //navy 网络发送消息“重复关闭门”
+                                    
+                                }
+                                else
+                                {
+                                    printf_debug("FUNC[%s] LINE[%d]\tThe door is closed!\n",__FUNCTION__, __LINE__);
+                                    entrance_guard_data.door_status = IS_CLOSED;
+                                    //navy 网络发送消息“成功关闭门”
+                                }
                                 break;
                             case ENTRANCE_GUARD_RELAY_OPEN_DOOR:   //门锁继电器状态设置(常开)(默认)
+                                    entrance_guard_data.door_lock_relay_status_setup = IS_OPENED;
                                 printf_debug("FUNC[%s] LINE[%d]\tThe door lock relay is setup to normally open!\n",__FUNCTION__, __LINE__);
                                 break;
                             case ENTRANCE_GUARD_RELAY_CLOSE_DOOR:  //门锁继电器状态设置(常闭)
+                                    entrance_guard_data.door_lock_relay_status_setup = IS_CLOSED;
                                 printf_debug("FUNC[%s] LINE[%d]\tThe door lock relay is setup to normally close!\n",__FUNCTION__, __LINE__);
                                 break;
                             case ENTRANCE_GUARD_CLIENT_SET_DOOR_HOLD_TIME: //客户端设置门的保持时间(1-255秒)
@@ -308,15 +417,21 @@ int entrance_guard_handshake_and_setup(int *com_fd)
                             //case ENTRANCE_GUARD_GET_ALARM_MESSAGE:  //获取报警消息
                                 //break;
                             case ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_OPEN: //门磁状态设置(常开)
+                                entrance_guard_data.door_contact_detection_mode_setup = IS_OPENED;
                                 printf_debug("FUNC[%s] LINE[%d]\tThe door contact is setup to normally open!\n",__FUNCTION__, __LINE__);
                                 break;
                             case ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE: //门磁状态设置(常闭)(默认)
+                                entrance_guard_data.door_contact_detection_mode_setup = IS_CLOSED;
                                 printf_debug("FUNC[%s] LINE[%d]\tThe door contact is setup to normally close!\n",__FUNCTION__, __LINE__);
                                 break;
                             default:
                                 break;
                         }
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
+                        fseek(fp_config_file, 0, SEEK_SET);
+                        printf_debug("\n\n\nentrance guard status info: %d %d %d %03d %03d\n\n\n",entrance_guard_data.door_lock_relay_status_setup, entrance_guard_data.door_contact_detection_mode_setup, entrance_guard_data.door_status, entrance_guard_data.client_set_door_hold_time, entrance_guard_data.button_set_door_hold_time);
+                        fprintf(fp_config_file, "%d %d %d %03d %03d",entrance_guard_data.door_lock_relay_status_setup, entrance_guard_data.door_contact_detection_mode_setup, entrance_guard_data.door_status, entrance_guard_data.client_set_door_hold_time, entrance_guard_data.button_set_door_hold_time);
+                        fflush(fp_config_file);
                     }
                     //else if(strncmp(return_alarm_upload_code, recv_buffer, 7) == 0)
                     else if(strncmp(return_alarm_upload_code, recv_buffer, 4) == 0)
@@ -327,7 +442,98 @@ int entrance_guard_handshake_and_setup(int *com_fd)
                         printf_debug("FUNC[%s] LINE[%d]\trecv_size = %d\n",__FUNCTION__, __LINE__,recv_size);
                         print_string("recv_data: ", recv_buffer, recv_size);
 #endif
+                        if (entrance_guard_data.if_has_delete_offline_alarm == YES) 
+                        {
+                            tm = time(NULL);
+                            t = localtime(&tm);
+
+                            if (entrance_guard_data.current_normal_message_num >= MAX_NORMAL_MESSAGE_NUM) 
+                            {
+                                entrance_guard_data.current_normal_message_num = 0;
+                                fclose(fp_normal_message_file);
+                                if (remove(ENTRANCE_GUARD_NORMAL_MESSAGE_FILE) < 0)
+                                {
+                                    printf("FUNC[%s] LINE[%d]\tFailed to delete %s!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_NORMAL_MESSAGE_FILE);
+                                }
+                                else
+                                {
+                                    printf_debug("FUNC[%s] LINE[%d]\tSucceed to delete %s!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_NORMAL_MESSAGE_FILE);
+                                }
+
+                                if ((fp_normal_message_file = fopen(ENTRANCE_GUARD_NORMAL_MESSAGE_FILE, "w+")) == NULL)
+                                {
+                                    printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_NORMAL_MESSAGE_FILE);
+                                    exit(1);
+                                }
+                            }
+                            if (entrance_guard_data.current_alarm_message_num >= MAX_ALARM_MESSAGE_NUM) 
+                            {
+                                entrance_guard_data.current_alarm_message_num = 0;
+                                fclose(fp_alarm_message_file);
+                                if (remove(ENTRANCE_GUARD_ALARM_MESSAGE_FILE) < 0)
+                                {
+                                    printf("FUNC[%s] LINE[%d]\tFailed to delete %s!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_ALARM_MESSAGE_FILE);
+                                }
+                                else
+                                {
+                                    printf_debug("FUNC[%s] LINE[%d]\tSucceed to delete %s!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_ALARM_MESSAGE_FILE);
+                                }
+                                if ((fp_alarm_message_file = fopen(ENTRANCE_GUARD_ALARM_MESSAGE_FILE, "w+")) == NULL)
+                                {
+                                    printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_ALARM_MESSAGE_FILE);
+                                    exit(1);
+                                }
+                            }
+
+                            fseek(fp_message_count_file, 0, SEEK_SET);
+                            switch(recv_buffer[11])
+                            {
+                                //存储格式 "2012-07-13 16:10:30 1" (1表示门锁打开，2表示门锁关闭，3表示合法打开门磁，4表示关闭门磁，5表示非法打开门磁)
+                                case 0x0c:  //按下开门按钮，门锁打开
+                                    fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 1);
+                                    fprintf(fp_message_count_file, "%03d %03d\n",++entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
+                                    printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Door lock open message\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
+                                    break;
+                                case 0x0d:  //门开保持时间(5秒)后，门自动关闭
+                                    fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 2);
+                                    fprintf(fp_message_count_file, "%03d %03d\n",++entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
+                                    printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Door lock close message\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
+                                    break;
+                                case 0x12:  //合法打开门磁(合法开门)
+                                case 0x10:  //合法打开门磁(合法开门)
+                                    fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 3);
+                                    fprintf(fp_message_count_file, "%03d %03d\n",++entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
+                                    printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Door contact normally open message\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
+                                    break;
+                                case 0x88:  //关闭门磁(关门)
+                                    fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 4);
+                                    fprintf(fp_message_count_file, "%03d %03d\n",++entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
+                                    printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Door contact normally close message\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
+                                    break;
+                                case 0x93:  //非法打开门磁(非法开门)
+                                case 0x91:  //非法打开门磁(非法开门)
+                                    fprintf(fp_alarm_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 5);
+                                    fflush(fp_alarm_message_file);
+                                    fprintf(fp_message_count_file, "%03d %03d\n",entrance_guard_data.current_normal_message_num, ++entrance_guard_data.current_alarm_message_num);
+                                    printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Warning! Door contact abnormally open message upload\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
+                                    //网络发送给客户端 //navy
+                                    break;
+                                default:
+                                    break;
+                            }
+                            fflush(fp_normal_message_file);
+                            fflush(fp_message_count_file);
+
+                            fseek(fp_message_count_file, 0, SEEK_SET);
+                            if ((fscanf(fp_message_count_file, "%03d %03d\n",&entrance_guard_data.current_normal_message_num, &entrance_guard_data.current_alarm_message_num)) != 2)
+                            {
+                                entrance_guard_data.current_normal_message_num = 0;
+                                entrance_guard_data.current_alarm_message_num = 0;
+                            }
+                            printf_debug("current_normal_message_num = %d \ncurrent_alarm_message_num = %d\n",entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
+                        }
                     }
+                    entrance_guard_data.if_entrance_guard_alive = YES;
                 }
                 break;
             case -2:
@@ -351,7 +557,7 @@ void print_string(char *string, unsigned char *buffer, unsigned int len)
     printf("%s",string);
     for (i = 0; i < len; i++) 
     {
-        printf("%x ",buffer[i]);
+        printf("%02X ",buffer[i]);
     }
     printf("\n");
 }
@@ -369,7 +575,7 @@ int send_entrance_guard_default_setup(int *com_fd)
         return -1;
     }
     usleep(150000);
-    if (SendDataToCom(*com_fd, door_button_default_setup_code, 19) == -1)
+    if (SendDataToCom(*com_fd, door_button_default_setup_code_1, 19) == -1)
     {
         printf("FUNC[%s] LINE[%d]\tSend data to com error!\n",__FUNCTION__, __LINE__);
         return -1;
@@ -410,8 +616,11 @@ int search_entrance_guard(int *com_fd)
                 {
                     printf("FUNC[%s] LINE[%d]\tEntrance guard is alive !\n",__FUNCTION__, __LINE__);
                     entrance_guard_data.if_entrance_guard_alive = YES;
-                    //return 1;
+                #if 1
+                    return 1;
+                #else
                     return send_entrance_guard_default_setup(com_fd); 
+                #endif
                 }
                 else
                 {

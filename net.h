@@ -11,7 +11,7 @@
 #include <sys/select.h>
 #include <time.h>
 
-#define SERVER_PORT_TCP	    21203	
+#define SERVER_PORT_TCP	    21213	
 
 #define SERVER_ACCEPT_TIMEOUT_SECOND        120
 #define SERVER_ACCEPT_TIMEOUT_MICROSECOND   0

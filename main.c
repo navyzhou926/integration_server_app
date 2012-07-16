@@ -39,7 +39,7 @@ void *pthread_get_local_ip(void *arg)
 {
     while (1) 
     {
-        sleep(300);
+        sleep(500);
         if (get_local_ip(ip, mac) == 0) 
         {
             printf_debug("local ip: %s\n",ip);
@@ -53,8 +53,8 @@ void *pthread_get_local_ip(void *arg)
 int main(int argc, char *argv[])
 {
     #ifdef DEBUG
-    time_t timer;
-    struct tm *tblock;
+    time_t tm;
+    struct tm *t;
     #endif
     int ret = 0;
     //int i = 0;
@@ -111,9 +111,10 @@ int main(int argc, char *argv[])
 start:
 
 #ifdef DEBUG 
-    timer = time(NULL);
-    tblock = localtime(&timer);
-    printf("FUNC[%s] LINE[%d]\tStartTime: %s\n",__FUNCTION__, __LINE__, asctime(tblock));
+    tm = time(NULL);
+    t = localtime(&tm);
+    //printf("FUNC[%s] LINE[%d]\tStartTime: %s\n",__FUNCTION__, __LINE__, asctime(tblock));
+    printf("FUNC[%s] LINE[%d]\tStartTime: %04d-%02d-%02d  %02d:%02d:%02d\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
 #endif
 
     if ((server_sock_tcp = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -234,6 +235,7 @@ start:
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE;
                         break;
                     default:   //无效指令
+                        printf_debug("FUNC[%s] LINE[%d]\tInvalid net command!\n",__FUNCTION__, __LINE__);
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
                         break;
                 }
@@ -252,24 +254,23 @@ start:
                 #endif
             }
 
-            printf_debug("length: %d   recv_data: ",ret);
-            //for (i = 0; i < RECV_BUFFER_SIZE; i++) 
+            printf_debug("length: %d   net_recv_data: 0x%x, 0x%x",ret, net_recv_buffer[30], net_recv_buffer[31]);
             #if 1
-            printf_debug("%s\n",net_recv_buffer);
+            //printf_debug("%s",net_recv_buffer);
             #else
             for (i = 0; i < ret; i++) 
             {
-                printf_debug("%c ",net_recv_buffer[i]);
+                printf_debug("0x%x ",net_recv_buffer[i]);
             }
-            printf("\n");
             #endif
+            printf("\n");
         }
     }
 
-tcp_end:
     //pthread_detach(tid_handshake);
     //pthread_join(tid_handshake, &tret);
     pthread_cancel(tid_handshake);
+tcp_end:
     close(server_sock_tcp);
     goto start;
 

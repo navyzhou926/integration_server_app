@@ -17,6 +17,9 @@
 
 
 #define ENTRANCE_GUARD_CONFIG_FILE                  "entrance_guard.config"
+#define ENTRANCE_GUARD_NORMAL_MESSAGE_FILE          "entrance_guard_normal_message.log"
+#define ENTRANCE_GUARD_ALARM_MESSAGE_FILE           "entrance_guard_alarm_message.log"
+#define ENTRANCE_GUARD_MESSAGE_COUNT_FILE           "entrance_guard_message_count.log"
 
 #define ENTRANCE_GUARD_NO_VALID_COMMAND             0x00
 #define ENTRANCE_GUARD_OPEN_DOOR                    0x01
@@ -30,20 +33,24 @@
 #define ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_OPEN   0x100
 #define ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE  0x200
 
+#define MAX_ALARM_MESSAGE_NUM                       200
+#define MAX_NORMAL_MESSAGE_NUM                      200
+
 typedef struct 
 {
-    char if_entrance_guard_alive;           //当前门禁是否在线
-    unsigned char door_lock_relay_status;   //门锁继电器状态(常开，常闭)
-    unsigned char door_status;              //门的状态(开门，关门)
+    char if_entrance_guard_alive;                 //当前门禁是否在线
+    unsigned int door_lock_relay_status_setup;   //门锁继电器状态设置(常开(默认)，常闭)
+    unsigned int door_contact_detection_mode_setup;      //门磁检测方式设置(短路(默认), 开路)
+    unsigned int door_status;              //门的状态(开门，关门)
     unsigned char current_handshake_num;    //当前握手码的基值
-    //char if_is_setup_command;               //整合服务器发给门禁的码是否是设置命令
+    //char if_is_setup_command;             //整合服务器发给门禁的码是否是设置命令
 
     /* unsigned int setup_command_set 介绍
     字节4：保留(高字节)
     字节3：保留
     字节2：保留
-    9：门磁状态设置(常闭)(默认)
-    8：门磁状态设置(常开)
+    9：门磁检测方式设置(短路)(默认)
+    8：门磁检测方式设置(开路)
     字节1：
     7：获取报警消息
     6：获取普通消息
@@ -54,9 +61,13 @@ typedef struct
     1：门状态设置(关门)
     0：门状态设置(开门)          */
     unsigned int setup_command_set;         //存储设置命令(低16位，每一位表示一个命令) 
-    unsigned char client_set_door_hold_time;//客户端设置门保持时间
-    unsigned char button_set_door_hold_time;//开门按钮设置门保持时间
+    unsigned int client_set_door_hold_time;//客户端设置门保持时间
+    unsigned int button_set_door_hold_time;//开门按钮设置门保持时间
     unsigned char if_set_door_hold_time_is_valid;//设置门保持时间是否合法
+    unsigned char if_has_delete_offline_alarm;//判断是否删除门禁离线后发生的报警
+    unsigned int current_normal_message_num; //当前文件中存储的普通消息总数
+    unsigned int current_alarm_message_num;  //当前文件中存储的报警消息总数
+
 }entrance_guard_arg;
 
 
@@ -64,3 +75,4 @@ void *pthread_entrance_guard(void *arg);
 extern entrance_guard_arg entrance_guard_data;
 
 #endif
+
