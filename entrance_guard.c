@@ -226,7 +226,7 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                 handshake_base_code[9] = handshake_variable_code[handshake_base_code[8]][0];
                 handshake_base_code[10] = handshake_variable_code[handshake_base_code[8]][1];
                 send_buffer = handshake_base_code;
-                send_size = 11;
+                send_size = HANDSHAKE_SEND_SIZE;
 #ifdef DEBUG 
                 //printf_debug("handshake_base_code: %x %x %x\n",handshake_base_code[8], handshake_base_code[9], handshake_base_code[10]);
                 //print_string("handshake_base_code: ", handshake_base_code, 11);
@@ -234,19 +234,19 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                 break;
             case ENTRANCE_GUARD_OPEN_DOOR:         //门状态设置(开门)
                 send_buffer = open_door_code;
-                send_size = 11;
+                send_size = OPEN_DOOR_SEND_SIZE;
                 break;
             case ENTRANCE_GUARD_CLOSE_DOOR:        //门状态设置(关门) 
                 send_buffer = close_door_code;
-                send_size = 11;
+                send_size = CLOSE_DOOR_SEND_SIZE;
                 break;
             case ENTRANCE_GUARD_RELAY_OPEN_DOOR:   //门锁继电器状态设置(常开)(默认)
                 send_buffer = door_lock_default_open_setup_code;
-                send_size = 19;
+                send_size = DOOR_LOCK_DEFAULT_OPEN_SETUP_SEND_SIZE;
                 break;
             case ENTRANCE_GUARD_RELAY_CLOSE_DOOR:  //门锁继电器状态设置(常闭)
                 send_buffer = door_lock_default_close_setup_code;
-                send_size = 19;
+                send_size = DOOR_LOCK_DEFAULT_CLOSE_SETUP_SEND_SIZE;
                 break;
             case ENTRANCE_GUARD_CLIENT_SET_DOOR_HOLD_TIME: //客户端设置门的保持时间(1-255秒)
                 for (i = 0; i < CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT; i++) 
@@ -254,7 +254,7 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                     if (client_control_door_hold_time_code[i][12] == entrance_guard_data.client_set_door_hold_time) 
                     {
                         send_buffer = client_control_door_hold_time_code[i];
-                        send_size = 27; 
+                        send_size = CLIENT_CONTROL_DOOR_HOLD_TIME_SEND_SIZE; 
                         entrance_guard_data.if_set_door_hold_time_is_valid = YES;
                         break;
                     }
@@ -262,7 +262,7 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                 if (entrance_guard_data.if_set_door_hold_time_is_valid == NO) 
                 {
                     send_buffer = handshake_base_code;
-                    send_size = 11;
+                    send_size = HANDSHAKE_SEND_SIZE;
                     entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
                     printf("FUNC[%s] LINE[%d]\tSet door hold time is not valid!\n",__FUNCTION__, __LINE__);
                     //navy 网络发送设置门保持时间不合法反馈包
@@ -275,7 +275,7 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                     if (door_button_control_door_hold_time_code[i][10] == entrance_guard_data.button_set_door_hold_time) 
                     {
                         send_buffer = door_button_control_door_hold_time_code[i];
-                        send_size = 19; 
+                        send_size = BUTTON_CONTROL_DOOR_HOLD_TIME_SEND_SIZE; 
                         entrance_guard_data.if_set_door_hold_time_is_valid = YES;
                         break;
                     }
@@ -283,7 +283,7 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                 if (entrance_guard_data.if_set_door_hold_time_is_valid == NO) 
                 {
                     send_buffer = handshake_base_code;
-                    send_size = 11;
+                    send_size = HANDSHAKE_SEND_SIZE;
                     entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
                     printf("FUNC[%s] LINE[%d]\tSet door hold time is not valid!\n",__FUNCTION__, __LINE__);
                     //navy 网络发送设置门保持时间不合法反馈包
@@ -296,11 +296,11 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                 //break;
             case ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_OPEN: //门磁状态设置(常开)
                 send_buffer = door_contact_default_open_setup_code;
-                send_size = 19;
+                send_size = DOOR_CONTACT_DEFAULT_OPEN_SETUP_SEND_SIZE;
                 break;
             case ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE: //门磁状态设置(常闭)(默认)
                 send_buffer = door_contact_default_close_setup_code;
-                send_size = 19;
+                send_size = DOOR_CONTACT_DEFAULT_CLOSE_SETUP_SEND_SIZE;
                 break;
             default:
                 break;
@@ -358,8 +358,7 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                     if ((strncmp(return_handshake_code_1, recv_buffer, 12) == 0) || (strncmp(return_handshake_code_2, recv_buffer, 12) == 0)) 
                     {
                         printf_debug("FUNC[%s] LINE[%d]\tHandshake code: %x %x %x\n",__FUNCTION__, __LINE__, handshake_base_code[8], handshake_base_code[9], handshake_base_code[10]);
-                            entrance_guard_data.if_has_delete_offline_alarm = YES;
-                        //return 1;
+                        entrance_guard_data.if_has_delete_offline_alarm = YES;
                     }
                     else if (strncmp(return_setup_success_code, recv_buffer, 9) == 0) 
                     {
@@ -463,7 +462,8 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                                 if ((fp_normal_message_file = fopen(ENTRANCE_GUARD_NORMAL_MESSAGE_FILE, "w+")) == NULL)
                                 {
                                     printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_NORMAL_MESSAGE_FILE);
-                                    exit(1);
+                                    //exit(1);
+                                    return -1;
                                 }
                             }
                             if (entrance_guard_data.current_alarm_message_num >= MAX_ALARM_MESSAGE_NUM) 
@@ -481,7 +481,8 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                                 if ((fp_alarm_message_file = fopen(ENTRANCE_GUARD_ALARM_MESSAGE_FILE, "w+")) == NULL)
                                 {
                                     printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ENTRANCE_GUARD_ALARM_MESSAGE_FILE);
-                                    exit(1);
+                                    //exit(1);
+                                    return -1;
                                 }
                             }
 
@@ -489,29 +490,36 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                             switch(recv_buffer[11])
                             {
                                 //存储格式 "2012-07-13 16:10:30 1" (1表示门锁打开，2表示门锁关闭，3表示合法打开门磁，4表示关闭门磁，5表示非法打开门磁)
-                                case 0x0c:  //按下开门按钮，门锁打开
+                                //case 0x0c:  //按下开门按钮，门锁打开
+                                case VALID_OPEN_DOOR_LOCK:
                                     fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 1);
                                     fprintf(fp_message_count_file, "%03d %03d\n",++entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
                                     printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Door lock open message\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
                                     break;
-                                case 0x0d:  //门开保持时间(5秒)后，门自动关闭
+                                //case 0x0d:  //门开保持时间(5秒)后，门自动关闭
+                                case VALID_CLOSE_DOOR_LOCK:
                                     fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 2);
                                     fprintf(fp_message_count_file, "%03d %03d\n",++entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
                                     printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Door lock close message\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
                                     break;
-                                case 0x12:  //合法打开门磁(合法开门)
-                                case 0x10:  //合法打开门磁(合法开门)
+                                //case 0x12:  //合法打开门磁(合法开门)
+                                //case 0x10:  //合法打开门磁(合法开门)
+                                case VALID_OPEN_DOOR_CONTACT_1:
+                                case VALID_OPEN_DOOR_CONTACT_2:
                                     fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 3);
                                     fprintf(fp_message_count_file, "%03d %03d\n",++entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
                                     printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Door contact normally open message\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
                                     break;
-                                case 0x88:  //关闭门磁(关门)
+                                //case 0x88:  //关闭门磁(关门)
+                                case VALID_CLOSE_DOOR_CONTACT:
                                     fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 4);
                                     fprintf(fp_message_count_file, "%03d %03d\n",++entrance_guard_data.current_normal_message_num, entrance_guard_data.current_alarm_message_num);
                                     printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d Door contact normally close message\n",__FUNCTION__, __LINE__,t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
                                     break;
-                                case 0x93:  //非法打开门磁(非法开门)
-                                case 0x91:  //非法打开门磁(非法开门)
+                                //case 0x93:  //非法打开门磁(非法开门)
+                                //case 0x91:  //非法打开门磁(非法开门)
+                                case INVALID_OPEN_DOOR_CONTACT_1:
+                                case INVALID_OPEN_DOOR_CONTACT_2:
                                     fprintf(fp_alarm_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 5);
                                     fflush(fp_alarm_message_file);
                                     fprintf(fp_message_count_file, "%03d %03d\n",entrance_guard_data.current_normal_message_num, ++entrance_guard_data.current_alarm_message_num);

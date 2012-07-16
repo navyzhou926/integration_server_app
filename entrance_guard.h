@@ -9,6 +9,16 @@
 #define CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT         21
 #define BUTTON_CONTROL_DOOR_HOLD_TIME_COUNT         17     
 
+#define HANDSHAKE_SEND_SIZE                         11
+#define OPEN_DOOR_SEND_SIZE                         11
+#define CLOSE_DOOR_SEND_SIZE                        11
+#define DOOR_LOCK_DEFAULT_OPEN_SETUP_SEND_SIZE      19
+#define DOOR_LOCK_DEFAULT_CLOSE_SETUP_SEND_SIZE     19
+#define CLIENT_CONTROL_DOOR_HOLD_TIME_SEND_SIZE     27 
+#define BUTTON_CONTROL_DOOR_HOLD_TIME_SEND_SIZE     19 
+#define DOOR_CONTACT_DEFAULT_OPEN_SETUP_SEND_SIZE   19
+#define DOOR_CONTACT_DEFAULT_CLOSE_SETUP_SEND_SIZE   19
+
 #define MAX_RECV_SIZE                               29
 #define SEARCH_ENTRANCE_GUARD_RECV_SIZE             29
 #define HANDSHAKE_SETUP_RECV_SIZE                   256
@@ -32,6 +42,15 @@
 #define ENTRANCE_GUARD_GET_ALARM_MESSAGE            0x80
 #define ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_OPEN   0x100
 #define ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE  0x200
+
+
+#define VALID_OPEN_DOOR_LOCK                        0x0c
+#define VALID_CLOSE_DOOR_LOCK                       0x0d
+#define VALID_OPEN_DOOR_CONTACT_1                   0x12
+#define VALID_OPEN_DOOR_CONTACT_2                   0x10
+#define VALID_CLOSE_DOOR_CONTACT                    0x88                    
+#define INVALID_OPEN_DOOR_CONTACT_1                 0x93
+#define INVALID_OPEN_DOOR_CONTACT_2                 0x91
 
 #define MAX_ALARM_MESSAGE_NUM                       200
 #define MAX_NORMAL_MESSAGE_NUM                      200
