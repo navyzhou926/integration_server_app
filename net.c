@@ -29,9 +29,11 @@ void *pthread_handshake(void *arg)
     while (1) 
     {
         sleep(NET_HANDSHAKE_DELAY_TIME);
+        #if 0
         pthread_mutex_lock(&counter_mutex);
         send(client_sock_tcp, "*********handshake@@@@@@@@\n", 27, 0);
         pthread_mutex_unlock(&counter_mutex);
+        #endif
         //printf("handshake\n");
     }
 

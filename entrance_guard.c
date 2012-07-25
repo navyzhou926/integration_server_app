@@ -84,7 +84,7 @@ void *pthread_entrance_guard(void *arg)
     FILE *fp_message_count_file;
     FILE *fp_config_file;
 
-    com_fd = InitCom(UART_DEVICE_ttyS1, BOARD_RATE);
+    com_fd = InitCom(UART_DEVICE_ttyS1, ENTRANCE_GUARD_BOARD_RATE);
     //com_fd = InitCom(UART_DEVICE_ttyUSB0, BOARD_RATE);
     if (com_fd == -1) 
     {
@@ -546,6 +546,7 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                 break;
             case -2:
                 printf("FUNC[%s] LINE[%d]\tRecv data error!\n",__FUNCTION__, __LINE__);
+                //navy send uart recv data error info to client
                 //exit(1);
                 //pthread_mutex_unlock(&entrance_guard_mutex);
                 return -1;
@@ -595,7 +596,7 @@ int send_entrance_guard_default_setup(int *com_fd)
         return -1;
     }
     recv_size = HANDSHAKE_SETUP_RECV_SIZE;
-    if ((recv_ret = RecvDataFromCom(*com_fd, recv_buffer, &recv_size, RECV_TIMEOUT, RECV_OVER_TIME)) == -2)
+    if ((recv_ret = RecvDataFromCom(*com_fd, recv_buffer, &recv_size, RECV_TIMEOUT, ENTRANCE_GUARD_RECV_OVER_TIME)) == -2)
     {
         return -1;    
     }
@@ -616,7 +617,7 @@ int search_entrance_guard(int *com_fd)
             return -1;
         }
         recv_size = SEARCH_ENTRANCE_GUARD_RECV_SIZE;
-        recv_ret = RecvDataFromCom(*com_fd, recv_buffer, &recv_size, RECV_TIMEOUT, RECV_OVER_TIME);
+        recv_ret = RecvDataFromCom(*com_fd, recv_buffer, &recv_size, RECV_TIMEOUT, ENTRANCE_GUARD_RECV_OVER_TIME);
         switch (recv_ret)
         {
             case 0:

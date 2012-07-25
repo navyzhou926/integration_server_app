@@ -34,6 +34,7 @@ unsigned char net_recv_verify_code[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,
 
 int flag = 0;
 int server_sock_tcp, client_sock_tcp;
+int if_have_net_client_connect = NO;
 
 void *pthread_get_local_ip(void *arg)
 {
@@ -52,6 +53,7 @@ void *pthread_get_local_ip(void *arg)
 
 int main(int argc, char *argv[])
 {
+    int on = 1;
     #ifdef DEBUG
     time_t tm;
     struct tm *t;
@@ -87,26 +89,32 @@ int main(int argc, char *argv[])
     }
     #endif
 
+    #if 0
     //创建与门禁通信的线程
     if (pthread_create(&tid_entrance_guard, NULL, pthread_entrance_guard, NULL) != 0) 
     {
         printf("FUNC[%s] LINE[%d]\tCan't create entrance guard thread !\n",__FUNCTION__, __LINE__);
         exit(1);
     }
+    #endif
 
+    #if 1
     //创建与报警器通信的线程
     if (pthread_create(&tid_ck2316_alarm, NULL, pthread_ck2316_alarm, NULL) != 0) 
     {
         printf("FUNC[%s] LINE[%d]\tCan't create ck2316 alarm thread !\n",__FUNCTION__, __LINE__);
         exit(1);
     }
+    #endif
 
+    #if 0
     //创建与矩阵通信的线程
     if (pthread_create(&tid_matrix_control, NULL, pthread_matrix_control, NULL) != 0) 
     {
         printf("FUNC[%s] LINE[%d]\tCan't create maxtrix control thread !\n",__FUNCTION__, __LINE__);
         exit(1);
     }
+    #endif
 
 start:
 
@@ -127,7 +135,6 @@ start:
     {
         printf_debug("FUNC[%s] LINE[%d]\tTCP create socket ok !\n",__FUNCTION__, __LINE__);
     }
-    int on = 1;
     setsockopt(server_sock_tcp, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
     bzero(&server_tcp, sizeof(server_tcp));
     server_tcp.sin_family = AF_INET;
@@ -179,6 +186,8 @@ start:
     {
         goto tcp_end;
     }
+
+    if_have_net_client_connect = YES;
 
     //创建给客户端发送网络握手包的线程
     if (pthread_create(&tid_handshake, NULL, pthread_handshake, &client_sock_tcp) != 0) 
@@ -271,6 +280,7 @@ start:
     //pthread_join(tid_handshake, &tret);
     pthread_cancel(tid_handshake);
 tcp_end:
+    if_have_net_client_connect = NO;
     close(server_sock_tcp);
     goto start;
 

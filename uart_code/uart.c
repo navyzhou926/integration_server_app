@@ -29,16 +29,15 @@
   　返回：正确-返回串口号句柄
   错误－返回－1表示打开串口失败
  **************************************************************************/
-int InitCom(char *UART_DEVICE_ttySx, int speed)
+int InitCom(int speed)
 {
     int fd ;
-    //int int_ret;
+    int int_ret;
     struct termios attr;
-    //unsigned char buf[20];
+    unsigned char buf[20];
     int speed_arr[] ={B115200,B57600,B38400,B19200,B9600,B4800,B2400,B1200,B300};
 
-    //fd = open(UART_DEVICE_ttyS1, O_RDWR| O_NOCTTY | O_NDELAY);
-    fd = open(UART_DEVICE_ttySx, O_RDWR| O_NOCTTY | O_NDELAY);
+    fd = open(UART_DEVICE_ttyS0, O_RDWR| O_NOCTTY | O_NDELAY);
     //open uart
     if (fd==-1)
     {
@@ -95,7 +94,7 @@ OverTime:超时时间(单位毫秒)
 -1-超时，Len:实际接收字符数
  ********************************************************************/
 
-int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime, unsigned int recv_over_time)
+int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime)
 {
     fd_set fds;
     struct timeval tv;
@@ -112,8 +111,7 @@ int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, uns
         return -1;
     }
     tv.tv_sec = 0;
-    //tv.tv_usec = 300000;
-    tv.tv_usec = recv_over_time;
+    tv.tv_usec = 200000;
 
     Num=*Len;
     while(Num)
@@ -133,56 +131,11 @@ int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, uns
         *DataBuf++=Chr;
         Num--;
     }
-//out:
+out:
     *Len-=Num;
     if(!Num)
         return 0;
     return -1;
-}
-
-int read_uart_data(int fd, unsigned char *data_buf, int len) 
-{
-    int ret = 0;
-    int i = 0;
-    unsigned char ch;
-    fd_set fds;
-    struct timeval tv;
-
-    //while (i < (len-1)) 
-    while (i < len) 
-    {
-        FD_ZERO(&fds);
-        FD_SET(fd,&fds);
-        tv.tv_sec = 2;
-        tv.tv_usec = 0;
-        if((ret = select(fd+1,&fds,NULL,NULL,&tv)) > 0)
-        {
-            if (read(fd, &ch, 1) > 0) 
-            {
-                data_buf[i] = ch;
-                #if 1
-                if (i > 0) 
-                {
-                    if ((data_buf[i-1] == 0x0D) && (data_buf[i] == 0x03)) 
-                    {
-                        return i + 1;
-                    }
-                }
-                #endif
-                i++;
-            }
-            else
-            {
-                return -2;
-            }
-        }
-        else
-        {
-            return -1;
-        }
-    }
-
-    return i;
 }
 
 /**************************************************************************
@@ -202,6 +155,5 @@ int CloseCom(int Device)
 int ClrCom(int Device)
 {
     tcflush(Device,TCIFLUSH);
-    return 0; 
 }
 

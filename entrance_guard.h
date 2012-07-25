@@ -24,6 +24,7 @@
 #define HANDSHAKE_SETUP_RECV_SIZE                   256
 
 #define MATCH_HANDSHAKE_TIMEOUT                     300000
+#define ENTRANCE_GUARD_RECV_OVER_TIME               400000
 
 
 #define ENTRANCE_GUARD_CONFIG_FILE                  "entrance_guard.config"
