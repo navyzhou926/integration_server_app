@@ -27,13 +27,14 @@
 
 /*int InitCom(int speed);*/
 int InitCom(char *UART_DEVICE_ttySx, int speed);
+int InitCom_ck2316(char *UART_DEVICE_ttySx, int speed);
 int SendDataToCom(int Device ,unsigned char * DataBuf ,int DataLen);
 //int RecvDataFromCom(int DeviceNo,unsigned char *DataBuf,unsigned int *Len,unsigned int OverTime);
 int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime, unsigned int recv_over_time);
 int CloseCom(int Device);
 int ClrCom(int Device);
 
-int read_uart_data(int fd, unsigned char *data_buf, int len); 
+int read_uart_data(int fd, unsigned char *data_buf, int len, unsigned int recv_timeout); 
 
 
 #endif

@@ -30,7 +30,7 @@
 
 #define PATH_HOME "/home"
 
-unsigned char net_recv_verify_code[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55};
+unsigned char net_recv_verify_code[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA};
 
 int flag = 0;
 int server_sock_tcp, client_sock_tcp;
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 0
+    #if 1
     //创建与矩阵通信的线程
     if (pthread_create(&tid_matrix_control, NULL, pthread_matrix_control, NULL) != 0) 
     {
@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
+#if 1
 start:
 
 #ifdef DEBUG 
@@ -208,10 +209,76 @@ start:
         }
         else 
         {
-            if (strncmp(net_recv_buffer, net_recv_verify_code, 30) == 0) 
+
+            printf_debug("length: %d   net_recv_data: 0x%x 0x%x, 0x%x 0x%x",ret, net_recv_buffer[28], net_recv_buffer[29], net_recv_buffer[30], net_recv_buffer[31]);
+            #if 1
+            //printf_debug("%s",net_recv_buffer);
+            #else
+            for (i = 0; i < ret; i++) 
             {
+                printf_debug("0x%x ",net_recv_buffer[i]);
+            }
+            #endif
+            printf("\n");
+            if (strncmp(net_recv_buffer, net_recv_verify_code, 23) == 0) 
+            {
+                switch(net_recv_buffer[29])
+                {
+                    case 0x00: //没有指令
+                        ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                        break;
+                    case 0x01: //系统布防
+                        ck2316_alarm_data.setup_command_set = CK2316_SYSTEM_DEFENCE;
+                        break;
+                    case 0x02: //系统撤防
+                        ck2316_alarm_data.setup_command_set = CK2316_SYSTEM_ABANDON;
+                        break;
+                    case 0x03: //消除报警记忆
+                        ck2316_alarm_data.setup_command_set = CK2316_ELIMINATE_ALARM_MEMORY;
+                        break;
+                    case 0x04: //旁路防区
+                        bypass_defence_area_code[5][2] = net_recv_buffer[28]/10;
+                        bypass_defence_area_code[6][2] = net_recv_buffer[28]%10;
+                        ck2316_alarm_data.setup_command_set = CK2316_BYPASS_DEFENCE_AREA;
+                        break;
+                    case 0x05: //CK2316报警主机复位
+                        ck2316_alarm_data.setup_command_set = CK2316_ALARM_HOST_RESET;
+                        break;
+                    case 0x06: //设置模拟键盘地址
+                        ck2316_alarm_data.ck2316_simulate_keyboard_address = net_recv_buffer[23];
+                        ck2316_simulate_keyboard_address_setup(ck2316_alarm_data.ck2316_simulate_keyboard_address);
+                        //网络发送 地址码设置成功
+                        printf_debug("\n\nCK2316 change keyboard address as: 0x%02x\n\n",ck2316_alarm_data.ck2316_simulate_keyboard_address);
+                        //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_ADDRESS_SETUP;
+                        break;
+                    case 0x07: //设置模拟键盘用户密码
+                        ck2316_alarm_data.ck2316_user_password[0] = net_recv_buffer[24];
+                        ck2316_alarm_data.ck2316_user_password[1] = net_recv_buffer[25];
+                        ck2316_alarm_data.ck2316_user_password[2] = net_recv_buffer[26];
+                        ck2316_alarm_data.ck2316_user_password[3] = net_recv_buffer[27];
+                        ck2316_user_password_setup(ck2316_alarm_data.ck2316_user_password);
+                        //网络发送 密码设置成功
+                        printf_debug("\n\nCK2316 change keyboard password as: %02d %02d %02d %02d\n\n",ck2316_alarm_data.ck2316_user_password[0], ck2316_alarm_data.ck2316_user_password[1], ck2316_alarm_data.ck2316_user_password[2], ck2316_alarm_data.ck2316_user_password[3]);
+                        //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_PASSWORD_SETUP;
+                        break;
+                    case 0x08: //获取布撤防状态（布防，撤防）
+                        //navy 网络发送
+                        printf_debug("CK2316 Defence status\t0x%02X\n",ck2316_alarm_data.ck2316_defence_status);
+                        break;
+                    case 0x09: //获取全部信息
+                        //navy 网络发送
+                        printf_debug("CK2316 Defence area status\t0x%02X%02X 0x%02X%02X 0x%02X%02X 0x%02X 0x%02X\n",ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1], ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0], ck2316_alarm_data.ck2316_defence_area_bypass_value[1], ck2316_alarm_data.ck2316_defence_area_bypass_value[0], ck2316_alarm_data.ck2316_defence_status, ck2316_alarm_data.ck2316_defence_area_alarm_status);
+                        break;
+                    default :
+                        printf_debug("FUNC[%s] LINE[%d]\tCK2316 invalid net command!\n",__FUNCTION__, __LINE__);
+                        ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                        break;
+                }
                 switch(net_recv_buffer[31])
                 {
+                    case 0x00: //没有指令
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
+                        break;
                     case 0x01: //开门 
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_OPEN_DOOR;
                         break;
@@ -244,7 +311,7 @@ start:
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE;
                         break;
                     default:   //无效指令
-                        printf_debug("FUNC[%s] LINE[%d]\tInvalid net command!\n",__FUNCTION__, __LINE__);
+                        printf_debug("FUNC[%s] LINE[%d]\tEntrance guard invalid net command!\n",__FUNCTION__, __LINE__);
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
                         break;
                 }
@@ -262,17 +329,6 @@ start:
                 entrance_guard_data.if_is_setup_command = YES;
                 #endif
             }
-
-            printf_debug("length: %d   net_recv_data: 0x%x, 0x%x",ret, net_recv_buffer[30], net_recv_buffer[31]);
-            #if 1
-            //printf_debug("%s",net_recv_buffer);
-            #else
-            for (i = 0; i < ret; i++) 
-            {
-                printf_debug("0x%x ",net_recv_buffer[i]);
-            }
-            #endif
-            printf("\n");
         }
     }
 
@@ -283,6 +339,12 @@ tcp_end:
     if_have_net_client_connect = NO;
     close(server_sock_tcp);
     goto start;
+#else
+while (1) 
+{
+    sleep(1000);
+}
+#endif
 
     exit(EXIT_SUCCESS);
 }

@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
-
 #include <unistd.h>     /*Unix 标准函数定义*/
 #include <sys/types.h>  
 #include <sys/stat.h>   
@@ -10,25 +9,15 @@
 #include <termios.h>    /*PPSIX 终端控制定义*/
 #include <errno.h>      /*错误号定义*/
 #include <sys/time.h> 
-
 #include "uart.h"
 
-/**************************************************************************
-  功能：初始化串口，本机只能一个串口，所以不用设置串口号，如果想对串口操作
-  　　　　需要先运用本函数。
+extern unsigned char ck2316_keyboard_address_code[];
+extern unsigned char ck2316_actual_keyboard_address_code[];
+extern unsigned char ck2316_handshake_code[];
 
-  输入：speed－波特率可输入项如下
-  　　 0-B57600,
-  1-B38400
-  2-B19200,
-  3-B9600,
-  4-B4800,
-  5-B2400,
-  6-B1200,
-  7-B300
-  　返回：正确-返回串口号句柄
-  错误－返回－1表示打开串口失败
- **************************************************************************/
+/*
+
+*/
 int InitCom(char *UART_DEVICE_ttySx, int speed)
 {
     int fd ;
@@ -54,14 +43,63 @@ int InitCom(char *UART_DEVICE_ttySx, int speed)
     // set uart attribution
     tcgetattr(fd, &attr);
     attr.c_cc[VMIN] = 0;
-    attr.c_cc[VTIME] = 15;
-    attr.c_iflag = 0;
-    attr.c_oflag = 0;
-    attr.c_lflag = 0;
-    attr.c_cflag = speed_arr[speed] | CS8 | CLOCAL | CREAD;
+    attr.c_cc[VTIME] = 15; 
+    attr.c_iflag = 0; //input options
+    attr.c_oflag = 0; //output options
+    attr.c_lflag = 0; //local mode flags
+    attr.c_cflag = speed_arr[speed] | CS8 | CLOCAL | CREAD; //control options
     tcsetattr(fd, TCSANOW, &attr);  
     return (fd);
 }
+
+//2400bps 8E1
+int InitCom_ck2316(char *UART_DEVICE_ttySx, int speed)
+{
+    int fd ;
+    //int int_ret;
+    struct termios attr;
+    //unsigned char buf[20];
+    int speed_arr[] ={B115200,B57600,B38400,B19200,B9600,B4800,B2400,B1200,B300};
+
+    fd = open(UART_DEVICE_ttySx, O_RDWR| O_NOCTTY | O_NDELAY);
+    if (fd==-1)
+    {
+        close(fd);
+        return(-1);
+    }
+    // set uart attribution
+    tcgetattr(fd, &attr);
+    attr.c_cc[VMIN] = 0;
+    attr.c_cc[VTIME] = 15; 
+    attr.c_iflag = 0; //input options
+    attr.c_oflag = 0; //output options
+    attr.c_lflag = 0; //local mode flags
+    attr.c_cflag = speed_arr[speed] | CS8 | CLOCAL | CREAD; //control options
+
+    //navy 20120806 add 
+    #if 1
+    #if 1 //even
+    attr.c_cflag |= PARENB;
+    attr.c_cflag &= ~PARODD;
+    //attr.c_iflag |= (INPCK | ISTRIP); //input options
+    attr.c_iflag |= (INPCK); //input options
+
+    #else //odd
+    attr.c_cflag |= PARENB;
+    attr.c_cflag |= PARODD;
+    //attr.c_iflag |= (INPCK | ISTRIP); //input options
+    attr.c_iflag |= (INPCK); //input options
+    #endif
+
+    attr.c_cflag &= ~CSTOPB;  //stop bit 1
+    //attr.c_cflag &= ~CSIZE;  //
+    #endif
+    //end navy
+
+    tcsetattr(fd, TCSANOW, &attr);  
+    return (fd);
+}
+
 /**************************************************************************
   功能：向串口发送数据，运行本函数前要先调用初始化函数
   输入：int Device ：串口的设置号
@@ -140,7 +178,8 @@ int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, uns
     return -1;
 }
 
-int read_uart_data(int fd, unsigned char *data_buf, int len) 
+#if 1
+int read_uart_data(int fd, unsigned char *data_buf, int len, unsigned int recv_timeout) 
 {
     int ret = 0;
     int i = 0;
@@ -148,27 +187,26 @@ int read_uart_data(int fd, unsigned char *data_buf, int len)
     fd_set fds;
     struct timeval tv;
 
+    tv.tv_sec = recv_timeout;
+    tv.tv_usec = 0;
     //while (i < (len-1)) 
     while (i < len) 
     {
         FD_ZERO(&fds);
         FD_SET(fd,&fds);
-        tv.tv_sec = 2;
-        tv.tv_usec = 0;
         if((ret = select(fd+1,&fds,NULL,NULL,&tv)) > 0)
         {
             if (read(fd, &ch, 1) > 0) 
             {
                 data_buf[i] = ch;
-                #if 1
                 if (i > 0) 
                 {
-                    if ((data_buf[i-1] == 0x0D) && (data_buf[i] == 0x03)) 
+                    if (((data_buf[i-1] == ck2316_actual_keyboard_address_code[0]) || (data_buf[i-1] == ck2316_keyboard_address_code[0])) && (data_buf[i] == ck2316_keyboard_address_code[1])) 
+                    //if ((data_buf[i-1] == ck2316_keyboard_address_code[0]) && (data_buf[i] == ck2316_keyboard_address_code[1])) 
                     {
                         return i + 1;
                     }
                 }
-                #endif
                 i++;
             }
             else
@@ -176,14 +214,93 @@ int read_uart_data(int fd, unsigned char *data_buf, int len)
                 return -2;
             }
         }
-        else
+        else if(ret == 0)
         {
             return -1;
         }
+        else
+        {
+            return -2;
+        }
     }
 
-    return i;
+    return 0;
 }
+#else
+int read_uart_data(int fd, unsigned char *data_buf, int len) 
+{
+    int ret = 0;
+    int i = 0;
+    unsigned char ch;
+    //unsigned char temp[] = {0xfe, 0x04, 0x03};
+    fd_set fds;
+    struct timeval tv;
+
+    //while (read(fd, &ch, 1) > 0) 
+    while (1)
+    {
+        if (read(fd, &ch, 1) > 0) 
+        {
+            data_buf[i++] = ch;
+            if (i > 1) 
+            {
+                if (i > len) 
+                {
+                    //i = 0;
+                    return i;
+                }
+                if (((data_buf[i-2] == ck2316_actual_keyboard_address_code[0]) || (data_buf[i-2] == ck2316_keyboard_address_code[0])) && (data_buf[i-1] == ck2316_keyboard_address_code[1])) 
+                //if ((data_buf[i-2] == ck2316_keyboard_address_code[0]) && (data_buf[i-1] == ck2316_keyboard_address_code[1])) 
+                //if ((data_buf[i-1] == ck2316_keyboard_address_code[1])) 
+                {
+                    //tcflush(fd,TCIOFLUSH);
+                    //write(fd, temp, 2);
+                    //SendDataToCom(fd, ck2316_handshake_code, 3);
+                    return i;
+                }
+            }
+        }
+    }
+    return 0;
+    //while (i < (len-1)) 
+    //while (i < len) 
+    {
+        FD_ZERO(&fds);
+        FD_SET(fd,&fds);
+        tv.tv_sec = 2;
+        tv.tv_usec = 0;
+        if((ret = select(fd+1,&fds,NULL,NULL,&tv)) > 0)
+        {
+            if (read(fd, data_buf, 2) > 0) 
+            {
+                //if (((data_buf[i-1] == 0x0B) || (data_buf[i-1] == ck2316_keyboard_address_code[0])) && (data_buf[i] == ck2316_keyboard_address_code[1])) 
+                if ((data_buf[0] == ck2316_keyboard_address_code[0]) && (data_buf[1] == ck2316_keyboard_address_code[1])) 
+                //if ((data_buf[i] == ck2316_keyboard_address_code[1])) 
+                {
+                    //tcflush(fd,TCIOFLUSH);
+                    //write(fd, temp, 2);
+                    //SendDataToCom(fd, ck2316_handshake_code, 3);
+                    return 2;
+                }
+            }
+            else
+            {
+                return -2;
+            }
+        }
+        else if(ret == 0)
+        {
+            return -1;
+        }
+        else
+        {
+            return -2;
+        }
+    }
+
+    return  0;
+}
+#endif
 
 /**************************************************************************
   功能：关闭串口

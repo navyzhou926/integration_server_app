@@ -23,9 +23,7 @@ enum CK2316_DEFENCN_AREA_ALARM_STATUS_ARG
     NORMAL_AND_EMERGENCY_ALARM = 3,
 }CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE;
 
-#define MAX_CHECK_COMMAND_COUNT            6
-
-#define CK2316_KEYBOARD_ADDRESS            0x06
+#define CK2316_KEYBOARD_ADDRESS            0x0E
 #define CK2316_ACTUAL_KEYBOARD_ADDRESS     (CK2316_KEYBOARD_ADDRESS+1)
 #define CK2316_KEYBOARD_ADDRESS_MASK       0x03
 #define CK2316_KEYBOARD_ADDRESS_SIZE       2
@@ -56,19 +54,19 @@ ck2316_alarm_arg ck2316_alarm_data = {NO, IS_ABANDONED, NO_ALARM, {0x00, 0x00}, 
 
 unsigned char ck2316_keyboard_code[][3] = {{0xFE,0x06,0x00},{0xFE,0x06,0x01},{0xFE,0x06,0x02},{0xFE,0x06,0x03},{0xFE,0x06,0x04},{0xFE,0x06,0x05},{0xFE,0x06,0x06},{0xFE,0x06,0x07},{0xFE,0x06,0x08},{0xFE,0x06,0x09},{0xFE,0x06,0x0A},{0xFE,0x06,0x0B},{0xFE,0x06,0x0C},{0xFE,0x06,0x0D},{0xFE,0x06,0x0E},{0xFE,0x06,0x0F}};
 
-#define CK2316_SYSTEM_DEFENCE_SIZE          (7-1)
+#define CK2316_SYSTEM_DEFENCE_SIZE          7
 unsigned char system_defence_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x02},{0xFE,0x04,0x06},{0xFE,0x04,0x03}};
 
-#define CK2316_SYSTEM_ABANDON_SIZE          (5-0)
+#define CK2316_SYSTEM_ABANDON_SIZE          5
 unsigned char system_abandon_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};
 
-#define CK2316_ELIMINATE_ALARM_MEMORY_SIZE  (3-0)
+#define CK2316_ELIMINATE_ALARM_MEMORY_SIZE  3
 unsigned char eliminate_alarm_memory_code[][3] = {{0xFE,0x06,0x0A},{0xFE,0x06,0x01},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};
 
-#define CK2316_BYPASS_DEFENCE_AREA_SIZE     (8)
+#define CK2316_BYPASS_DEFENCE_AREA_SIZE     8
 unsigned char bypass_defence_area_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0C},{0xFE,0x06,0x00},{0xFE,0x06,0x00},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};
 
-#define CK2316_ALARM_HOST_RESET_SIZE        (8-0)
+#define CK2316_ALARM_HOST_RESET_SIZE        8
 unsigned char alarm_host_reset_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0A},{0xFE,0x06,0x06},{0xFE,0x06,0x08},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};
 
 FILE *fp_ck2316_config_file = NULL;
@@ -162,11 +160,8 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
     unsigned char recv_buffer[72] = {0};
     unsigned char temp_test[] = {0xaa, 0x55, 0xa5};
     unsigned char if_search_keyboard = YES;
-    int check_command_count = 0;
+    int count = 0;
     int system_count = 0;
-    int capture_address_count = 0;
-    unsigned int ck2316_check_command_setup_successful_flag = 0;
-    unsigned int before_defence_area_bypass_value = 0;
 
     //ck2316_alarm_data.setup_command_set = CK2316_SYSTEM_DEFENCE;
     //ck2316_alarm_data.setup_command_set = CK2316_SYSTEM_ABANDON;
@@ -189,27 +184,10 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
         switch (recv_ret)
         {
             case 0:
-                if (capture_address_count++ > 4) 
-                {
-                    capture_address_count = 0;
-                    //navy 网络发送 地址设置错误或没有捕获报警主机的地址码
-                    printf_debug("FUNC[%s] LINE[%d]\tKeyboard address set error or did not capture CK2316 address code!\n",__FUNCTION__, __LINE__);
-                    ck2316_alarm_data.if_ck2316_alive = NO;
-                    if (ck2316_alarm_data.setup_command_set != CK2316_NO_VALID_COMMAND) 
-                    {
-                        //navy 网络发送 报警主机不在线
-                        ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                        printf_debug("FUNC[%s] LINE[%d]\tWarning ! Timeout, ck2316 is not alive !\n",__FUNCTION__, __LINE__);
-                    }
-                }
+                //navy 网络发送 地址设置错误或没有捕获报警主机的地址码
+                printf_debug("FUNC[%s] LINE[%d]\tKeyboard address set error or did not capture CK2316 address code!\n",__FUNCTION__, __LINE__);
                 break;
             case -1:
-                if (ck2316_alarm_data.setup_command_set != CK2316_NO_VALID_COMMAND) 
-                {
-                    //navy 网络发送 报警主机不在线
-                    ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                    printf_debug("FUNC[%s] LINE[%d]\tWarning ! Timeout, ck2316 is not alive !\n",__FUNCTION__, __LINE__);
-                }
                 printf_debug("FUNC[%s] LINE[%d]\tTimeout, ck2316 is not alive ! recv_ret = %d\n",__FUNCTION__, __LINE__,recv_ret);
                 ck2316_alarm_data.if_ck2316_alive = NO;
                 if_search_keyboard = YES;
@@ -220,18 +198,11 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
             default: 
                 if (if_search_keyboard == YES) 
                 {
-                    for (i = 0; i < 0; i++) 
+                    for (i = 0; i < 3; i++) 
                         write(*com_fd, temp_test, CK2316_HANDSHAKE_SIZE);
-                    //for (i = 0; i < 7; i++) 
-                    for (i = 0; i < 10; i++) 
+                    for (i = 0; i < 6; i++) 
                         write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
                     if_search_keyboard = NO;
-                    if (ck2316_check_command_setup_successful_flag == CK2316_ALARM_HOST_RESET) 
-                    {
-                        ck2316_check_command_setup_successful_flag = CK2316_NO_VALID_COMMAND; 
-                        //navy 网络发送 报警主机成功复位
-                        printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to reset!\n",__FUNCTION__, __LINE__);
-                    }
                 }
                 else
                 {
@@ -244,46 +215,46 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                 ck2316_alarm_data.if_ck2316_alive = YES;
                                 break;
                             case CK2316_SYSTEM_DEFENCE: //系统布防
-                                if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
+                            if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
+                            {
+                                write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
+                                //navy 网络发送 系统已经布防，现在不用布防
+                                printf_debug("FUNC[%s] LINE[%d]\tWarning ! CK2316 has been defence status !\n",__FUNCTION__, __LINE__);
+                                ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                            }
+                            else
+                            {
+                                write(*com_fd, system_defence_code[system_count], CK2316_HANDSHAKE_SIZE);
+                                system_count++;
+                                if (system_count >= CK2316_SYSTEM_DEFENCE_SIZE) 
                                 {
-                                    write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
-                                    //navy 网络发送 系统已经布防，现在不用布防
-                                    printf_debug("FUNC[%s] LINE[%d]\tWarning ! CK2316 has been defence status !\n",__FUNCTION__, __LINE__);
+                                    system_count = 0;
                                     ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                                    //navy 网络发送 系统已经成功布防
+                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to defence !\n",__FUNCTION__, __LINE__);
                                 }
-                                else
-                                {
-                                    write(*com_fd, system_defence_code[system_count], CK2316_HANDSHAKE_SIZE);
-                                    system_count++;
-                                    if (system_count >= CK2316_SYSTEM_DEFENCE_SIZE) 
-                                    {
-                                        system_count = 0;
-                                        //ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                        ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
-                                        ck2316_check_command_setup_successful_flag = CK2316_SYSTEM_DEFENCE;
-                                    }
-                                }
+                            }
                                 break;
                             case CK2316_SYSTEM_ABANDON://系统撤防
-                                if ((ck2316_alarm_data.ck2316_defence_status == IS_ABANDONED) && ((ck2316_alarm_data.ck2316_defence_area_alarm_status & EMERGENCY_ALARM) != EMERGENCY_ALARM)) 
+                            if (ck2316_alarm_data.ck2316_defence_status == IS_ABANDONED) 
+                            {
+                                write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
+                                //navy 网络发送 系统已经撤防，现在不用撤防
+                                printf_debug("FUNC[%s] LINE[%d]\tWarning ! CK2316 has been abandoned status !\n",__FUNCTION__, __LINE__);
+                                ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                            }
+                            else
+                            {
+                                write(*com_fd, system_abandon_code[system_count], CK2316_HANDSHAKE_SIZE);
+                                system_count++;
+                                if (system_count >= CK2316_SYSTEM_ABANDON_SIZE) 
                                 {
-                                    write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
-                                    //navy 网络发送 系统已经撤防，现在不用撤防
-                                    printf_debug("FUNC[%s] LINE[%d]\tWarning ! CK2316 has been abandoned status !\n",__FUNCTION__, __LINE__);
+                                    system_count = 0;
                                     ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                                    //navy 网络发送 系统已经成功撤防
+                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to abandon!\n",__FUNCTION__, __LINE__);
                                 }
-                                else
-                                {
-                                    write(*com_fd, system_abandon_code[system_count], CK2316_HANDSHAKE_SIZE);
-                                    system_count++;
-                                    if (system_count >= CK2316_SYSTEM_ABANDON_SIZE) 
-                                    {
-                                        system_count = 0;
-                                        //ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                        ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
-                                        ck2316_check_command_setup_successful_flag = CK2316_SYSTEM_ABANDON;
-                                    }
-                                }
+                            }
                                 break;
                             case CK2316_ELIMINATE_ALARM_MEMORY://消除报警记忆
                                 write(*com_fd, eliminate_alarm_memory_code[system_count], CK2316_HANDSHAKE_SIZE);
@@ -291,37 +262,24 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                 if (system_count >= CK2316_ELIMINATE_ALARM_MEMORY_SIZE) 
                                 {
                                     system_count = 0;
-                                    //ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                    ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
-                                    ck2316_check_command_setup_successful_flag = CK2316_ELIMINATE_ALARM_MEMORY;
+                                    ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                                    //navy 网络发送 系统已经成功消除报警记忆
+                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to eliminate alarm memory!\n",__FUNCTION__, __LINE__);
                                 }
                                 break;
                             case CK2316_BYPASS_DEFENCE_AREA: //系统旁路
-                                if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
+                                write(*com_fd, bypass_defence_area_code[system_count], CK2316_HANDSHAKE_SIZE);
+                                system_count++;
+                                if (system_count == 5 && bypass_defence_area_code[system_count][2] == 0) 
                                 {
-                                    //navy 网络发送 请撤防后再旁路
-                                    printf_debug("FUNC[%s] LINE[%d]\tPlease abandon ,then bypass defence area!\n",__FUNCTION__, __LINE__);
-                                    ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                }
-                                else
-                                {
-                                    write(*com_fd, bypass_defence_area_code[system_count], CK2316_HANDSHAKE_SIZE);
-                                    if (system_count == 0) 
-                                    {
-                                        before_defence_area_bypass_value = (ck2316_alarm_data.ck2316_defence_area_bypass_value[1]<<8) | ck2316_alarm_data.ck2316_defence_area_bypass_value[0];
-                                    }
                                     system_count++;
-                                    if (system_count == 5 && bypass_defence_area_code[system_count][2] == 0) 
-                                    {
-                                        system_count++;
-                                    }
-                                    if (system_count >= CK2316_BYPASS_DEFENCE_AREA_SIZE) 
-                                    {
-                                        system_count = 0;
-                                        //ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                        ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
-                                        ck2316_check_command_setup_successful_flag = CK2316_BYPASS_DEFENCE_AREA;
-                                    }
+                                }
+                                if (system_count >= CK2316_BYPASS_DEFENCE_AREA_SIZE) 
+                                {
+                                    system_count = 0;
+                                    ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                                    //navy 网络发送 系统已经成功旁路或取消旁路防区
+                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to bypass or cancel bypass defence area!\n",__FUNCTION__, __LINE__);
                                 }
                                 break;
                             case CK2316_ALARM_HOST_RESET: //报警主机复位
@@ -331,9 +289,8 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                 {
                                     system_count = 0;
                                     ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                    //ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
-                                    ck2316_check_command_setup_successful_flag = CK2316_ALARM_HOST_RESET;
-                                    if_search_keyboard = YES;
+                                    //navy 网络发送 报警主机成功复位
+                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to reset!\n",__FUNCTION__, __LINE__);
                                 }
                                 break;
                             /*
@@ -351,77 +308,6 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                 break;
                             */
                             case CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL:
-                                write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
-                                check_command_count++;
-                                if (check_command_count > MAX_CHECK_COMMAND_COUNT) 
-                                {
-                                    switch(ck2316_check_command_setup_successful_flag)
-                                    {
-                                        case CK2316_SYSTEM_DEFENCE:   
-                                            if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
-                                            {
-                                                //navy 网络发送 系统布防成功
-                                                printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to defence !\n",__FUNCTION__, __LINE__);
-                                            }
-                                            else
-                                            {
-                                                //navy 网络发送 系统布防失败
-                                                printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to defence !\n",__FUNCTION__, __LINE__);
-                                            }
-                                            break;
-                                        case CK2316_SYSTEM_ABANDON:   
-                                            if (ck2316_alarm_data.ck2316_defence_status == IS_ABANDONED) 
-                                            {
-                                                //navy 网络发送 系统撤防成功
-                                                printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to abandon !\n",__FUNCTION__, __LINE__);
-                                            }
-                                            else
-                                            {
-                                                //navy 网络发送 系统撤防失败
-                                                printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to abandon !\n",__FUNCTION__, __LINE__);
-                                            }
-                                            break;
-                                        case CK2316_ELIMINATE_ALARM_MEMORY:   
-                                            if (ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] == 0x00 && ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] == 0x00) 
-                                            {
-                                                //navy 网络发送 系统已经成功消除报警记忆
-                                                printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to eliminate alarm memory!\n",__FUNCTION__, __LINE__);
-                                            }
-                                            else
-                                            {
-                                                //navy 网络发送 系统消除报警记忆失败
-                                                printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to eliminate alarm memory!\n",__FUNCTION__, __LINE__);
-                                            }
-
-                                            break;
-                                        case CK2316_BYPASS_DEFENCE_AREA:   
-                                            if (before_defence_area_bypass_value != ((ck2316_alarm_data.ck2316_defence_area_bypass_value[1]<<8) | ck2316_alarm_data.ck2316_defence_area_bypass_value[0])) 
-                                            {
-                                                if (before_defence_area_bypass_value & (1<<(bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]-1))) 
-                                                {
-                                                    //navy 网络发送 系统已经成功取消旁路防区
-                                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to cancel bypass defence area %d\n",__FUNCTION__, __LINE__, bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]);
-                                                }
-                                                else
-                                                {
-                                                    //navy 网络发送 系统已经成功旁路防区
-                                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to bypass defence area %d\n",__FUNCTION__, __LINE__, bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                    //navy 网络发送 系统旁路或取消防区失败
-                                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to bypass or cancel bypass defence area %d\n",__FUNCTION__, __LINE__, bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]);
-                                            }
-                                            break;
-                                        case CK2316_ALARM_HOST_RESET:
-                                            break;
-                                        default :
-                                            break;
-                                    }
-                                    check_command_count = 0;
-                                    ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                }
                                 break;
                             default:
                                 ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
@@ -433,7 +319,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                         FE 04 03 A5 11 00 00 00 00 00 00 0F 03 
                         FE 04 03 A5 12 00 00 00 00 00 00 0F 03 
                         FE 04 03 FF 09 00 00 00 00 00 08 0F 03 */
-                        if (recv_buffer[recv_ret-8] == CK2316_HIGH_DEFENCE_AREA_HEAD)    //高防区 
+                        if (recv_buffer[CK2316_DEFENCE_AREA_HEAD_POSITION] == CK2316_HIGH_DEFENCE_AREA_HEAD)    //高防区 
                         {
                             //获取高防区报警记忆状态
                             ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] = recv_buffer[recv_ret-7];
@@ -442,20 +328,15 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                             //获取高防区旁路状态
                             ck2316_alarm_data.ck2316_defence_area_bypass_value[1] = recv_buffer[recv_ret-4];
                         }
-                        else if (recv_buffer[recv_ret-9] == CK2316_LOW_DEFENCE_AREA_HEAD) //低防区
+                        else if (recv_buffer[CK2316_DEFENCE_AREA_HEAD_POSITION] == CK2316_LOW_DEFENCE_AREA_HEAD) //低防区
                         {
                             //获取布撤防状态（布防，撤防）
                             if (recv_buffer[recv_ret-4] & CK2316_IS_DEFENCED_OR_ABANDONED_MASK) 
                                 ck2316_alarm_data.ck2316_defence_status = IS_DEFENCED;
                             else
                                 ck2316_alarm_data.ck2316_defence_status = IS_ABANDONED;
-                            printf_debug("ck2316_defence_status = 0x%x\n",ck2316_alarm_data.ck2316_defence_status);
                             //获取低防区报警记忆状态
-                            ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] = recv_buffer[recv_ret-8];
-                            if (ck2316_alarm_data.ck2316_defence_area_alarm_status & EMERGENCY_ALARM)
-                            {
-                                ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] = recv_buffer[recv_ret-8] | 0x80;
-                            }
+                            ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] = recv_buffer[recv_ret-8] | (recv_buffer[recv_ret-6] & 0x80);
                             //获取低防区实时报警状态
                             ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0] = recv_buffer[recv_ret-7] | (recv_buffer[recv_ret-6] & 0x80);
                             //获取低防区旁路状态
