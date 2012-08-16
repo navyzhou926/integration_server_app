@@ -210,7 +210,7 @@ start:
         else 
         {
 
-            printf_debug("length: %d   net_recv_data: 0x%x 0x%x, 0x%x 0x%x",ret, net_recv_buffer[28], net_recv_buffer[29], net_recv_buffer[30], net_recv_buffer[31]);
+            printf_debug("length: %d   net_recv_data: 0x%x 0x%x, 0x%x 0x%x\n",ret, net_recv_buffer[28], net_recv_buffer[29], net_recv_buffer[30], net_recv_buffer[31]);
             #if 1
             //printf_debug("%s",net_recv_buffer);
             #else
@@ -218,8 +218,8 @@ start:
             {
                 printf_debug("0x%x ",net_recv_buffer[i]);
             }
-            #endif
             printf("\n");
+            #endif
             if (strncmp(net_recv_buffer, net_recv_verify_code, 23) == 0) 
             {
                 switch(net_recv_buffer[29])
@@ -237,37 +237,79 @@ start:
                         ck2316_alarm_data.setup_command_set = CK2316_ELIMINATE_ALARM_MEMORY;
                         break;
                     case 0x04: //旁路防区
-                        bypass_defence_area_code[5][2] = net_recv_buffer[28]/10;
-                        bypass_defence_area_code[6][2] = net_recv_buffer[28]%10;
-                        ck2316_alarm_data.setup_command_set = CK2316_BYPASS_DEFENCE_AREA;
+                        if (net_recv_buffer[28] > 0 && net_recv_buffer[28] <= 16) //16个防区
+                        {
+                            bypass_defence_area_code[5][2] = net_recv_buffer[28]/10;
+                            bypass_defence_area_code[6][2] = net_recv_buffer[28]%10;
+                            ck2316_alarm_data.setup_command_set = CK2316_BYPASS_DEFENCE_AREA;
+                        }
+                        else
+                        {
+                            //网络发送 旁路防区失败，错误的防区号
+                            printf_debug("\n\nWarning ! CK2316 bypass defence area failed,wrong Defence area number!\n\n");
+                        }
                         break;
                     case 0x05: //CK2316报警主机复位
                         ck2316_alarm_data.setup_command_set = CK2316_ALARM_HOST_RESET;
                         break;
                     case 0x06: //设置模拟键盘地址
-                        ck2316_alarm_data.ck2316_simulate_keyboard_address = net_recv_buffer[23];
-                        ck2316_simulate_keyboard_address_setup(ck2316_alarm_data.ck2316_simulate_keyboard_address);
-                        //网络发送 地址码设置成功
-                        printf_debug("\n\nCK2316 change keyboard address as: 0x%02x\n\n",ck2316_alarm_data.ck2316_simulate_keyboard_address);
-                        //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_ADDRESS_SETUP;
+                        if (net_recv_buffer[23] >= 0x00 && net_recv_buffer[23] <= 0x0F) 
+                        {
+                            ck2316_alarm_data.ck2316_simulate_keyboard_address = net_recv_buffer[23];
+                            ck2316_simulate_keyboard_address_setup(ck2316_alarm_data.ck2316_simulate_keyboard_address);
+                            //网络发送 地址码设置成功
+                            printf_debug("\n\nCK2316 change keyboard address as: 0x%02X\n\n",ck2316_alarm_data.ck2316_simulate_keyboard_address);
+                            //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_ADDRESS_SETUP;
+                        }
+                        else
+                        {
+                            //网络发送 地址码设置失败，错误的地址码
+                            printf_debug("\n\nWarning ! CK2316 change keyboard address failed,wrong address !\n\n");
+                        }
                         break;
                     case 0x07: //设置模拟键盘用户密码
-                        ck2316_alarm_data.ck2316_user_password[0] = net_recv_buffer[24];
-                        ck2316_alarm_data.ck2316_user_password[1] = net_recv_buffer[25];
-                        ck2316_alarm_data.ck2316_user_password[2] = net_recv_buffer[26];
-                        ck2316_alarm_data.ck2316_user_password[3] = net_recv_buffer[27];
-                        ck2316_user_password_setup(ck2316_alarm_data.ck2316_user_password);
-                        //网络发送 密码设置成功
-                        printf_debug("\n\nCK2316 change keyboard password as: %02d %02d %02d %02d\n\n",ck2316_alarm_data.ck2316_user_password[0], ck2316_alarm_data.ck2316_user_password[1], ck2316_alarm_data.ck2316_user_password[2], ck2316_alarm_data.ck2316_user_password[3]);
-                        //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_PASSWORD_SETUP;
+                        if (net_recv_buffer[24] >= 0x00 && net_recv_buffer[24] <= 0x0F && net_recv_buffer[25] >= 0x00 && net_recv_buffer[25] <= 0x0F && net_recv_buffer[26] >= 0x00 && net_recv_buffer[26] <= 0x0F && net_recv_buffer[27] >= 0x00 && net_recv_buffer[27] <= 0x0F) 
+                        {
+                            ck2316_alarm_data.ck2316_user_password[0] = net_recv_buffer[24];
+                            ck2316_alarm_data.ck2316_user_password[1] = net_recv_buffer[25];
+                            ck2316_alarm_data.ck2316_user_password[2] = net_recv_buffer[26];
+                            ck2316_alarm_data.ck2316_user_password[3] = net_recv_buffer[27];
+                            ck2316_user_password_setup(ck2316_alarm_data.ck2316_user_password);
+                            //网络发送 密码设置成功
+                            printf_debug("\n\nCK2316 change keyboard password as: %02d %02d %02d %02d\n\n",ck2316_alarm_data.ck2316_user_password[0], ck2316_alarm_data.ck2316_user_password[1], ck2316_alarm_data.ck2316_user_password[2], ck2316_alarm_data.ck2316_user_password[3]);
+                            //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_PASSWORD_SETUP;
+                        }
+                        else
+                        {
+                            //网络发送 密码设置失败，错误的密码值
+                            printf_debug("\n\nWarning ! CK2316 change password failed,wrong password value!\n\n");
+                        }
                         break;
                     case 0x08: //获取布撤防状态（布防，撤防）
-                        //navy 网络发送
-                        printf_debug("CK2316 Defence status\t0x%02X\n",ck2316_alarm_data.ck2316_defence_status);
+                        if (ck2316_alarm_data.if_ck2316_alive == YES) 
+                        {
+                            //navy 网络发送
+                            printf_debug("CK2316 Defence status\t0x%02X\n",ck2316_alarm_data.ck2316_defence_status);
+                        }
+                        else
+                        {
+                            //navy 网络发送 报警主机不在线
+                            ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                            printf_debug("FUNC[%s] LINE[%d]\tWarning ! Timeout, ck2316 is not alive !\n",__FUNCTION__, __LINE__);
+                        }
                         break;
                     case 0x09: //获取全部信息
-                        //navy 网络发送
-                        printf_debug("CK2316 Defence area status\t0x%02X%02X 0x%02X%02X 0x%02X%02X 0x%02X 0x%02X\n",ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1], ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0], ck2316_alarm_data.ck2316_defence_area_bypass_value[1], ck2316_alarm_data.ck2316_defence_area_bypass_value[0], ck2316_alarm_data.ck2316_defence_status, ck2316_alarm_data.ck2316_defence_area_alarm_status);
+                        if (ck2316_alarm_data.if_ck2316_alive == YES) 
+                        {
+                            //navy 网络发送
+                            printf_debug("CK2316 Defence area status\t0x%02X%02X 0x%02X%02X 0x%02X%02X 0x%02X 0x%02X 0x%02X\n",ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1], ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0], ck2316_alarm_data.ck2316_defence_area_bypass_value[1], ck2316_alarm_data.ck2316_defence_area_bypass_value[0], ck2316_alarm_data.ck2316_defence_status, ck2316_alarm_data.ck2316_defence_area_alarm_status, ck2316_alarm_data.ck2316_simulate_keyboard_address);
+                        }
+                        else
+                        {
+                            //navy 网络发送 报警主机不在线
+                            ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                            printf_debug("FUNC[%s] LINE[%d]\tWarning ! Timeout, ck2316 is not alive !\n",__FUNCTION__, __LINE__);
+                        }
                         break;
                     default :
                         printf_debug("FUNC[%s] LINE[%d]\tCK2316 invalid net command!\n",__FUNCTION__, __LINE__);

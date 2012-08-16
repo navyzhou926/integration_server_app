@@ -13,7 +13,7 @@ void *pthread_matrix_control(void *arg)
 {
     while (1) 
     {
-        //usleep(10000);
+        usleep(10000);
         //printf("matrix control\n");
     }
 
