@@ -22,13 +22,6 @@
 //6 2400
 //7 1200
 //8 300
-#define ENTRANCE_GUARD_BOARD_RATE   4
-#define CK2316_BOARD_RATE           6
-
-#define CK2316_UART_BOARD           2400
-#define CK2316_UART_DATA_BIT        3
-#define CK2316_UART_CHECK_BIT       2
-#define CK2316_UART_STOP_BIT        0
 
 /*int InitCom(int speed);*/
 int InitCom(char *UART_DEVICE_ttySx, int speed);

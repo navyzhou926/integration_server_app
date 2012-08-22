@@ -19,6 +19,7 @@
 #include "entrance_guard.h"
 #include "ck2316_alarm.h"
 #include "matrix_control.h"
+#include "cradle_head_control.h"
 
 #define DEBUG
 
@@ -30,11 +31,20 @@
 
 #define PATH_HOME "/home"
 
-unsigned char net_recv_verify_code[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA};
+unsigned char net_recv_verify_code[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA};
 
 int flag = 0;
 int server_sock_tcp, client_sock_tcp;
 int if_have_net_client_connect = NO;
+
+void *pthread_temp_test(void *arg)
+{
+    while (1) 
+    {
+    }
+
+    return (void *)1;
+}
 
 void *pthread_get_local_ip(void *arg)
 {
@@ -59,7 +69,7 @@ int main(int argc, char *argv[])
     struct tm *t;
     #endif
     int ret = 0;
-    //int i = 0;
+    int i = 0;
     //char *receive_ip = NULL;
     //char *receive_mac = NULL;
 
@@ -70,6 +80,7 @@ int main(int argc, char *argv[])
     pthread_t tid_entrance_guard;
     pthread_t tid_ck2316_alarm;
     pthread_t tid_matrix_control;
+    pthread_t tid_cradle_head_control;
     pthread_t tid_handshake;
 
     while (get_local_ip(ip, mac) != 0) 
@@ -89,7 +100,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 0
+    #if 1
     //创建与门禁通信的线程
     if (pthread_create(&tid_entrance_guard, NULL, pthread_entrance_guard, NULL) != 0) 
     {
@@ -105,6 +116,14 @@ int main(int argc, char *argv[])
         printf("FUNC[%s] LINE[%d]\tCan't create ck2316 alarm thread !\n",__FUNCTION__, __LINE__);
         exit(1);
     }
+    #else
+        #if 0
+    if (pthread_create(&tid_ck2316_alarm, NULL, pthread_temp_test, NULL) != 0) 
+    {
+        printf("FUNC[%s] LINE[%d]\tCan't create temp test thread !\n",__FUNCTION__, __LINE__);
+        exit(1);
+    }
+        #endif
     #endif
 
     #if 1
@@ -112,6 +131,15 @@ int main(int argc, char *argv[])
     if (pthread_create(&tid_matrix_control, NULL, pthread_matrix_control, NULL) != 0) 
     {
         printf("FUNC[%s] LINE[%d]\tCan't create maxtrix control thread !\n",__FUNCTION__, __LINE__);
+        exit(1);
+    }
+    #endif
+
+    #if 1
+    //创建与云台通信的线程
+    if (pthread_create(&tid_cradle_head_control, NULL, pthread_cradle_head_control, NULL) != 0) 
+    {
+        printf("FUNC[%s] LINE[%d]\tCan't create cradle head control thread !\n",__FUNCTION__, __LINE__);
         exit(1);
     }
     #endif
@@ -210,18 +238,159 @@ start:
         else 
         {
 
-            printf_debug("length: %d   net_recv_data: 0x%x 0x%x, 0x%x 0x%x\n",ret, net_recv_buffer[28], net_recv_buffer[29], net_recv_buffer[30], net_recv_buffer[31]);
-            #if 1
+            //printf_debug("length: %d   net_recv_data: 0x%x 0x%x, 0x%x 0x%x\n",ret, net_recv_buffer[28], net_recv_buffer[29], net_recv_buffer[30], net_recv_buffer[31]);
+            #if 0
             //printf_debug("%s",net_recv_buffer);
             #else
-            for (i = 0; i < ret; i++) 
+            for (i = 15; i < ret; i++) 
             {
                 printf_debug("0x%x ",net_recv_buffer[i]);
             }
             printf("\n");
             #endif
-            if (strncmp(net_recv_buffer, net_recv_verify_code, 23) == 0) 
+            if (strncmp(net_recv_buffer, net_recv_verify_code, 15) == 0) 
             {
+                switch(net_recv_buffer[19])
+                {
+                    case 0x00: //没有指令
+                        cradle_head_control_data.setup_command_set = CRADLE_HEAD_CONTROL_NO_VALID_COMMAND;
+                        break;
+                    case 0x01: //以SS速度向上
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.cradle_head_move_speed = net_recv_buffer[16];
+                        cradle_head_control_data.setup_command_set = PTZ_UP;
+                        break;
+                    case 0x02: //以SS速度向下
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.cradle_head_move_speed = net_recv_buffer[16];
+                        cradle_head_control_data.setup_command_set = PTZ_DOWN;
+                        break;
+                    case 0x03: //以SS速度向左
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.cradle_head_move_speed = net_recv_buffer[16];
+                        cradle_head_control_data.setup_command_set = PTZ_LEFT;
+                        break;
+                    case 0x04: //以SS速度向右
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.cradle_head_move_speed = net_recv_buffer[16];
+                        cradle_head_control_data.setup_command_set = PTZ_RIGHT;
+                        break;
+                    case 0x05: //光圈调节，变大
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_APERTURE_BIG;
+                        break;
+                    case 0x06: //光圈调节，缩小
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_APERTURE_SMALL;
+                        break;
+                    case 0x07: //聚焦近
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_FOCUS_IN;
+                        break;
+                    case 0x08: //聚焦远
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_FOCUS_OUT;
+                        break;
+                    case 0x09: //变倍长(特写, 放大)
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_ZOOM_IN;
+                        break;
+                    case 0x0a: //变倍短(广角, 缩小)
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_ZOOM_OUT;
+                        break;
+                    case 0x0b: //开始自动焦距（自动倍率）
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_AUTO_ZOOM;
+                        break;
+                    case 0x0c: //开自动调焦
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_AUTO_FOCUS;
+                        break;
+                    case 0x0d: //开自动光圈
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_AUTO_APERTURE;
+                        break;
+                    case 0x0e: //设置预置点
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.cradle_head_preset_point = net_recv_buffer[15];
+                        cradle_head_control_data.setup_command_set = PTZ_SET_PTZBIT;
+                        break;
+                    case 0x0f: //调用预置点
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.cradle_head_preset_point = net_recv_buffer[15];
+                        cradle_head_control_data.setup_command_set = PTZ_CLE_PTZBIT;
+                        break;
+                    case 0x10: //停止所有连续量（镜头，云台）动作
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = PTZ_STOP_ALL;
+                        break;
+                    case 0x11: //辅助功能1开
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = AUX_PWRON1;
+                        break;
+                    case 0x12: //辅助功能1关
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = AUX_PWROFF1;
+                        break;
+                    case 0x13: //辅助功能2开
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = AUX_PWRON2;
+                        break;
+                    case 0x14: //辅助功能2关
+                        cradle_head_control_data.cradle_head_protocol_type = net_recv_buffer[18];
+                        cradle_head_control_data.cradle_head_address = net_recv_buffer[17];
+                        cradle_head_control_data.setup_command_set = AUX_PWROFF2;
+                        break;
+                    default :
+                        //网络发送无效命令
+                        printf_debug("FUNC[%s] LINE[%d]\tCradle head invalid net command!\n",__FUNCTION__, __LINE__);
+                        cradle_head_control_data.setup_command_set = CRADLE_HEAD_CONTROL_NO_VALID_COMMAND;
+                        break;
+                }
+                switch(net_recv_buffer[22])
+                {
+                    case 0x00: //没有指令
+                        matrix_control_data.setup_command_set = MATRIX_CONTROL_NO_VALID_COMMAND;
+                        break;
+                    case 0x01: //矩阵切换
+                        matrix_control_data.setup_command_set = MATRIX_SWITCHOVER_COMMAND;
+                        matrix_control_data.matrix_current_switchover_in_value = net_recv_buffer[20];
+                        matrix_control_data.matrix_current_switchover_out_value = net_recv_buffer[21];
+                        break;
+                    case 0x02: //矩阵单通道取消切换
+                        matrix_control_data.setup_command_set = MATRIX_CANCEL_SWITCHOVER_COMMAND;
+                        matrix_control_data.matrix_current_switchover_in_value = net_recv_buffer[20];
+                        matrix_control_data.matrix_current_switchover_out_value = net_recv_buffer[21];
+                        break;
+                    case 0x03: //矩阵所有通道取消切换
+                        matrix_control_data.setup_command_set = MATRIX_CANCEL_ALL_SWITCHOVER_COMMAND;
+                        break;
+                    default :
+                        //网络发送无效命令
+                        printf_debug("FUNC[%s] LINE[%d]\tMatrix invalid net command!\n",__FUNCTION__, __LINE__);
+                        ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                        break;
+                }
                 switch(net_recv_buffer[29])
                 {
                     case 0x00: //没有指令
@@ -312,6 +481,7 @@ start:
                         }
                         break;
                     default :
+                        //网络发送无效命令
                         printf_debug("FUNC[%s] LINE[%d]\tCK2316 invalid net command!\n",__FUNCTION__, __LINE__);
                         ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
                         break;
@@ -353,6 +523,7 @@ start:
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE;
                         break;
                     default:   //无效指令
+                        //网络发送无效命令
                         printf_debug("FUNC[%s] LINE[%d]\tEntrance guard invalid net command!\n",__FUNCTION__, __LINE__);
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
                         break;

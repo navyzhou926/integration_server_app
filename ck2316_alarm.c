@@ -6,8 +6,6 @@
 #include "net.h"
 #include "serial_common.h"
 
-//#define MAIN_TEST
-
 #define DEBUG
 #ifdef DEBUG
 #define printf_debug(fmt, arg...) printf(fmt, ##arg)
@@ -22,6 +20,11 @@ enum CK2316_DEFENCN_AREA_ALARM_STATUS_ARG
     EMERGENCY_ALARM = 2,
     NORMAL_AND_EMERGENCY_ALARM = 3,
 }CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE;
+
+#define CK2316_UART_BOARD           2400
+#define CK2316_UART_DATA_BIT        3
+#define CK2316_UART_CHECK_BIT       2
+#define CK2316_UART_STOP_BIT        0
 
 #define MAX_CHECK_COMMAND_COUNT            6
 
@@ -83,27 +86,12 @@ int verify_ck2316_data(unsigned char *recv_buffer, unsigned int len);
 int ck2316_user_password_setup(unsigned int user_password[4]);
 int ck2316_alarm_init(void);
 
-#ifndef MAIN_TEST
+extern int matrix_handshake_and_setup(int *com_fd);
 void *pthread_ck2316_alarm(void *arg)
-#else
-int if_have_net_client_connect = NO;
-void print_string(char *string, unsigned char *buffer, unsigned int len)
-{
-    int i = 0;
-
-    printf("%s",string);
-    for (i = 0; i < len; i++) 
-    {
-        printf("%02X ",buffer[i]);
-    }
-    printf("\n");
-}
-int main(int argc, const char *argv[])
-#endif
 {
     int com_fd;
     int recv_ret = 0;
-    unsigned char recv_buffer[72] = {0};
+    //unsigned char recv_buffer[72] = {0};
 
     while (1) 
     {
@@ -119,58 +107,26 @@ int main(int argc, const char *argv[])
 
     while (1) 
     {
-#if 0
-        com_fd = InitCom_ck2316(UART_DEVICE_ttyS0, CK2316_BOARD_RATE);
-#else
-        //navy1
-        com_fd = OpenDev(UART_DEVICE_ttyS0);
+        com_fd = OpenDev(CK2316_UART_DEVICE);
+        if (com_fd == -1) 
+        {
+            printf("FUNC[%s] LINE[%d]\tOpen uart failed!\n",__FUNCTION__, __LINE__);
+            sleep(10);
+            continue;
+        }
         //fd nSpeed nBits nEvent nStop)
         //set_opt(com_fd, 2400, 3, 2, 0); //for ck2316
-        set_opt(com_fd, CK2316_UART_BOARD, CK2316_UART_DATA_BIT, CK2316_UART_CHECK_BIT, CK2316_UART_STOP_BIT);
-        //set_opt(com_fd, 2400, 3, 0, 0);
-#endif
-        if (com_fd == -1) 
+        //recv_ret = set_opt(com_fd, 9600, 3, 0, 0); //for ck2316
+        recv_ret = set_opt(com_fd, CK2316_UART_BOARD, CK2316_UART_DATA_BIT, CK2316_UART_CHECK_BIT, CK2316_UART_STOP_BIT);
+        if (recv_ret == -1) 
         {
             printf("FUNC[%s] LINE[%d]\tInit uart failed!\n",__FUNCTION__, __LINE__);
             sleep(10);
+            continue;
         }
         ClrCom(com_fd);
 
-#if 0
-        while (if_have_net_client_connect == NO) 
-        {
-            printf("no link\n");
-            sleep(2);
-        }
-#endif
-        #if 0
-        while (1) 
-        {
-        #if 1
-            recv_ret = read_uart_data(com_fd, recv_buffer, CK2316_MAX_RECV_SIZE, CK2316_RECV_TIMEOUT); 
-            //recv_ret = read(com_fd, recv_buffer, 10);
-            printf_debug("recv_ret = %d\t",recv_ret);
-            if (recv_ret > 0) 
-            {
-                #ifdef DEBUG
-                print_string("\n ", recv_buffer, recv_ret);
-                #endif
-                write(com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
-                //ClrCom(com_fd);
-            }
-            else
-            {
-                printf_debug("read data error\n");
-            }
-        #else
-            write(com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
-        #endif
-            //ClrCom(com_fd);
-            sleep(1);
-        }
-        #endif
-
-         recv_ret = ck2316_alarm_handshake_and_setup(&com_fd);
+        recv_ret = ck2316_alarm_handshake_and_setup(&com_fd);
         if (recv_ret == -1) 
         {
             close(com_fd);
@@ -178,19 +134,15 @@ int main(int argc, const char *argv[])
         }
     }
 
-#ifndef MAIN_TEST
     return (void *)1;
-#else
-    return 0;
-#endif
 }
 
 int ck2316_alarm_handshake_and_setup(int *com_fd)
 {
-    int i = 0;
+    //int i = 0;
     int recv_ret = 0;
     unsigned char recv_buffer[72] = {0};
-    unsigned char temp_test[] = {0xaa, 0x55, 0xa5};
+    //unsigned char temp_test[] = {0xaa, 0x55, 0xa5};
     int check_command_count = 0;
     int system_count = 0;
     int timeout_count = 0;

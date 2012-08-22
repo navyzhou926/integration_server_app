@@ -56,6 +56,8 @@
 #define MAX_ALARM_MESSAGE_NUM                       200
 #define MAX_NORMAL_MESSAGE_NUM                      200
 
+#define ENTRANCE_GUARD_BOARD_RATE   4
+
 typedef struct 
 {
     char if_entrance_guard_alive;                 //当前门禁是否在线

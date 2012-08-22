@@ -84,7 +84,7 @@ void *pthread_entrance_guard(void *arg)
     FILE *fp_message_count_file;
     FILE *fp_config_file;
 
-    com_fd = InitCom(UART_DEVICE_ttyS0, ENTRANCE_GUARD_BOARD_RATE);
+    com_fd = InitCom(ENTRANCE_GUARD_UART_DEVICE, ENTRANCE_GUARD_BOARD_RATE);
     //com_fd = InitCom(UART_DEVICE_ttyUSB0, BOARD_RATE);
     if (com_fd == -1) 
     {
