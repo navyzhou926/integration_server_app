@@ -1,5 +1,5 @@
 #ifndef _CK2316_ALARM_H
-#define _CK2316_ALARM_H_H
+#define _CK2316_ALARM_H
 
 #define CK2316_MAX_RECV_SIZE                        64
 #define CK2316_HANDSHAKE_SIZE                        3

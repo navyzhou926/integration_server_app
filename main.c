@@ -20,6 +20,7 @@
 #include "ck2316_alarm.h"
 #include "matrix_control.h"
 #include "cradle_head_control.h"
+#include "alarm_input_output.h"
 
 #define DEBUG
 
@@ -81,7 +82,9 @@ int main(int argc, char *argv[])
     pthread_t tid_ck2316_alarm;
     pthread_t tid_matrix_control;
     pthread_t tid_cradle_head_control;
+    pthread_t tid_alarm_input_output;
     pthread_t tid_handshake;
+    pthread_t tid_temp_test;
 
     while (get_local_ip(ip, mac) != 0) 
     {
@@ -100,7 +103,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 1
+    #if 0
     //创建与门禁通信的线程
     if (pthread_create(&tid_entrance_guard, NULL, pthread_entrance_guard, NULL) != 0) 
     {
@@ -109,7 +112,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 1
+    #if 0
     //创建与报警器通信的线程
     if (pthread_create(&tid_ck2316_alarm, NULL, pthread_ck2316_alarm, NULL) != 0) 
     {
@@ -117,8 +120,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
     #else
-        #if 0
-    if (pthread_create(&tid_ck2316_alarm, NULL, pthread_temp_test, NULL) != 0) 
+        #if 1
+    if (pthread_create(&tid_temp_test, NULL, pthread_temp_test, NULL) != 0) 
     {
         printf("FUNC[%s] LINE[%d]\tCan't create temp test thread !\n",__FUNCTION__, __LINE__);
         exit(1);
@@ -126,7 +129,7 @@ int main(int argc, char *argv[])
         #endif
     #endif
 
-    #if 1
+    #if 0
     //创建与矩阵通信的线程
     if (pthread_create(&tid_matrix_control, NULL, pthread_matrix_control, NULL) != 0) 
     {
@@ -140,6 +143,15 @@ int main(int argc, char *argv[])
     if (pthread_create(&tid_cradle_head_control, NULL, pthread_cradle_head_control, NULL) != 0) 
     {
         printf("FUNC[%s] LINE[%d]\tCan't create cradle head control thread !\n",__FUNCTION__, __LINE__);
+        exit(1);
+    }
+    #endif
+
+    #if 1
+    //创建与报警输入输出通信的线程
+    if (pthread_create(&tid_alarm_input_output, NULL, pthread_alarm_input_output, NULL) != 0) 
+    {
+        printf("FUNC[%s] LINE[%d]\tCan't create alarm input and output thread !\n",__FUNCTION__, __LINE__);
         exit(1);
     }
     #endif
@@ -242,14 +254,108 @@ start:
             #if 0
             //printf_debug("%s",net_recv_buffer);
             #else
-            for (i = 15; i < ret; i++) 
+            for (i = 9; i < ret; i++) 
             {
                 printf_debug("0x%x ",net_recv_buffer[i]);
             }
             printf("\n");
             #endif
-            if (strncmp(net_recv_buffer, net_recv_verify_code, 15) == 0) 
+            if (strncmp(net_recv_buffer, net_recv_verify_code, 9) == 0) 
             {
+                switch(net_recv_buffer[14])
+                {
+                    case 0x00: //没有指令,报警输入输出正常工作
+                        alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
+                        break;
+                    case 0x01: //设置报警联动对应关系
+                        if (alarm_input_output_data.real_time_alarm_output_objcet) 
+                        {
+                            //网络发送请取消所有报警输出，然后再设置报警联动对应关系
+                            printf_debug("FUNC[%s] LINE[%d]\tPlease cancel alarm output, then try it again!\n",__FUNCTION__, __LINE__);
+                        }
+                        else
+                        {
+                            if (net_recv_buffer[12] < 1 || net_recv_buffer[12] > MAX_ALARM_LINKAGE_INPUT_OBJECT) 
+                            {
+                                //网络发送 无效参数
+                                printf_debug("FUNC[%s] LINE[%d]\tInvalid arg alarm_linkage_input_object, it should be 1 to 9\n",__FUNCTION__, __LINE__);
+                            }
+                            else
+                            {
+                                alarm_input_output_data.alarm_linkage_input_object = net_recv_buffer[12];
+                                alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO;
+                                alarm_input_output_data.alarm_input_linkage_output_object[alarm_input_output_data.alarm_linkage_input_object-1] = net_recv_buffer[13];
+                            }
+                        }
+                        break;
+                    case 0x02: //获取报警联动对应关系
+                        if (net_recv_buffer[12] < 1 || net_recv_buffer[12] > MAX_ALARM_LINKAGE_INPUT_OBJECT) 
+                        {
+                            //网络发送 无效参数
+                            printf_debug("FUNC[%s] LINE[%d]\tInvalid arg alarm_linkage_input_object, it should be 1 to 9\n",__FUNCTION__, __LINE__);
+                        }
+                        else
+                        {
+                            alarm_input_output_data.alarm_linkage_input_object = net_recv_buffer[12];
+                            //网络发送 获取报警联动对应关系
+                            printf_debug("FUNC[%s] LINE[%d]\tChannel %d: 0x%X\n",__FUNCTION__, __LINE__, alarm_input_output_data.alarm_linkage_input_object, alarm_input_output_data.alarm_input_linkage_output_object[alarm_input_output_data.alarm_linkage_input_object-1]);
+                        }
+                        break;
+                    case 0x03: //取消报警输出
+                            if (net_recv_buffer[11] < 0 || net_recv_buffer[11] > MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT) 
+                            {
+                                //网络发送 无效参数
+                                printf_debug("FUNC[%s] LINE[%d]\tInvalid arg cancel_linkage_alarm_channel, it should be 0 to 8\n",__FUNCTION__, __LINE__);
+                            }
+                            else
+                            {
+                                alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_CANCEL_LINKAGE_ALARM;
+                                alarm_input_output_data.cancel_linkage_alarm_channel = net_recv_buffer[11];
+                            }
+                        break;
+                    case 0x04: //恢复默认参数
+                        if (alarm_input_output_data.real_time_alarm_output_objcet) 
+                        {
+                            //网络发送请取消所有报警输出，然后再设置报警联动对应关系
+                            printf_debug("FUNC[%s] LINE[%d]\tPlease cancel alarm output, then try it again!\n",__FUNCTION__, __LINE__);
+                        }
+                        else
+                        {
+                            alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_RESTORE_TO_DEFAULT;
+                        }
+                        break;
+                    case 0x05: //设置报警输出持续时间
+                        if (alarm_input_output_data.real_time_alarm_output_objcet) 
+                        {
+                            //网络发送请取消所有报警输出，然后再设置报警联动对应关系
+                            printf_debug("FUNC[%s] LINE[%d]\tPlease cancel alarm output, then try it again!\n",__FUNCTION__, __LINE__);
+                        }
+                        else
+                        {
+                                if (net_recv_buffer[11] < 0 || net_recv_buffer[11] > MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT) 
+                                {
+                                    //网络发送 无效参数
+                                    printf_debug("FUNC[%s] LINE[%d]\tInvalid arg alarm_linkage_output_object, it should be 1 to 8\n",__FUNCTION__, __LINE__);
+                                
+                                }
+                                else
+                                {
+                                    alarm_input_output_data.alarm_linkage_output_object = net_recv_buffer[11];
+                                    alarm_input_output_data.alarm_duration = 60*net_recv_buffer[9] + net_recv_buffer[10];
+                                    if (alarm_input_output_data.alarm_duration > MAX_ALARM_DURATION) 
+                                    {
+                                        alarm_input_output_data.alarm_duration = MAX_ALARM_DURATION;
+                                    }
+                                    alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_SET_ALARM_DURATION;
+                                }
+                        }
+                        break;
+                    default :
+                        //网络发送无效命令
+                        printf_debug("FUNC[%s] LINE[%d]\tAlarm input and output invalid net command!\n",__FUNCTION__, __LINE__);
+                        alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
+                        break;
+                }
                 switch(net_recv_buffer[19])
                 {
                     case 0x00: //没有指令
@@ -522,10 +628,16 @@ start:
                     case 0x0a: //门磁状态设置(常闭)(默认)
                         entrance_guard_data.setup_command_set = ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE;
                         break;
+                    case 0x0b: //门磁取消报警状态
+                        //entrance_guard_data.setup_command_set = ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE;
+                        entrance_guard_data.if_has_entrance_guard_alarm = NO;
+                        printf_debug("FUNC[%s] LINE[%d]\tEntrance guard succeed to cancel alarm!\n",__FUNCTION__, __LINE__);
+                        //navy 网络发送 门磁取消报警成功
+                        break;
                     default:   //无效指令
                         //网络发送无效命令
                         printf_debug("FUNC[%s] LINE[%d]\tEntrance guard invalid net command!\n",__FUNCTION__, __LINE__);
-                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_CANCEL_ALARM_STATUS;
                         break;
                 }
                 #if 0

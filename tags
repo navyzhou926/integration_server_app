@@ -4,40 +4,66 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-ANT	cradle_head_control.h	41;"	d
-AUX_PWROFF1	cradle_head_control.h	25;"	d
-AUX_PWROFF2	cradle_head_control.h	27;"	d
-AUX_PWRON1	cradle_head_control.h	24;"	d
-AUX_PWRON2	cradle_head_control.h	26;"	d
+ALARM_GPIO_DEVICE_NAME	alarm_input_output.c	24;"	d	file:
+ALARM_INPUT_OUTPUT_CANCEL_LINKAGE_ALARM	alarm_input_output.h	16;"	d
+ALARM_INPUT_OUTPUT_CONFIG_FILE	alarm_input_output.h	9;"	d
+ALARM_INPUT_OUTPUT_GET_LINKAGE_INFO	alarm_input_output.h	15;"	d
+ALARM_INPUT_OUTPUT_NORMAL_OPERATION	alarm_input_output.h	13;"	d
+ALARM_INPUT_OUTPUT_RESTORE_TO_DEFAULT	alarm_input_output.h	17;"	d
+ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO	alarm_input_output.h	14;"	d
+ALARM_INPUT_OUTPUT_TIMED_ALARM_FILE	alarm_input_output.h	10;"	d
+ALARM_LINKAGE_OUTPUT_OBJECT_1	alarm_input_output.c	63;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_2	alarm_input_output.c	64;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_3	alarm_input_output.c	65;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_4	alarm_input_output.c	66;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_5	alarm_input_output.c	67;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_6	alarm_input_output.c	68;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_7	alarm_input_output.c	69;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_8	alarm_input_output.c	70;"	d	file:
+ALARM_OUTPUT_NORMALLY_CLOSE	alarm_input_output.c	57;"	d	file:
+ALARM_OUTPUT_NORMALLY_OPEN	alarm_input_output.c	56;"	d	file:
+ANT	cradle_head_control.h	40;"	d
+AT91_ALARM_IO1	alarm_input_output.c	26;"	d	file:
+AT91_ALARM_IO2	alarm_input_output.c	27;"	d	file:
+AT91_ALARM_IO3	alarm_input_output.c	28;"	d	file:
+AT91_ALARM_IO4	alarm_input_output.c	29;"	d	file:
+AT91_ALARM_IO5	alarm_input_output.c	30;"	d	file:
+AT91_ALARM_IO6	alarm_input_output.c	31;"	d	file:
+AT91_ALARM_IO7	alarm_input_output.c	32;"	d	file:
+AT91_ALARM_IO8	alarm_input_output.c	33;"	d	file:
+AUX_PWROFF1	cradle_head_control.h	24;"	d
+AUX_PWROFF2	cradle_head_control.h	26;"	d
+AUX_PWRON1	cradle_head_control.h	23;"	d
+AUX_PWRON2	cradle_head_control.h	25;"	d
 BUTTON_CONTROL_DOOR_HOLD_TIME_COUNT	entrance_guard.h	10;"	d
 BUTTON_CONTROL_DOOR_HOLD_TIME_SEND_SIZE	entrance_guard.h	18;"	d
-CBC	cradle_head_control.h	42;"	d
+CBC	cradle_head_control.h	41;"	d
+CHANGE_INPUT_OUTPUT_STATUS	alarm_input_output.c	53;"	d	file:
 CK2316_ALARM_HOST_RESET	ck2316_alarm.h	23;"	d
-CK2316_ALARM_HOST_RESET_SIZE	ck2316_alarm.c	76;"	d	file:
-CK2316_BOARD_RATE	uart.h	26;"	d
+CK2316_ALARM_HOST_RESET_SIZE	ck2316_alarm.c	74;"	d	file:
 CK2316_BYPASS_DEFENCE_AREA	ck2316_alarm.h	22;"	d
-CK2316_BYPASS_DEFENCE_AREA_SIZE	ck2316_alarm.c	73;"	d	file:
+CK2316_BYPASS_DEFENCE_AREA_SIZE	ck2316_alarm.c	71;"	d	file:
 CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL	ck2316_alarm.h	26;"	d
 CK2316_CONFIG_FILE	ck2316_alarm.h	13;"	d
-CK2316_DEFENCE_AREA_ALARM_STATUS_MASK	ck2316_alarm.c	51;"	d	file:
-CK2316_DEFENCE_AREA_HEAD_POSITION	ck2316_alarm.c	48;"	d	file:
+CK2316_DEFENCE_AREA_ALARM_STATUS_MASK	ck2316_alarm.c	49;"	d	file:
+CK2316_DEFENCE_AREA_HEAD_POSITION	ck2316_alarm.c	46;"	d	file:
 CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	ck2316_alarm.c	/^enum CK2316_DEFENCN_AREA_ALARM_STATUS_ARG$/;"	g	file:
 CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE	ck2316_alarm.c	/^}CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE;$/;"	v	typeref:enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG
 CK2316_ELIMINATE_ALARM_MEMORY	ck2316_alarm.h	21;"	d
-CK2316_ELIMINATE_ALARM_MEMORY_SIZE	ck2316_alarm.c	70;"	d	file:
-CK2316_HANDSHAKE_CODE_1	ck2316_alarm.c	40;"	d	file:
-CK2316_HANDSHAKE_CODE_2	ck2316_alarm.c	41;"	d	file:
-CK2316_HANDSHAKE_CODE_3	ck2316_alarm.c	42;"	d	file:
-CK2316_HANDSHAKE_SIZE	ck2316_alarm.c	43;"	d	file:
+CK2316_ELIMINATE_ALARM_MEMORY_SIZE	ck2316_alarm.c	68;"	d	file:
+CK2316_HANDSHAKE_CODE_1	ck2316_alarm.c	38;"	d	file:
+CK2316_HANDSHAKE_CODE_2	ck2316_alarm.c	39;"	d	file:
+CK2316_HANDSHAKE_CODE_3	ck2316_alarm.c	40;"	d	file:
+CK2316_HANDSHAKE_SIZE	ck2316_alarm.c	41;"	d	file:
 CK2316_HANDSHAKE_SIZE	ck2316_alarm.h	5;"	d
-CK2316_HIGH_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	52;"	d	file:
-CK2316_HIGH_DEFENCE_AREA_HEAD	ck2316_alarm.c	46;"	d	file:
-CK2316_IS_DEFENCED_OR_ABANDONED_MASK	ck2316_alarm.c	50;"	d	file:
-CK2316_KEYBOARD_ADDRESS	ck2316_alarm.c	33;"	d	file:
-CK2316_KEYBOARD_ADDRESS_MASK	ck2316_alarm.c	35;"	d	file:
-CK2316_KEYBOARD_ADDRESS_SIZE	ck2316_alarm.c	36;"	d	file:
-CK2316_LOW_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	53;"	d	file:
-CK2316_LOW_DEFENCE_AREA_HEAD	ck2316_alarm.c	47;"	d	file:
+CK2316_HIGH_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	50;"	d	file:
+CK2316_HIGH_DEFENCE_AREA_HEAD	ck2316_alarm.c	44;"	d	file:
+CK2316_IS_DEFENCED_OR_ABANDONED_MASK	ck2316_alarm.c	48;"	d	file:
+CK2316_KEYBOARD_ADDRESS	ck2316_alarm.c	31;"	d	file:
+CK2316_KEYBOARD_ADDRESS_MASK	ck2316_alarm.c	33;"	d	file:
+CK2316_KEYBOARD_ADDRESS_SIZE	ck2316_alarm.c	34;"	d	file:
+CK2316_LOW_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	51;"	d	file:
+CK2316_LOW_DEFENCE_AREA_HEAD	ck2316_alarm.c	45;"	d	file:
 CK2316_MAX_ALARM_MESSAGE_NUM	ck2316_alarm.h	28;"	d
 CK2316_MAX_NORMAL_MESSAGE_NUM	ck2316_alarm.h	29;"	d
 CK2316_MAX_RECV_SIZE	ck2316_alarm.h	4;"	d
@@ -45,26 +71,31 @@ CK2316_NO_VALID_COMMAND	ck2316_alarm.h	18;"	d
 CK2316_RECV_FINISH_TIMEOUT	ck2316_alarm.h	8;"	d
 CK2316_RECV_TIMEOUT	ck2316_alarm.h	7;"	d
 CK2316_SYSTEM_ABANDON	ck2316_alarm.h	20;"	d
-CK2316_SYSTEM_ABANDON_SIZE	ck2316_alarm.c	67;"	d	file:
+CK2316_SYSTEM_ABANDON_SIZE	ck2316_alarm.c	65;"	d	file:
 CK2316_SYSTEM_DEFENCE	ck2316_alarm.h	19;"	d
-CK2316_SYSTEM_DEFENCE_SIZE	ck2316_alarm.c	64;"	d	file:
-CK2316_UART_BOARD	ck2316_alarm.c	26;"	d	file:
-CK2316_UART_CHECK_BIT	ck2316_alarm.c	28;"	d	file:
-CK2316_UART_DATA_BIT	ck2316_alarm.c	27;"	d	file:
-CK2316_UART_STOP_BIT	ck2316_alarm.c	29;"	d	file:
-CK2316_USER_PASSWORD_1	ck2316_alarm.c	55;"	d	file:
-CK2316_USER_PASSWORD_2	ck2316_alarm.c	56;"	d	file:
-CK2316_USER_PASSWORD_3	ck2316_alarm.c	57;"	d	file:
-CK2316_USER_PASSWORD_4	ck2316_alarm.c	58;"	d	file:
+CK2316_SYSTEM_DEFENCE_SIZE	ck2316_alarm.c	62;"	d	file:
+CK2316_UART_BOARD	ck2316_alarm.c	24;"	d	file:
+CK2316_UART_CHECK_BIT	ck2316_alarm.c	26;"	d	file:
+CK2316_UART_DATA_BIT	ck2316_alarm.c	25;"	d	file:
+CK2316_UART_DEVICE	global.h	9;"	d
+CK2316_UART_STOP_BIT	ck2316_alarm.c	27;"	d	file:
+CK2316_USER_PASSWORD_1	ck2316_alarm.c	53;"	d	file:
+CK2316_USER_PASSWORD_2	ck2316_alarm.c	54;"	d	file:
+CK2316_USER_PASSWORD_3	ck2316_alarm.c	55;"	d	file:
+CK2316_USER_PASSWORD_4	ck2316_alarm.c	56;"	d	file:
 CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT	entrance_guard.h	9;"	d
 CLIENT_CONTROL_DOOR_HOLD_TIME_SEND_SIZE	entrance_guard.h	17;"	d
 CLOSE_DOOR	entrance_guard.h	7;"	d
 CLOSE_DOOR_SEND_SIZE	entrance_guard.h	14;"	d
-CLT_168	cradle_head_control.h	37;"	d
-CONCORD	cradle_head_control.h	44;"	d
+CLT_168	cradle_head_control.h	36;"	d
+CONCORD	cradle_head_control.h	43;"	d
 CRADLE_HEAD_APERTURE_BIG	cradle_head_control.c	/^unsigned char CRADLE_HEAD_APERTURE_BIG[8] = {0xa0,0x00,0x04,0x00,0x00,0x00,0xaf,0x0b};  \/\/光圈大$/;"	v
 CRADLE_HEAD_APERTURE_SMALL	cradle_head_control.c	/^unsigned char CRADLE_HEAD_APERTURE_SMALL[8] = {0xa0,0x00,0x08,0x00,0x00,0x00,0xaf,0x07};\/\/光圈小$/;"	v
 CRADLE_HEAD_CONTROL_NO_VALID_COMMAND	cradle_head_control.h	4;"	d
+CRADLE_HEAD_DEFAULT_ADDRESS	cradle_head_control.c	26;"	d	file:
+CRADLE_HEAD_DEFAULT_MOVE_SPEED	cradle_head_control.c	28;"	d	file:
+CRADLE_HEAD_DEFAULT_PRESET_POINT	cradle_head_control.c	29;"	d	file:
+CRADLE_HEAD_DEFAULT_PROTOCOL_TYPE	cradle_head_control.c	27;"	d	file:
 CRADLE_HEAD_DOWN	cradle_head_control.c	/^unsigned char CRADLE_HEAD_DOWN[8] = {0xa0,0x00,0x00,0x10,0x00,0x0f,0xaf,0x10}; \/\/下$/;"	v
 CRADLE_HEAD_FOCUS_IN	cradle_head_control.c	/^unsigned char CRADLE_HEAD_FOCUS_IN[8] = {0xa0,0x00,0x02,0x00,0x00,0x00,0xaf,0x0d};\/\/聚焦近$/;"	v
 CRADLE_HEAD_FOCUS_OUT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_FOCUS_OUT[8] = {0xa0,0x00,0x01,0x00,0x00,0x00,0xaf,0x0e};\/\/聚焦远$/;"	v
@@ -73,32 +104,40 @@ CRADLE_HEAD_RIGHT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_RIGHT[8] = {
 CRADLE_HEAD_SET_PRESET_POINT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_SET_PRESET_POINT[8] = {0xa0,0x00,0x00,0x03,0x00,0x01,0xaf,0x0d};\/\/设置预置点001$/;"	v
 CRADLE_HEAD_STOP	cradle_head_control.c	/^unsigned char CRADLE_HEAD_STOP[8] = {0xa0,0x00,0x00,0x00,0x00,0x00,0xaf,0x00}; \/\/停止$/;"	v
 CRADLE_HEAD_TURN_TO_PRESET_POINT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_TURN_TO_PRESET_POINT[8] = {0xa0,0x00,0x00,0x07,0x00,0x01,0xaf,0x09};\/\/转至预置点001$/;"	v
-CRADLE_HEAD_UART_BOARD	cradle_head_control.c	16;"	d	file:
+CRADLE_HEAD_UART_BOARD	cradle_head_control.c	17;"	d	file:
 CRADLE_HEAD_UART_CHECK_BIT	cradle_head_control.c	19;"	d	file:
 CRADLE_HEAD_UART_DATA_BIT	cradle_head_control.c	18;"	d	file:
+CRADLE_HEAD_UART_DEVICE	global.h	10;"	d
 CRADLE_HEAD_UART_STOP_BIT	cradle_head_control.c	20;"	d	file:
 CRADLE_HEAD_UP	cradle_head_control.c	/^unsigned char CRADLE_HEAD_UP[8] = {0xa0,0x00,0x00,0x08,0x00,0x0f,0xaf,0x08};   \/\/上$/;"	v
 CRADLE_HEAD_ZOOM_IN	cradle_head_control.c	/^unsigned char CRADLE_HEAD_ZOOM_IN[8] = {0xa0,0x00,0x00,0x20,0x00,0x00,0xaf,0x2f}; \/\/变倍长(特写, 放大)$/;"	v
 CRADLE_HEAD_ZOOM_OUT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_ZOOM_OUT[8] = {0xa0,0x00,0x00,0x40,0x00,0x00,0xaf,0x4f};\/\/变倍短(广角, 缩小)$/;"	v
-CS850A	cradle_head_control.h	43;"	d
-CURRENT_MATRIX_MAX_OUT_CHANNEL_NUM	matrix_control.c	24;"	d	file:
+CS850A	cradle_head_control.h	42;"	d
+CURRENT_MATRIX_MAX_OUT_CHANNEL_NUM	matrix_control.c	25;"	d	file:
 CloseCom	uart.c	/^int CloseCom(int Device)$/;"	f
 CloseConsole	serial_common.c	/^int CloseConsole(void)$/;"	f
 ClrCom	uart.c	/^int ClrCom(int Device)$/;"	f
-DEBUG	ck2316_alarm.c	11;"	d	file:
-DEBUG	cradle_head_control.c	9;"	d	file:
+DEBUG	alarm_input_output.c	17;"	d	file:
+DEBUG	ck2316_alarm.c	9;"	d	file:
+DEBUG	cradle_head_control.c	10;"	d	file:
 DEBUG	entrance_guard.c	11;"	d	file:
-DEBUG	main.c	24;"	d	file:
-DEBUG	matrix_control.c	8;"	d	file:
+DEBUG	main.c	25;"	d	file:
+DEBUG	matrix_control.c	9;"	d	file:
 DEBUG	net.c	8;"	d	file:
+DEFAULT_TIMED_ALARM_MINUTE	alarm_input_output.c	91;"	d	file:
+DELAY_N_MINUTE_COUNT	alarm_input_output.c	94;"	d	file:
+DELAY_N_SECOND	alarm_input_output.c	93;"	d	file:
+DISABLE_ALARM_OUTPUT	alarm_input_output.c	60;"	d	file:
 DOOR_CONTACT_DEFAULT_CLOSE_SETUP_SEND_SIZE	entrance_guard.h	20;"	d
 DOOR_CONTACT_DEFAULT_OPEN_SETUP_SEND_SIZE	entrance_guard.h	19;"	d
 DOOR_LOCK_DEFAULT_CLOSE_SETUP_SEND_SIZE	entrance_guard.h	16;"	d
 DOOR_LOCK_DEFAULT_OPEN_SETUP_SEND_SIZE	entrance_guard.h	15;"	d
 EMERGENCY_ALARM	ck2316_alarm.c	/^    EMERGENCY_ALARM = 2,$/;"	e	enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	file:
+ENABLE_ALARM_OUTPUT	alarm_input_output.c	59;"	d	file:
 ENTRANCE_GUARD_ALARM_MESSAGE_FILE	entrance_guard.h	32;"	d
-ENTRANCE_GUARD_BOARD_RATE	uart.h	25;"	d
+ENTRANCE_GUARD_BOARD_RATE	entrance_guard.h	60;"	d
 ENTRANCE_GUARD_BUTTON_SET_DOOR_HOLD_TIME	entrance_guard.h	41;"	d
+ENTRANCE_GUARD_CANCEL_ALARM_STATUS	entrance_guard.h	46;"	d
 ENTRANCE_GUARD_CLIENT_SET_DOOR_HOLD_TIME	entrance_guard.h	40;"	d
 ENTRANCE_GUARD_CLOSE_DOOR	entrance_guard.h	37;"	d
 ENTRANCE_GUARD_CONFIG_FILE	entrance_guard.h	30;"	d
@@ -113,12 +152,16 @@ ENTRANCE_GUARD_OPEN_DOOR	entrance_guard.h	36;"	d
 ENTRANCE_GUARD_RECV_OVER_TIME	entrance_guard.h	27;"	d
 ENTRANCE_GUARD_RELAY_CLOSE_DOOR	entrance_guard.h	39;"	d
 ENTRANCE_GUARD_RELAY_OPEN_DOOR	entrance_guard.h	38;"	d
-EXEP_PORT	serial_common.h	/^	EXEP_PORT,$/;"	e	enum:__anon5
+ENTRANCE_GUARD_UART_DEVICE	global.h	8;"	d
+EXEP_PORT	serial_common.h	/^	EXEP_PORT,$/;"	e	enum:__anon6
+GET_ALARM_INPUT_VALUE	alarm_input_output.c	61;"	d	file:
+GET_IO_DATA	alarm_input_output.c	52;"	d	file:
 HANDSHAKE_SEND_SIZE	entrance_guard.h	12;"	d
 HANDSHAKE_SETUP_RECV_SIZE	entrance_guard.h	24;"	d
-HD600	cradle_head_control.h	45;"	d
-INVALID_OPEN_DOOR_CONTACT_1	entrance_guard.h	53;"	d
-INVALID_OPEN_DOOR_CONTACT_2	entrance_guard.h	54;"	d
+HD600	cradle_head_control.h	44;"	d
+INPUT	alarm_input_output.c	47;"	d	file:
+INVALID_OPEN_DOOR_CONTACT_1	entrance_guard.h	54;"	d
+INVALID_OPEN_DOOR_CONTACT_2	entrance_guard.h	55;"	d
 IS_ABANDONED	ck2316_alarm.h	11;"	d
 IS_CLOSED	entrance_guard.h	5;"	d
 IS_DEFENCED	ck2316_alarm.h	10;"	d
@@ -128,20 +171,25 @@ InitCom_ck2316	uart.c	/^int InitCom_ck2316(char *UART_DEVICE_ttySx, int speed)$/
 MATCH_HANDSHAKE_TIMEOUT	entrance_guard.h	26;"	d
 MATRIX_CANCEL_ALL_SWITCHOVER_COMMAND	matrix_control.h	7;"	d
 MATRIX_CANCEL_SWITCHOVER_COMMAND	matrix_control.h	6;"	d
-MATRIX_CANCEL_SWITCHOVER_IN_CHANNEL	matrix_control.c	22;"	d	file:
+MATRIX_CANCEL_SWITCHOVER_IN_CHANNEL	matrix_control.c	23;"	d	file:
 MATRIX_CONTROL_NO_VALID_COMMAND	matrix_control.h	4;"	d
 MATRIX_SWITCHOVER_COMMAND	matrix_control.h	5;"	d
-MATRIX_UART_BOARD	matrix_control.c	15;"	d	file:
-MATRIX_UART_CHECK_BIT	matrix_control.c	18;"	d	file:
-MATRIX_UART_DATA_BIT	matrix_control.c	17;"	d	file:
-MATRIX_UART_MAX_SEND_SIZE	matrix_control.c	21;"	d	file:
-MATRIX_UART_STOP_BIT	matrix_control.c	19;"	d	file:
-MAX_ALARM_MESSAGE_NUM	entrance_guard.h	56;"	d
-MAX_CHECK_COMMAND_COUNT	ck2316_alarm.c	31;"	d	file:
-MAX_NORMAL_MESSAGE_NUM	entrance_guard.h	57;"	d
+MATRIX_UART_BOARD	matrix_control.c	16;"	d	file:
+MATRIX_UART_CHECK_BIT	matrix_control.c	19;"	d	file:
+MATRIX_UART_DATA_BIT	matrix_control.c	18;"	d	file:
+MATRIX_UART_DEVICE	global.h	7;"	d
+MATRIX_UART_MAX_SEND_SIZE	matrix_control.c	22;"	d	file:
+MATRIX_UART_STOP_BIT	matrix_control.c	20;"	d	file:
+MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT	alarm_input_output.h	21;"	d
+MAX_ALARM_IO_NUM	alarm_input_output.c	34;"	d	file:
+MAX_ALARM_LINKAGE_INPUT_OBJECT	alarm_input_output.h	20;"	d
+MAX_ALARM_MESSAGE_NUM	entrance_guard.h	57;"	d
+MAX_CHECK_COMMAND_COUNT	ck2316_alarm.c	29;"	d	file:
+MAX_COMMAND_NUM	alarm_input_output.c	54;"	d	file:
+MAX_NORMAL_MESSAGE_NUM	entrance_guard.h	58;"	d
 MAX_RECV_SIZE	entrance_guard.h	22;"	d
-MG_CS160	cradle_head_control.h	48;"	d
-NEOCOM	cradle_head_control.h	50;"	d
+MG_CS160	cradle_head_control.h	47;"	d
+NEOCOM	cradle_head_control.h	49;"	d
 NET_HANDSHAKE_DELAY_TIME	net.h	22;"	d
 NET_RECV_BUFFER_SIZE	net.h	24;"	d
 NO	global.h	5;"	d
@@ -150,52 +198,55 @@ NORMAL_AND_EMERGENCY_ALARM	ck2316_alarm.c	/^    NORMAL_AND_EMERGENCY_ALARM = 3,$
 NO_ALARM	ck2316_alarm.c	/^    NO_ALARM = 0,$/;"	e	enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	file:
 OPEN_DOOR	entrance_guard.h	6;"	d
 OPEN_DOOR_SEND_SIZE	entrance_guard.h	13;"	d
-OTHER_CHOICE	serial_common.h	/^	OTHER_CHOICE$/;"	e	enum:__anon5
+OTHER_CHOICE	serial_common.h	/^	OTHER_CHOICE$/;"	e	enum:__anon6
+OUTPUT	alarm_input_output.c	48;"	d	file:
 OpenDev	serial_common.c	/^int OpenDev(char *Dev)$/;"	f
-PATH_HOME	main.c	32;"	d	file:
+PATH_HOME	main.c	33;"	d	file:
 PELCO_D_Table	cradle_head_control.c	/^unsigned char PELCO_D_Table[20][7]={$/;"	v
 PELCO_D_UART_MAX_SNED_SIZE	cradle_head_control.c	23;"	d	file:
 PELCO_P_Table	cradle_head_control.c	/^unsigned char PELCO_P_Table[20][8]={$/;"	v
 PELCO_P_UART_MAX_SNED_SIZE	cradle_head_control.c	22;"	d	file:
-PIH	cradle_head_control.h	47;"	d
-PTZ_APERTURE_BIG	cradle_head_control.h	12;"	d
-PTZ_APERTURE_SMALL	cradle_head_control.h	13;"	d
-PTZ_AUTO_APERTURE	cradle_head_control.h	20;"	d
-PTZ_AUTO_FOCUS	cradle_head_control.h	19;"	d
-PTZ_AUTO_ZOOM	cradle_head_control.h	18;"	d
-PTZ_CLE_PTZBIT	cradle_head_control.h	22;"	d
-PTZ_DOWN	cradle_head_control.h	9;"	d
-PTZ_FOCUS_IN	cradle_head_control.h	14;"	d
-PTZ_FOCUS_OUT	cradle_head_control.h	15;"	d
-PTZ_LEFT	cradle_head_control.h	10;"	d
-PTZ_RIGHT	cradle_head_control.h	11;"	d
-PTZ_SET_PTZBIT	cradle_head_control.h	21;"	d
-PTZ_STOP_ALL	cradle_head_control.h	23;"	d
-PTZ_UP	cradle_head_control.h	8;"	d
-PTZ_ZOOM_IN	cradle_head_control.h	16;"	d
-PTZ_ZOOM_OUT	cradle_head_control.h	17;"	d
-Palco_D	cradle_head_control.h	30;"	d
-Palco_P	cradle_head_control.h	31;"	d
-Philips	cradle_head_control.h	33;"	d
-READ_PORT	serial_common.h	/^	READ_PORT,$/;"	e	enum:__anon5
+PIH	cradle_head_control.h	46;"	d
+PTZ_APERTURE_BIG	cradle_head_control.h	11;"	d
+PTZ_APERTURE_SMALL	cradle_head_control.h	12;"	d
+PTZ_AUTO_APERTURE	cradle_head_control.h	19;"	d
+PTZ_AUTO_FOCUS	cradle_head_control.h	18;"	d
+PTZ_AUTO_ZOOM	cradle_head_control.h	17;"	d
+PTZ_CLE_PTZBIT	cradle_head_control.h	21;"	d
+PTZ_DOWN	cradle_head_control.h	8;"	d
+PTZ_FOCUS_IN	cradle_head_control.h	13;"	d
+PTZ_FOCUS_OUT	cradle_head_control.h	14;"	d
+PTZ_LEFT	cradle_head_control.h	9;"	d
+PTZ_RIGHT	cradle_head_control.h	10;"	d
+PTZ_SET_PTZBIT	cradle_head_control.h	20;"	d
+PTZ_STOP_ALL	cradle_head_control.h	22;"	d
+PTZ_UP	cradle_head_control.h	7;"	d
+PTZ_ZOOM_IN	cradle_head_control.h	15;"	d
+PTZ_ZOOM_OUT	cradle_head_control.h	16;"	d
+Palco_D	cradle_head_control.h	29;"	d
+Palco_P	cradle_head_control.h	30;"	d
+Philips	cradle_head_control.h	32;"	d
+READ_PORT	serial_common.h	/^	READ_PORT,$/;"	e	enum:__anon6
 RECV_TIMEOUT	uart.h	13;"	d
-RV800	cradle_head_control.h	35;"	d
+RV800	cradle_head_control.h	34;"	d
 ReadComPort	serial_common.c	/^int ReadComPort(int fd, void *data, int datalength)$/;"	f
 RecvDataFromCom	uart.c	/^int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime, unsigned int recv_over_time)$/;"	f
-S1601	cradle_head_control.h	36;"	d
-SAMSUNG	cradle_head_control.h	46;"	d
+S1601	cradle_head_control.h	35;"	d
+SAMSUNG	cradle_head_control.h	45;"	d
 SEARCH_ENTRANCE_GUARD_RECV_SIZE	entrance_guard.h	23;"	d
-SELECT_PORT_ERR	serial_common.h	/^   SELECT_PORT_ERR = -2,$/;"	e	enum:__anon6
-SELECT_PORT_SUCCESS	serial_common.h	/^   SELECT_PORT_SUCCESS=0,$/;"	e	enum:__anon6
-SELECT_PORT_TIMEOUT	serial_common.h	/^   SELECT_PORT_TIMEOUT = -1,$/;"	e	enum:__anon6
+SELECT_PORT_ERR	serial_common.h	/^   SELECT_PORT_ERR = -2,$/;"	e	enum:__anon7
+SELECT_PORT_SUCCESS	serial_common.h	/^   SELECT_PORT_SUCCESS=0,$/;"	e	enum:__anon7
+SELECT_PORT_TIMEOUT	serial_common.h	/^   SELECT_PORT_TIMEOUT = -1,$/;"	e	enum:__anon7
 SERVER_ACCEPT_TIMEOUT_MICROSECOND	net.h	17;"	d
 SERVER_ACCEPT_TIMEOUT_SECOND	net.h	16;"	d
 SERVER_PORT_TCP	net.h	14;"	d
 SERVER_RECV_TIMEOUT_MICROSECOND	net.h	20;"	d
 SERVER_RECV_TIMEOUT_SECOND	net.h	19;"	d
+SET_IO_DATA_AS_HIGH	alarm_input_output.c	51;"	d	file:
+SET_IO_DATA_AS_LOW	alarm_input_output.c	50;"	d	file:
 SendDataToCom	uart.c	/^int SendDataToCom(int Device ,unsigned char * DataBuf ,int DataLen)$/;"	f
-TD_500	cradle_head_control.h	38;"	d
-TOTA120	cradle_head_control.h	34;"	d
+TD_500	cradle_head_control.h	37;"	d
+TOTA120	cradle_head_control.h	33;"	d
 U32	serial_common.c	/^typedef unsigned int U32;$/;"	t	file:
 UART_DEVICE_ttyS0	uart.h	5;"	d
 UART_DEVICE_ttyS1	uart.h	6;"	d
@@ -205,21 +256,22 @@ UART_DEVICE_ttyS4	uart.h	9;"	d
 UART_DEVICE_ttyS5	uart.h	10;"	d
 UART_DEVICE_ttyS6	uart.h	11;"	d
 UART_DEVICE_ttyUSB0	uart.h	4;"	d
-V1200	cradle_head_control.h	39;"	d
-VALID_CLOSE_DOOR_CONTACT	entrance_guard.h	52;"	d
-VALID_CLOSE_DOOR_LOCK	entrance_guard.h	49;"	d
-VALID_OPEN_DOOR_CONTACT_1	entrance_guard.h	50;"	d
-VALID_OPEN_DOOR_CONTACT_2	entrance_guard.h	51;"	d
-VALID_OPEN_DOOR_LOCK	entrance_guard.h	48;"	d
-WISDOM	cradle_head_control.h	49;"	d
-WRITE_PORT	serial_common.h	/^	WRITE_PORT,$/;"	e	enum:__anon5
+V1200	cradle_head_control.h	38;"	d
+VALID_CLOSE_DOOR_CONTACT	entrance_guard.h	53;"	d
+VALID_CLOSE_DOOR_LOCK	entrance_guard.h	50;"	d
+VALID_OPEN_DOOR_CONTACT_1	entrance_guard.h	51;"	d
+VALID_OPEN_DOOR_CONTACT_2	entrance_guard.h	52;"	d
+VALID_OPEN_DOOR_LOCK	entrance_guard.h	49;"	d
+WISDOM	cradle_head_control.h	48;"	d
+WRITE_PORT	serial_common.h	/^	WRITE_PORT,$/;"	e	enum:__anon6
 WriteComPort	serial_common.c	/^int WriteComPort(int fd, void *data, int datalength)$/;"	f
-YAAN	cradle_head_control.h	32;"	d
+YAAN	cradle_head_control.h	31;"	d
 YAAN_Table	cradle_head_control.c	/^unsigned char YAAN_Table[20][12]={$/;"	v
 YAAN_UART_MAX_SNED_SIZE	cradle_head_control.c	24;"	d	file:
 YES	global.h	4;"	d
-ZION	cradle_head_control.h	40;"	d
-_CK2316_ALARM_H_H	ck2316_alarm.h	2;"	d
+ZION	cradle_head_control.h	39;"	d
+_ALARM_INPUT_OUTPUT_H	alarm_input_output.h	2;"	d
+_CK2316_ALARM_H	ck2316_alarm.h	2;"	d
 _CRADLE_HEAD_CONTROL_H	cradle_head_control.h	2;"	d
 _ENTRANCE_GUARD_H	entrance_guard.h	2;"	d
 _GLOABL_H	global.h	2;"	d
@@ -229,95 +281,116 @@ _NET_H	net.h	2;"	d
 _SERIAL_COMMON_	serial_common.h	2;"	d
 __UART_H__	uart.h	2;"	d
 alarm_host_reset_code	ck2316_alarm.c	/^unsigned char alarm_host_reset_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0A},{0xFE,0x06,0x06},{0xFE,0x06,0x08},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};$/;"	v
-button_set_door_hold_time	entrance_guard.h	/^    unsigned int button_set_door_hold_time;\/\/开门按钮设置门保持时间$/;"	m	struct:__anon3
+alarm_input_linkage_output_object	alarm_input_output.h	/^    unsigned int alarm_input_linkage_output_object[32]; \/\/每个报警联动输入对象，对应最多32个报警联动输出对象。与报警联动输入对象一一对应，每个int的每一位对应一个报警联动输入对象，一个报警联动输入对象可以对应多个报警联动输出对象。$/;"	m	struct:__anon1
+alarm_input_output_arg	alarm_input_output.h	/^}alarm_input_output_arg;$/;"	t	typeref:struct:__anon1
+alarm_input_output_data	alarm_input_output.c	/^alarm_input_output_arg alarm_input_output_data = {NO, ALARM_INPUT_OUTPUT_NORMAL_OPERATION, MAX_ALARM_LINKAGE_INPUT_OBJECT,  0, MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT, {ALARM_LINKAGE_OUTPUT_OBJECT_1, ALARM_LINKAGE_OUTPUT_OBJECT_2, ALARM_LINKAGE_OUTPUT_OBJECT_3, ALARM_LINKAGE_OUTPUT_OBJECT_4, ALARM_LINKAGE_OUTPUT_OBJECT_5, ALARM_LINKAGE_OUTPUT_OBJECT_6, ALARM_LINKAGE_OUTPUT_OBJECT_7, ALARM_LINKAGE_OUTPUT_OBJECT_8, ALARM_LINKAGE_OUTPUT_OBJECT_1}, 0};$/;"	v
+alarm_input_output_data	alarm_input_output.h	/^alarm_input_output_arg alarm_input_output_data;$/;"	v
+alarm_input_output_default_setup	alarm_input_output.c	/^void alarm_input_output_default_setup(void)$/;"	f
+alarm_input_output_io_table	alarm_input_output.c	/^unsigned int const alarm_input_output_io_table[MAX_ALARM_IO_NUM] = {$/;"	v
+alarm_input_output_setup	alarm_input_output.c	/^int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, FILE *fp_timed_alarm_file, int *timed_alarm_count_array)$/;"	f
+alarm_linkage_input_object	alarm_input_output.h	/^    unsigned int alarm_linkage_input_object;\/\/1-9, 报警联动输入对象$/;"	m	struct:__anon1
+button_set_door_hold_time	entrance_guard.h	/^    unsigned int button_set_door_hold_time;\/\/开门按钮设置门保持时间$/;"	m	struct:__anon4
 bypass_defence_area_code	ck2316_alarm.c	/^unsigned char bypass_defence_area_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0C},{0xFE,0x06,0x00},{0xFE,0x06,0x00},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};$/;"	v
-ck2316_alarm_arg	ck2316_alarm.h	/^}ck2316_alarm_arg;$/;"	t	typeref:struct:__anon1
+cancel_linkage_alarm_channel	alarm_input_output.h	/^    unsigned int cancel_linkage_alarm_channel;$/;"	m	struct:__anon1
+change_alarm_input_output_status	alarm_input_output.c	/^int change_alarm_input_output_status(int alarm_input_output_fd, int input_output_command)$/;"	f
+ck2316_alarm_arg	ck2316_alarm.h	/^}ck2316_alarm_arg;$/;"	t	typeref:struct:__anon2
 ck2316_alarm_data	ck2316_alarm.c	/^ck2316_alarm_arg ck2316_alarm_data = {NO, IS_ABANDONED, NO_ALARM, {0x00, 0x00}, {0x00, 0x00}, {0x00, 0x00}, 0, CK2316_KEYBOARD_ADDRESS, {CK2316_USER_PASSWORD_1, CK2316_USER_PASSWORD_2, CK2316_USER_PASSWORD_3,CK2316_USER_PASSWORD_4}};$/;"	v
 ck2316_alarm_data	ck2316_alarm.h	/^ck2316_alarm_arg ck2316_alarm_data;$/;"	v
 ck2316_alarm_handshake_and_setup	ck2316_alarm.c	/^int ck2316_alarm_handshake_and_setup(int *com_fd)$/;"	f
 ck2316_alarm_init	ck2316_alarm.c	/^int ck2316_alarm_init(void)$/;"	f
-ck2316_defence_area_alarm_memory_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_alarm_memory_value[2]; \/\/CK2316防区报警记忆$/;"	m	struct:__anon1
-ck2316_defence_area_alarm_status	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_alarm_status; \/\/CK2316防区报警状态(0:无报警 1:普通防区报警 2:紧急防区报警 3:普通和紧急防区都有报警)$/;"	m	struct:__anon1
-ck2316_defence_area_bypass_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_bypass_value[2]; \/\/低16位分别表示16个旁路防区号$/;"	m	struct:__anon1
-ck2316_defence_area_real_time_alarm_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_real_time_alarm_value[2];\/\/CK2316实时报警的防区$/;"	m	struct:__anon1
-ck2316_defence_status	ck2316_alarm.h	/^    char ck2316_defence_status;             \/\/CK2316报警主机布撤防的状态(布防，撤防)$/;"	m	struct:__anon1
+ck2316_defence_area_alarm_memory_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_alarm_memory_value[2]; \/\/CK2316防区报警记忆$/;"	m	struct:__anon2
+ck2316_defence_area_alarm_status	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_alarm_status; \/\/CK2316防区报警状态(0:无报警 1:普通防区报警 2:紧急防区报警 3:普通和紧急防区都有报警)$/;"	m	struct:__anon2
+ck2316_defence_area_bypass_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_bypass_value[2]; \/\/低16位分别表示16个旁路防区号$/;"	m	struct:__anon2
+ck2316_defence_area_real_time_alarm_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_real_time_alarm_value[2];\/\/CK2316实时报警的防区$/;"	m	struct:__anon2
+ck2316_defence_status	ck2316_alarm.h	/^    char ck2316_defence_status;             \/\/CK2316报警主机布撤防的状态(布防，撤防)$/;"	m	struct:__anon2
 ck2316_handshake_code	ck2316_alarm.c	/^unsigned char ck2316_handshake_code[] = {CK2316_HANDSHAKE_CODE_1, CK2316_HANDSHAKE_CODE_2, CK2316_HANDSHAKE_CODE_3};$/;"	v
 ck2316_keyboard_address_code	ck2316_alarm.c	/^unsigned char ck2316_keyboard_address_code[] = {CK2316_KEYBOARD_ADDRESS, CK2316_KEYBOARD_ADDRESS_MASK};$/;"	v
 ck2316_keyboard_code	ck2316_alarm.c	/^unsigned char ck2316_keyboard_code[][3] = {{0xFE,0x06,0x00},{0xFE,0x06,0x01},{0xFE,0x06,0x02},{0xFE,0x06,0x03},{0xFE,0x06,0x04},{0xFE,0x06,0x05},{0xFE,0x06,0x06},{0xFE,0x06,0x07},{0xFE,0x06,0x08},{0xFE,0x06,0x09},{0xFE,0x06,0x0A},{0xFE,0x06,0x0B},{0xFE,0x06,0x0C},{0xFE,0x06,0x0D},{0xFE,0x06,0x0E},{0xFE,0x06,0x0F}};$/;"	v
-ck2316_simulate_keyboard_address	ck2316_alarm.h	/^    unsigned int ck2316_simulate_keyboard_address; \/\/模拟控制CK2316报警主机的键盘地址$/;"	m	struct:__anon1
+ck2316_simulate_keyboard_address	ck2316_alarm.h	/^    unsigned int ck2316_simulate_keyboard_address; \/\/模拟控制CK2316报警主机的键盘地址$/;"	m	struct:__anon2
 ck2316_simulate_keyboard_address_setup	ck2316_alarm.c	/^int ck2316_simulate_keyboard_address_setup(unsigned int address)$/;"	f
-ck2316_user_password	ck2316_alarm.h	/^    unsigned int ck2316_user_password[4];$/;"	m	struct:__anon1
+ck2316_user_password	ck2316_alarm.h	/^    unsigned int ck2316_user_password[4];$/;"	m	struct:__anon2
 ck2316_user_password_setup	ck2316_alarm.c	/^int ck2316_user_password_setup(unsigned int user_password[4])$/;"	f
 client_control_door_hold_time_code	entrance_guard.c	/^unsigned char client_control_door_hold_time_code[CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT][27] = {{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x01,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x73,0x94},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x02,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xbc,0x31},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x03,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xf9,0x52},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x04,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x33,0x5a},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x05,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x76,0x39},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x06,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xb9,0x9c},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x07,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xfc,0xff},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x08,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x3d,0xad},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x09,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x78,0xce},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x0a,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xb7,0x6b},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x0f,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xf7,0xa5},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x14,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x25,0xee},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x1e,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xa4,0x72},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x28,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x10,0xc5},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x32,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x87,0xed},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x3c,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x03,0xdc},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x46,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xe3,0x4c},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x50,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x7a,0x93},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x5a,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0xfb,0x0f},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x64,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x44,0xe2},{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0xff,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x23,0x09}};$/;"	v
-client_set_door_hold_time	entrance_guard.h	/^    unsigned int client_set_door_hold_time;\/\/客户端设置门保持时间$/;"	m	struct:__anon3
+client_set_door_hold_time	entrance_guard.h	/^    unsigned int client_set_door_hold_time;\/\/客户端设置门保持时间$/;"	m	struct:__anon4
 client_sock_tcp	main.c	/^int server_sock_tcp, client_sock_tcp;$/;"	v
 close_door_code	entrance_guard.c	/^unsigned char close_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc3,0x7e,0x3a};$/;"	v
 counter_mutex	net.c	/^pthread_mutex_t counter_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v
-cradle_control_data	cradle_head_control.c	/^cradle_head_control_arg cradle_control_data;$/;"	v
-cradle_control_data	cradle_head_control.h	/^cradle_head_control_arg cradle_control_data;$/;"	v
-cradle_head_address	cradle_head_control.h	/^    unsigned char cradle_head_address;      \/\/云台地址(1-255)$/;"	m	struct:__anon2
-cradle_head_control_arg	cradle_head_control.h	/^}cradle_head_control_arg;$/;"	t	typeref:struct:__anon2
+cradle_head_address	cradle_head_control.h	/^    unsigned char cradle_head_address;      \/\/云台地址(1-255)$/;"	m	struct:__anon3
+cradle_head_control_arg	cradle_head_control.h	/^}cradle_head_control_arg;$/;"	t	typeref:struct:__anon3
+cradle_head_control_data	cradle_head_control.c	/^cradle_head_control_arg cradle_head_control_data = {CRADLE_HEAD_CONTROL_NO_VALID_COMMAND,CRADLE_HEAD_DEFAULT_PROTOCOL_TYPE,CRADLE_HEAD_DEFAULT_ADDRESS,CRADLE_HEAD_DEFAULT_MOVE_SPEED,CRADLE_HEAD_DEFAULT_PRESET_POINT};$/;"	v
+cradle_head_control_data	cradle_head_control.h	/^cradle_head_control_arg cradle_head_control_data;$/;"	v
 cradle_head_handshake_and_contorl	cradle_head_control.c	/^int cradle_head_handshake_and_contorl(int *com_fd)$/;"	f
-cradle_head_move_speed	cradle_head_control.h	/^    unsigned char cradle_head_move_speed;   \/\/云台移动速度(1-255)$/;"	m	struct:__anon2
-cradle_head_preset_point	cradle_head_control.h	/^    unsigned char cradle_head_preset_point; \/\/云台预置点(1-32, 33-64)$/;"	m	struct:__anon2
-cradle_head_protocol_type	cradle_head_control.h	/^    unsigned char cradle_head_protocol_type;     \/\/云台协议类型$/;"	m	struct:__anon2
-current_alarm_message_num	entrance_guard.h	/^    unsigned int current_alarm_message_num;  \/\/当前文件中存储的报警消息总数$/;"	m	struct:__anon3
-current_handshake_num	entrance_guard.h	/^    unsigned char current_handshake_num;    \/\/当前握手码的基值$/;"	m	struct:__anon3
-current_normal_message_num	entrance_guard.h	/^    unsigned int current_normal_message_num; \/\/当前文件中存储的普通消息总数$/;"	m	struct:__anon3
+cradle_head_move_speed	cradle_head_control.h	/^    unsigned char cradle_head_move_speed;   \/\/云台移动速度(1-255)$/;"	m	struct:__anon3
+cradle_head_preset_point	cradle_head_control.h	/^    unsigned char cradle_head_preset_point; \/\/云台预置点(1-32, 33-64)$/;"	m	struct:__anon3
+cradle_head_protocol_type	cradle_head_control.h	/^    unsigned char cradle_head_protocol_type;     \/\/云台协议类型$/;"	m	struct:__anon3
+current_alarm_message_num	entrance_guard.h	/^    unsigned int current_alarm_message_num;  \/\/当前文件中存储的报警消息总数$/;"	m	struct:__anon4
+current_handshake_num	entrance_guard.h	/^    unsigned char current_handshake_num;    \/\/当前握手码的基值$/;"	m	struct:__anon4
+current_normal_message_num	entrance_guard.h	/^    unsigned int current_normal_message_num; \/\/当前文件中存储的普通消息总数$/;"	m	struct:__anon4
 door_button_control_door_hold_time_code	entrance_guard.c	/^unsigned char door_button_control_door_hold_time_code[BUTTON_CONTROL_DOOR_HOLD_TIME_COUNT][19] = {{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x7f,0x3b},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0xa7,0xb9},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x1f,0xd8},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x06,0x9c},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0xbe,0xfd},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x66,0x7f},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x07,0x00,0x00,0x00,0x00,0x00,0x00,0xde,0x1e},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x54,0xf7},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x09,0x00,0x00,0x00,0x00,0x00,0x00,0xec,0x96},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x0a,0x00,0x00,0x00,0x00,0x00,0x00,0x34,0x14},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x0f,0x00,0x00,0x00,0x00,0x00,0x00,0x4d,0xb3},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x14,0x00,0x00,0x00,0x00,0x00,0x00,0x31,0xe7},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x1e,0x00,0x00,0x00,0x00,0x00,0x00,0xc2,0xa9},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x28,0x00,0x00,0x00,0x00,0x00,0x00,0x3a,0x01},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x32,0x00,0x00,0x00,0x00,0x00,0x00,0xfe,0x34},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x64,0x00,0x00,0x00,0x00,0x00,0x00,0xb5,0x86},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0xff,0x00,0x00,0x00,0x00,0x00,0x00,0x62,0x2b}};$/;"	v
 door_button_default_setup_code_1	entrance_guard.c	/^unsigned char door_button_default_setup_code_1[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x01,0x08,0x80,0x00,0x42,0x00,0xb0,0x00,0x00,0x00,0xbd,0x74};$/;"	v
 door_button_default_setup_code_2	entrance_guard.c	/^unsigned char door_button_default_setup_code_2[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x01,0x08,0x88,0x00,0x42,0x00,0xb0,0x00,0x00,0x00,0xa3,0xae};$/;"	v
 door_contact_default_close_setup_code	entrance_guard.c	/^unsigned char door_contact_default_close_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x00,0x08,0xc9,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x6d,0x69};$/;"	v
 door_contact_default_open_setup_code	entrance_guard.c	/^unsigned char door_contact_default_open_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x00,0x08,0x89,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x9b,0xb9};$/;"	v
-door_contact_detection_mode_setup	entrance_guard.h	/^    unsigned int door_contact_detection_mode_setup;      \/\/门磁检测方式设置(短路(默认), 开路)$/;"	m	struct:__anon3
+door_contact_detection_mode_setup	entrance_guard.h	/^    unsigned int door_contact_detection_mode_setup;      \/\/门磁检测方式设置(短路(默认), 开路)$/;"	m	struct:__anon4
 door_lock_default_close_setup_code	entrance_guard.c	/^unsigned char door_lock_default_close_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0xca,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x2d};$/;"	v
 door_lock_default_open_setup_code	entrance_guard.c	/^unsigned char door_lock_default_open_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0xbe,0xfd};$/;"	v
-door_lock_relay_status_setup	entrance_guard.h	/^    unsigned int door_lock_relay_status_setup;   \/\/门锁继电器状态设置(常开(默认)，常闭)$/;"	m	struct:__anon3
-door_status	entrance_guard.h	/^    unsigned int door_status;              \/\/门的状态(开门，关门)$/;"	m	struct:__anon3
+door_lock_relay_status_setup	entrance_guard.h	/^    unsigned int door_lock_relay_status_setup;   \/\/门锁继电器状态设置(常开(默认)，常闭)$/;"	m	struct:__anon4
+door_status	entrance_guard.h	/^    unsigned int door_status;              \/\/门的状态(开门，关门)$/;"	m	struct:__anon4
 eliminate_alarm_memory_code	ck2316_alarm.c	/^unsigned char eliminate_alarm_memory_code[][3] = {{0xFE,0x06,0x0A},{0xFE,0x06,0x01},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};$/;"	v
-entrance_guard_arg	entrance_guard.h	/^}entrance_guard_arg;$/;"	t	typeref:struct:__anon3
-entrance_guard_data	entrance_guard.c	/^entrance_guard_arg entrance_guard_data = {NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 0, 5, 5, NO, NO, 0, 0};$/;"	v
+enable_and_disable_alarm_out	alarm_input_output.c	/^int enable_and_disable_alarm_out(int alarm_out_fd, int alarm_output_io_pin, int enable_disable_command)$/;"	f
+entrance_guard_arg	entrance_guard.h	/^}entrance_guard_arg;$/;"	t	typeref:struct:__anon4
+entrance_guard_data	entrance_guard.c	/^entrance_guard_arg entrance_guard_data = {NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 5, 5, 0, NO, NO, NO, 0, 0};$/;"	v
 entrance_guard_handshake_and_setup	entrance_guard.c	/^int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file, FILE *fp_alarm_message_file, FILE *fp_message_count_file, FILE *fp_config_file)$/;"	f
 entrance_guard_mutex	entrance_guard.c	/^pthread_mutex_t entrance_guard_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v
 find_dst_string_in_str	serial_common.c	/^int find_dst_string_in_str(unsigned char *p_src, int len, unsigned char *p_dst, int cmp_len)$/;"	f
 find_dword_in_str	serial_common.c	/^int find_dword_in_str(unsigned char *p_src, int len, unsigned int dst_num)$/;"	f
 flag	main.c	/^int flag = 0;$/;"	v
+fp_alarm_input_output_config_file	alarm_input_output.c	/^FILE *fp_alarm_input_output_config_file = NULL;$/;"	v
 fp_ck2316_config_file	ck2316_alarm.c	/^FILE *fp_ck2316_config_file = NULL;$/;"	v
+get_alarm_input_data	alarm_input_output.c	/^int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_io_status, int *timed_alarm_count_array, int *temp_timed_alarm_count_array)$/;"	f
+get_alarm_input_value	alarm_input_output.c	/^int get_alarm_input_value(int alarm_input_fd, int alarm_input_io_pin)$/;"	f
 get_local_ip	net.c	/^int get_local_ip(char *out_ip, char *out_mac)$/;"	f
 handshake_base_code	entrance_guard.c	/^unsigned char handshake_base_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x11,0x01,0x00,0x00,0x00};$/;"	v
 handshake_variable_code	entrance_guard.c	/^signed char handshake_variable_code[][2] = {{0x14,0xaa},{0x04,0x8b},{0x34,0xe8},{0x24,0xc9},{0x54,0x2e},{0x44,0x0f},{0x74,0x6c},{0x64,0x4d},{0x95,0xa2},{0x85,0x83},{0xb5,0xe0},{0xa5,0xc1},{0xd5,0x26},{0xc5,0x07},{0xf5,0x64},{0xe5,0x45},{0x06,0x9b},{0x16,0xba},{0x26,0xd9},{0x36,0xf8},{0x46,0x1f},{0x56,0x3e},{0x66,0x5d},{0x76,0x7c},{0x87,0x93},{0x97,0xb2},{0xa7,0xd1},{0xb7,0xf0},{0xc7,0x17},{0xd7,0x36},{0xe7,0x55},{0xf7,0x74},{0x30,0xc8},{0x20,0xe9},{0x10,0x8a},{0x00,0xab},{0x70,0x4c},{0x60,0x6d},{0x50,0x0e},{0x40,0x2f},{0xb1,0xc0},{0xa1,0xe1},{0x91,0x82},{0x81,0xa3},{0xf1,0x44},{0xe1,0x65},{0xd1,0x06},{0xc1,0x27},{0x22,0xf9},{0x32,0xd8},{0x02,0xbb},{0x12,0x9a},{0x62,0x7d},{0x72,0x5c},{0x42,0x3f},{0x52,0x1e},{0xa3,0xf1},{0xb3,0xd0},{0x83,0xb3},{0x93,0x92},{0xe3,0x75},{0xf3,0x54},{0xc3,0x37},{0xd3,0x16},{0x5c,0x6e},{0x4c,0x4f},{0x7c,0x2c},{0x6c,0x0d},{0x1c,0xea},{0x0c,0xcb},{0x3c,0xa8},{0x2c,0x89},{0xdd,0x66},{0xcd,0x47},{0xfd,0x24},{0xed,0x05},{0x9d,0xe2},{0x8d,0xc3},{0xbd,0xa0},{0xad,0x81},{0x4e,0x5f},{0x5e,0x7e},{0x6e,0x1d},{0x7e,0x3c},{0x0e,0xdb},{0x1e,0xfa},{0x2e,0x99},{0x3e,0xb8},{0xcf,0x57},{0xdf,0x76},{0xef,0x15},{0xff,0x34},{0x8f,0xd3},{0x9f,0xf2},{0xaf,0x91},{0xbf,0xb0},{0x78,0x0c},{0x68,0x2d},{0x58,0x4e},{0x48,0x6f},{0x38,0x88},{0x28,0xa9},{0x18,0xca},{0x08,0xeb},{0xf9,0x04},{0xe9,0x25},{0xd9,0x46},{0xc9,0x67},{0xb9,0x80},{0xa9,0xa1},{0x99,0xc2},{0x89,0xe3},{0x6a,0x3d},{0x7a,0x1c},{0x4a,0x7f},{0x5a,0x5e},{0x2a,0xb9},{0x3a,0x98},{0x0a,0xfb},{0x1a,0xda},{0xeb,0x35},{0xfb,0x14},{0xcb,0x77},{0xdb,0x56},{0xab,0xb1},{0xbb,0x90},{0x8b,0xf3},{0x9b,0xd2},{0x85,0x22},{0x95,0x03},{0xa5,0x60},{0xb5,0x41},{0xc5,0xa6},{0xd5,0x87},{0xe5,0xe4},{0xf5,0xc5},{0x04,0x2a},{0x14,0x0b},{0x24,0x68},{0x34,0x49},{0x44,0xae},{0x54,0x8f},{0x64,0xec},{0x74,0xcd},{0x97,0x13},{0x87,0x32},{0xb7,0x51},{0xa7,0x70},{0xd7,0x97},{0xc7,0xb6},{0xf7,0xd5},{0xe7,0xf4},{0x16,0x1b},{0x06,0x3a},{0x36,0x59},{0x26,0x78},{0x56,0x9f},{0x46,0xbe},{0x76,0xdd},{0x66,0xfc},{0xa1,0x40},{0xb1,0x61},{0x81,0x02},{0x91,0x23},{0xe1,0xc4},{0xf1,0xe5},{0xc1,0x86},{0xd1,0xa7},{0x20,0x48},{0x30,0x69},{0x00,0x0a},{0x10,0x2b},{0x60,0xcc},{0x70,0xed},{0x40,0x8e},{0x50,0xaf},{0xb3,0x71},{0xa3,0x50},{0x93,0x33},{0x83,0x12},{0xf3,0xf5},{0xe3,0xd4},{0xd3,0xb7},{0xc3,0x96},{0x32,0x79},{0x22,0x58},{0x12,0x3b},{0x02,0x1a},{0x72,0xfd},{0x62,0xdc},{0x52,0xbf},{0x42,0x9e},{0xcd,0xe6},{0xdd,0xc7},{0xed,0xa4},{0xfd,0x85},{0x8d,0x62},{0x9d,0x43},{0xad,0x20},{0xbd,0x01},{0x4c,0xee},{0x5c,0xcf},{0x6c,0xac},{0x7c,0x8d},{0x0c,0x6a},{0x1c,0x4b},{0x2c,0x28},{0x3c,0x09},{0xdf,0xd7},{0xcf,0xf6},{0xff,0x95},{0xef,0xb4},{0x9f,0x53},{0x8f,0x72},{0xbf,0x11},{0xaf,0x30},{0x5e,0xdf},{0x4e,0xfe},{0x7e,0x9d},{0x6e,0xbc},{0x1e,0x5b},{0x0e,0x7a},{0x3e,0x19},{0x2e,0x38},{0xe9,0x84},{0xf9,0xa5},{0xc9,0xc6},{0xd9,0xe7},{0xa9,0x00},{0xb9,0x21},{0x89,0x42},{0x99,0x63},{0x68,0x8c},{0x78,0xad},{0x48,0xce},{0x58,0xef},{0x28,0x08},{0x38,0x29},{0x08,0x4a},{0x18,0x6b},{0xfb,0xb5},{0xeb,0x94},{0xdb,0xf7},{0xcb,0xd6},{0xbb,0x31},{0xab,0x10},{0x9b,0x73},{0x8b,0x52},{0x7a,0xbd},{0x6a,0x9c},{0x5a,0xff},{0x4a,0xde},{0x3a,0x39},{0x2a,0x18},{0x1a,0x7b},{0x0a,0x5a}};$/;"	v
-if_ck2316_alive	ck2316_alarm.h	/^    char if_ck2316_alive;                   \/\/当前CK2316报警主机是否在线$/;"	m	struct:__anon1
+if_alarm_input_output_device_is_ready	alarm_input_output.h	/^    unsigned int if_alarm_input_output_device_is_ready; \/\/报警输入输出设备是否准备好$/;"	m	struct:__anon1
+if_ck2316_alive	ck2316_alarm.h	/^    char if_ck2316_alive;                   \/\/当前CK2316报警主机是否在线$/;"	m	struct:__anon2
 if_disconnect_client	net.c	/^int if_disconnect_client = NO;$/;"	v
-if_entrance_guard_alive	entrance_guard.h	/^    char if_entrance_guard_alive;                 \/\/当前门禁是否在线$/;"	m	struct:__anon3
-if_has_delete_offline_alarm	entrance_guard.h	/^    unsigned char if_has_delete_offline_alarm;\/\/判断是否删除门禁离线后发生的报警$/;"	m	struct:__anon3
+if_entrance_guard_alive	entrance_guard.h	/^    char if_entrance_guard_alive;                 \/\/当前门禁是否在线$/;"	m	struct:__anon4
+if_has_delete_offline_alarm	entrance_guard.h	/^    unsigned char if_has_delete_offline_alarm;\/\/判断是否删除门禁离线后发生的报警$/;"	m	struct:__anon4
+if_has_entrance_guard_alarm	entrance_guard.h	/^    unsigned char if_has_entrance_guard_alarm; \/\/判断是否有门禁报警(非法开门)$/;"	m	struct:__anon4
 if_have_net_client_connect	main.c	/^int if_have_net_client_connect = NO;$/;"	v
-if_set_door_hold_time_is_valid	entrance_guard.h	/^    unsigned char if_set_door_hold_time_is_valid;\/\/设置门保持时间是否合法$/;"	m	struct:__anon3
+if_set_door_hold_time_is_valid	entrance_guard.h	/^    unsigned char if_set_door_hold_time_is_valid;\/\/设置门保持时间是否合法$/;"	m	struct:__anon4
 ip	net.c	/^char ip[36] = {0};$/;"	v
 mac	net.c	/^char mac[36] = {0};$/;"	v
 main	main.c	/^int main(int argc, char *argv[])$/;"	f
-matrix_control_arg	matrix_control.h	/^}matrix_control_arg;$/;"	t	typeref:struct:__anon4
+matrix_control_arg	matrix_control.h	/^}matrix_control_arg;$/;"	t	typeref:struct:__anon5
 matrix_control_data	matrix_control.h	/^matrix_control_arg matrix_control_data;$/;"	v
-matrix_current_switchover_in_value	matrix_control.h	/^    unsigned char matrix_current_switchover_in_value;  \/\/存储矩阵视频输入通道号$/;"	m	struct:__anon4
-matrix_current_switchover_out_value	matrix_control.h	/^    unsigned char matrix_current_switchover_out_value; \/\/存储矩阵视频输出通道号$/;"	m	struct:__anon4
+matrix_current_switchover_in_value	matrix_control.h	/^    unsigned char matrix_current_switchover_in_value;  \/\/存储矩阵视频输入通道号$/;"	m	struct:__anon5
+matrix_current_switchover_out_value	matrix_control.h	/^    unsigned char matrix_current_switchover_out_value; \/\/存储矩阵视频输出通道号$/;"	m	struct:__anon5
 matrix_handshake_and_setup	matrix_control.c	/^int matrix_handshake_and_setup(int *com_fd)$/;"	f
 matrix_switchover_handshake_code	matrix_control.c	/^unsigned char matrix_switchover_handshake_code[] = {0xBB, 0x00};$/;"	v
+max_alarm_input_linkage_output_object	alarm_input_output.h	/^    unsigned int max_alarm_input_linkage_output_object; \/\/default is 8$/;"	m	struct:__anon1
+max_alarm_linkage_input_object	alarm_input_output.h	/^    unsigned int max_alarm_linkage_input_object;  \/\/default is 9$/;"	m	struct:__anon1
 net_recv_buffer	net.c	/^char net_recv_buffer[NET_RECV_BUFFER_SIZE + 1] = {0};$/;"	v
-net_recv_verify_code	main.c	/^unsigned char net_recv_verify_code[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55};$/;"	v
+net_recv_verify_code	main.c	/^unsigned char net_recv_verify_code[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA};$/;"	v
+open_alarm_input_output_device	alarm_input_output.c	/^int open_alarm_input_output_device(int *alarm_input_output_fd)$/;"	f
 open_door_code	entrance_guard.c	/^unsigned char open_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc2,0x6e,0x1b};$/;"	v
 print_string	entrance_guard.c	/^void print_string(char *string, unsigned char *buffer, unsigned int len)$/;"	f
+printf_debug	alarm_input_output.c	19;"	d	file:
+printf_debug	alarm_input_output.c	21;"	d	file:
+printf_debug	ck2316_alarm.c	11;"	d	file:
 printf_debug	ck2316_alarm.c	13;"	d	file:
-printf_debug	ck2316_alarm.c	15;"	d	file:
-printf_debug	cradle_head_control.c	11;"	d	file:
-printf_debug	cradle_head_control.c	13;"	d	file:
+printf_debug	cradle_head_control.c	12;"	d	file:
+printf_debug	cradle_head_control.c	14;"	d	file:
 printf_debug	entrance_guard.c	13;"	d	file:
 printf_debug	entrance_guard.c	15;"	d	file:
-printf_debug	main.c	27;"	d	file:
-printf_debug	main.c	29;"	d	file:
-printf_debug	matrix_control.c	10;"	d	file:
-printf_debug	matrix_control.c	12;"	d	file:
+printf_debug	main.c	28;"	d	file:
+printf_debug	main.c	30;"	d	file:
+printf_debug	matrix_control.c	11;"	d	file:
+printf_debug	matrix_control.c	13;"	d	file:
 printf_debug	net.c	11;"	d	file:
 printf_debug	net.c	13;"	d	file:
-protocol_type	cradle_head_control.c	/^unsigned char protocol_type = Palco_P;$/;"	v
+pthread_alarm_input_output	alarm_input_output.c	/^void *pthread_alarm_input_output(void *arg)$/;"	f
 pthread_ck2316_alarm	ck2316_alarm.c	/^void *pthread_ck2316_alarm(void *arg)$/;"	f
 pthread_cradle_head_control	cradle_head_control.c	/^void *pthread_cradle_head_control(void *arg)$/;"	f
 pthread_entrance_guard	entrance_guard.c	/^void *pthread_entrance_guard(void *arg)$/;"	f
@@ -325,8 +398,10 @@ pthread_get_local_ip	main.c	/^void *pthread_get_local_ip(void *arg)$/;"	f
 pthread_handshake	net.c	/^void *pthread_handshake(void *arg)$/;"	f
 pthread_matrix_control	matrix_control.c	/^void *pthread_matrix_control(void *arg)$/;"	f
 pthread_temp_test	main.c	/^void *pthread_temp_test(void *arg)$/;"	f
+pthread_timed_alarm	alarm_input_output.c	/^void *pthread_timed_alarm(void *arg)$/;"	f
 read_uart_data	uart.c	/^int read_uart_data(int fd, unsigned char *data_buf, int len) $/;"	f
 read_uart_data	uart.c	/^int read_uart_data(int fd, unsigned char *data_buf, int len, unsigned int recv_timeout) $/;"	f
+real_time_alarm_output_objcet	alarm_input_output.h	/^    unsigned int real_time_alarm_output_objcet;  \/\/正在报警的输出联动对象，每一位对应一路输出，1为正在报警，0无报警$/;"	m	struct:__anon1
 return_alarm_upload_code	entrance_guard.c	/^unsigned char return_alarm_upload_code[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11};$/;"	v
 return_alarm_upload_code_1	entrance_guard.c	/^unsigned char return_alarm_upload_code_1[] = {0xfa,0xfa,0xfa,0x2a,0x7d,0x00,0x11};$/;"	v
 return_close_door_alarm_upload_code	entrance_guard.c	/^unsigned char return_close_door_alarm_upload_code[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11,0x00,0x00,0x03,0x00,0x0d,0x10,0x00,0x00,0x00,0x00,0x0c};$/;"	v
@@ -347,10 +422,12 @@ send_handshake_packet	ck2316_alarm.c	/^int send_handshake_packet(int *com_fd)$/;
 serial_probe	serial_common.c	/^int serial_probe(int fd, int type, struct timeval time_out)$/;"	f
 server_sock_tcp	main.c	/^int server_sock_tcp, client_sock_tcp;$/;"	v
 set_opt	serial_common.c	/^int set_opt(int fd,int nSpeed,int nBits,int nEvent,int nStop)$/;"	f
-setup_command_set	ck2316_alarm.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon1
-setup_command_set	cradle_head_control.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon2
-setup_command_set	entrance_guard.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon3
-setup_command_set	matrix_control.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon4
+setup_command_set	alarm_input_output.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低8位，每一位表示一个命令) $/;"	m	struct:__anon1
+setup_command_set	ck2316_alarm.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon2
+setup_command_set	cradle_head_control.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon3
+setup_command_set	entrance_guard.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon4
+setup_command_set	matrix_control.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon5
+start_alarm_output	alarm_input_output.c	/^int start_alarm_output(int *alarm_input_output_fd)$/;"	f
 system_abandon_code	ck2316_alarm.c	/^unsigned char system_abandon_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};$/;"	v
 system_defence_code	ck2316_alarm.c	/^unsigned char system_defence_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x02},{0xFE,0x04,0x06},{0xFE,0x04,0x03}};$/;"	v
 tcp_server_recv	net.c	/^int tcp_server_recv(int *server_sock_tcp, int *client_sock_tcp)$/;"	f

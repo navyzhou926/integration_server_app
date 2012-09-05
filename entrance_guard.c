@@ -17,7 +17,7 @@
 
 pthread_mutex_t entrance_guard_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-entrance_guard_arg entrance_guard_data = {NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 0, 5, 5, NO, NO, 0, 0};
+entrance_guard_arg entrance_guard_data = {NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 5, 5, 0, NO, NO, NO, 0, 0};
 
 //host code
 unsigned char search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x02,0xcc,0x57};
@@ -520,6 +520,7 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                                 //case 0x91:  //非法打开门磁(非法开门)
                                 case INVALID_OPEN_DOOR_CONTACT_1:
                                 case INVALID_OPEN_DOOR_CONTACT_2:
+                                    entrance_guard_data.if_has_entrance_guard_alarm = YES;
                                     fprintf(fp_alarm_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 5);
                                     fflush(fp_alarm_message_file);
                                     fprintf(fp_message_count_file, "%03d %03d\n",entrance_guard_data.current_normal_message_num, ++entrance_guard_data.current_alarm_message_num);
