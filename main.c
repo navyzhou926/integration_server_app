@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 0
+    #if 1
     //创建与报警器通信的线程
     if (pthread_create(&tid_ck2316_alarm, NULL, pthread_ck2316_alarm, NULL) != 0) 
     {
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 1
+    #if 0
     //创建与云台通信的线程
     if (pthread_create(&tid_cradle_head_control, NULL, pthread_cradle_head_control, NULL) != 0) 
     {
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 1
+    #if 0
     //创建与报警输入输出通信的线程
     if (pthread_create(&tid_alarm_input_output, NULL, pthread_alarm_input_output, NULL) != 0) 
     {
@@ -301,19 +301,15 @@ start:
                             printf_debug("FUNC[%s] LINE[%d]\tChannel %d: 0x%X\n",__FUNCTION__, __LINE__, alarm_input_output_data.alarm_linkage_input_object, alarm_input_output_data.alarm_input_linkage_output_object[alarm_input_output_data.alarm_linkage_input_object-1]);
                         }
                         break;
-                    case 0x03: //取消报警输出
-                            if (net_recv_buffer[11] < 0 || net_recv_buffer[11] > MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT) 
-                            {
-                                //网络发送 无效参数
-                                printf_debug("FUNC[%s] LINE[%d]\tInvalid arg cancel_linkage_alarm_channel, it should be 0 to 8\n",__FUNCTION__, __LINE__);
-                            }
-                            else
-                            {
-                                alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_CANCEL_LINKAGE_ALARM;
-                                alarm_input_output_data.cancel_linkage_alarm_channel = net_recv_buffer[11];
-                            }
+                    case 0x03: //设置报警输出
+                            alarm_input_output_data.set_and_cancel_linkage_alarm_channel = net_recv_buffer[13];
+                            alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_SET_AND_CANCEL_LINKAGE_ALARM;
                         break;
-                    case 0x04: //恢复默认参数
+                    case 0x04: //获取报警输出
+                            //网络发送 报警输出 
+                            printf_debug("FUNC[%s] LINE[%d]\tAlarm output status: 0x%X\n",__FUNCTION__, __LINE__, alarm_input_output_data.real_time_alarm_output_objcet);
+                        break;
+                    case 0x05: //恢复默认参数
                         if (alarm_input_output_data.real_time_alarm_output_objcet) 
                         {
                             //网络发送请取消所有报警输出，然后再设置报警联动对应关系
@@ -324,7 +320,7 @@ start:
                             alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_RESTORE_TO_DEFAULT;
                         }
                         break;
-                    case 0x05: //设置报警输出持续时间
+                    case 0x06: //设置报警输出持续时间
                         if (alarm_input_output_data.real_time_alarm_output_objcet) 
                         {
                             //网络发送请取消所有报警输出，然后再设置报警联动对应关系
@@ -332,10 +328,11 @@ start:
                         }
                         else
                         {
-                                if (net_recv_buffer[11] < 0 || net_recv_buffer[11] > MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT) 
+                                //if (net_recv_buffer[11] < 0 || net_recv_buffer[11] > MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT) 
+                                if (net_recv_buffer[11] > MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT) 
                                 {
                                     //网络发送 无效参数
-                                    printf_debug("FUNC[%s] LINE[%d]\tInvalid arg alarm_linkage_output_object, it should be 1 to 8\n",__FUNCTION__, __LINE__);
+                                    printf_debug("FUNC[%s] LINE[%d]\tInvalid arg alarm_linkage_output_object, it should be 0 to 8\n",__FUNCTION__, __LINE__);
                                 
                                 }
                                 else
@@ -348,6 +345,19 @@ start:
                                     }
                                     alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_SET_ALARM_DURATION;
                                 }
+                        }
+                        break;
+                    case 0x07: //获取报警输出持续时间
+                        if (net_recv_buffer[11] < 1 || net_recv_buffer[11] > MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT) 
+                        {
+                            //网络发送 无效参数
+                            printf_debug("FUNC[%s] LINE[%d]\tInvalid arg alarm_linkage_output_object, it should be 1 to 8\n",__FUNCTION__, __LINE__);
+                        
+                        }
+                        else
+                        {
+                            alarm_input_output_data.alarm_linkage_output_object = net_recv_buffer[11];
+                            alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_GET_ALARM_DURATION;
                         }
                         break;
                     default :
@@ -528,7 +538,8 @@ start:
                         ck2316_alarm_data.setup_command_set = CK2316_ALARM_HOST_RESET;
                         break;
                     case 0x06: //设置模拟键盘地址
-                        if (net_recv_buffer[23] >= 0x00 && net_recv_buffer[23] <= 0x0F) 
+                        //if (net_recv_buffer[23] >= 0x00 && net_recv_buffer[23] <= 0x0F) 
+                        if (net_recv_buffer[23] <= 0x0F) 
                         {
                             ck2316_alarm_data.ck2316_simulate_keyboard_address = net_recv_buffer[23];
                             ck2316_simulate_keyboard_address_setup(ck2316_alarm_data.ck2316_simulate_keyboard_address);
@@ -543,7 +554,8 @@ start:
                         }
                         break;
                     case 0x07: //设置模拟键盘用户密码
-                        if (net_recv_buffer[24] >= 0x00 && net_recv_buffer[24] <= 0x0F && net_recv_buffer[25] >= 0x00 && net_recv_buffer[25] <= 0x0F && net_recv_buffer[26] >= 0x00 && net_recv_buffer[26] <= 0x0F && net_recv_buffer[27] >= 0x00 && net_recv_buffer[27] <= 0x0F) 
+                        //if (net_recv_buffer[24] >= 0x00 && net_recv_buffer[24] <= 0x0F && net_recv_buffer[25] >= 0x00 && net_recv_buffer[25] <= 0x0F && net_recv_buffer[26] >= 0x00 && net_recv_buffer[26] <= 0x0F && net_recv_buffer[27] >= 0x00 && net_recv_buffer[27] <= 0x0F) 
+                        if (net_recv_buffer[24] <= 0x0F && net_recv_buffer[25] <= 0x0F && net_recv_buffer[26] <= 0x0F && net_recv_buffer[27] <= 0x0F) 
                         {
                             ck2316_alarm_data.ck2316_user_password[0] = net_recv_buffer[24];
                             ck2316_alarm_data.ck2316_user_password[1] = net_recv_buffer[25];

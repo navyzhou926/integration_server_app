@@ -17,7 +17,7 @@
 
 pthread_mutex_t entrance_guard_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-entrance_guard_arg entrance_guard_data = {NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 5, 5, 0, NO, NO, NO, 0, 0};
+entrance_guard_arg entrance_guard_data = {0, NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 5, 5, 0, NO, NO, NO, 0, 0};
 
 //host code
 unsigned char search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x02,0xcc,0x57};

@@ -50,6 +50,7 @@
 
 typedef struct 
 {
+    int current_fd;
     unsigned int setup_command_set;         //存储设置命令(低16位，每一位表示一个命令) 
     unsigned char cradle_head_protocol_type;     //云台协议类型
     unsigned char cradle_head_address;      //云台地址(1-255)

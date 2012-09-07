@@ -61,6 +61,7 @@
 
 typedef struct 
 {
+    int current_fd;
     char if_entrance_guard_alive;                 //当前门禁是否在线
     unsigned int door_lock_relay_status_setup;   //门锁继电器状态设置(常开(默认)，常闭)
     unsigned int door_contact_detection_mode_setup;      //门磁检测方式设置(短路(默认), 开路)

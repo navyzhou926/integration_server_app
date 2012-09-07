@@ -30,6 +30,7 @@
 
 typedef struct 
 {
+    int current_fd;
     char if_ck2316_alive;                   //当前CK2316报警主机是否在线
     char ck2316_defence_status;             //CK2316报警主机布撤防的状态(布防，撤防)
     unsigned char ck2316_defence_area_alarm_status; //CK2316防区报警状态(0:无报警 1:普通防区报警 2:紧急防区报警 3:普通和紧急防区都有报警)
@@ -67,5 +68,6 @@ void *pthread_ck2316_alarm(void *arg);
 ck2316_alarm_arg ck2316_alarm_data;
 int ck2316_simulate_keyboard_address_setup(unsigned int address);
 extern unsigned char bypass_defence_area_code[][3];
+int ck2316_user_password_setup(unsigned int user_password[4]);
 
 #endif

@@ -8,6 +8,7 @@
 
 typedef struct 
 {
+    int current_fd;
     /* unsigned int setup_command_set 介绍
     字节4：保留(高字节)
     字节3：保留

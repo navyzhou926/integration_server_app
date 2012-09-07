@@ -10,12 +10,13 @@
 #define ALARM_INPUT_OUTPUT_TIMED_ALARM_FILE         "alarm_input_output_timed_alarm.config"
 
 //#define ALARM_INPUT_OUTPUT_NO_VALID_COMMAND         0x00
-#define ALARM_INPUT_OUTPUT_NORMAL_OPERATION         0x00  //报警联动正常操作
-#define ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO         0x01  //设置报警联动对应关系
-#define ALARM_INPUT_OUTPUT_GET_LINKAGE_INFO         0x02  //获取报警联动对应关系
-#define ALARM_INPUT_OUTPUT_CANCEL_LINKAGE_ALARM     0x03  //取消报警输出
-#define ALARM_INPUT_OUTPUT_RESTORE_TO_DEFAULT       0x04  //恢复默认参数
-#define ALARM_INPUT_OUTPUT_SET_ALARM_DURATION       0x05  //设置报警输出持续时间
+#define ALARM_INPUT_OUTPUT_NORMAL_OPERATION                 0x00  //报警联动正常操作
+#define ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO                 0x01  //设置报警联动对应关系
+#define ALARM_INPUT_OUTPUT_GET_LINKAGE_INFO                 0x02  //获取报警联动对应关系
+#define ALARM_INPUT_OUTPUT_SET_AND_CANCEL_LINKAGE_ALARM     0x03  //取消报警输出
+#define ALARM_INPUT_OUTPUT_RESTORE_TO_DEFAULT               0x04  //恢复默认参数
+#define ALARM_INPUT_OUTPUT_SET_ALARM_DURATION               0x05  //设置报警输出持续时间
+#define ALARM_INPUT_OUTPUT_GET_ALARM_DURATION               0x06  //获取报警输出持续时间
 
 
 #define MAX_ALARM_DURATION                          1440   //24小时
@@ -24,6 +25,7 @@
 
 typedef struct 
 {
+    int current_fd;
     unsigned int if_alarm_input_output_device_is_ready; //报警输入输出设备是否准备好
     /* unsigned int setup_command_set 介绍
     以下均为十六进制,其它为保留值,某一位为1,表示该位对应的命令生效
@@ -64,7 +66,7 @@ etup_command_set   字节3：保留
     2：取消报警输出2
     1：取消报警输出1
     0：取消所有报警输入的联动报警输出       */
-    unsigned int cancel_linkage_alarm_channel;
+    unsigned int set_and_cancel_linkage_alarm_channel;
     unsigned int alarm_duration;  //报警持续时间
 
 }alarm_input_output_arg;

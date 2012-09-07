@@ -24,6 +24,8 @@
 
 #define CURRENT_MATRIX_MAX_OUT_CHANNEL_NUM  4
 
+matrix_control_arg matrix_control_data = {0, MATRIX_CONTROL_NO_VALID_COMMAND, 0, 0};
+
 unsigned char matrix_switchover_handshake_code[] = {0xBB, 0x00};
 
 extern void print_string(char *string, unsigned char *buffer, unsigned int len);
