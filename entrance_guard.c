@@ -17,7 +17,7 @@
 
 pthread_mutex_t entrance_guard_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-entrance_guard_arg entrance_guard_data = {NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 5, 5, 0, NO, NO, NO, 0, 0};
+entrance_guard_arg entrance_guard_data = {0, NO, IS_OPENED, IS_CLOSED, IS_OPENED, 0, 5, 5, 0, NO, NO, NO, 0, 0, {ENTRANCE_GUARD_SERIAL_PORT,0,0,0,{LINK_DEV_DOOR_CLT,1,DOOR_CTL_PROTOCOL_COSON},{ENTRANCE_GUARD_BOARD,ENTRANCE_GUARD_UART_DATA_BIT,ENTRANCE_GUARD_UART_STOP_BIT,ENTRANCE_GUARD_UART_CHECK_BIT,0}}};
 
 //host code
 unsigned char search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x02,0xcc,0x57};
@@ -84,6 +84,23 @@ void *pthread_entrance_guard(void *arg)
     FILE *fp_message_count_file;
     FILE *fp_config_file;
 
+#if 1
+    com_fd = OpenDev(ENTRANCE_GUARD_UART_DEVICE);
+    if (com_fd == -1) 
+    {
+        printf("FUNC[%s] LINE[%d]\tOpen uart failed!\n",__FUNCTION__, __LINE__);
+        exit(1);
+    }
+    //fd nSpeed nBits nEvent nStop)
+    //recv_ret = set_opt(com_fd, 9600, 3, 0, 0); //for entrance guard 
+    recv_ret = set_opt(com_fd, ENTRANCE_GUARD_BOARD, ENTRANCE_GUARD_UART_DATA_BIT, ENTRANCE_GUARD_UART_CHECK_BIT, ENTRANCE_GUARD_UART_STOP_BIT);
+    if (recv_ret == -1) 
+    {
+        printf("FUNC[%s] LINE[%d]\tInit uart failed!\n",__FUNCTION__, __LINE__);
+        exit(1);
+    }
+    ClrCom(com_fd);
+#else
     com_fd = InitCom(ENTRANCE_GUARD_UART_DEVICE, ENTRANCE_GUARD_BOARD_RATE);
     //com_fd = InitCom(UART_DEVICE_ttyUSB0, BOARD_RATE);
     if (com_fd == -1) 
@@ -91,6 +108,7 @@ void *pthread_entrance_guard(void *arg)
         printf("FUNC[%s] LINE[%d]\tInit uart failed!\n",__FUNCTION__, __LINE__);
         exit(1);
     }
+#endif
 
     //打开存储普通消息的文件
     if ((fp_normal_message_file = fopen(ENTRANCE_GUARD_NORMAL_MESSAGE_FILE, "a+")) == NULL)

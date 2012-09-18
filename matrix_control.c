@@ -13,16 +13,12 @@
 #define printf_debug(fmt, arg...) do{}while(0)
 #endif
 
-#define MATRIX_UART_BOARD           9600
-
-#define MATRIX_UART_DATA_BIT        3  //8bit
-#define MATRIX_UART_CHECK_BIT       0
-#define MATRIX_UART_STOP_BIT        0
-
 #define MATRIX_UART_MAX_SEND_SIZE   4
 #define MATRIX_CANCEL_SWITCHOVER_IN_CHANNEL     0xFF
 
 #define CURRENT_MATRIX_MAX_OUT_CHANNEL_NUM  4
+
+matrix_control_arg matrix_control_data = {0, MATRIX_CONTROL_NO_VALID_COMMAND, 0, 0, {MATRIX_SERIAL_PORT,0,0,0,{LINK_DEV_MATRIX,1,MATRIX_PROTOCOL_PELCO},{MATRIX_UART_BOARD,MATRIX_UART_DATA_BIT,MATRIX_UART_STOP_BIT,MATRIX_UART_CHECK_BIT,0}}};
 
 unsigned char matrix_switchover_handshake_code[] = {0xBB, 0x00};
 
@@ -81,6 +77,9 @@ int matrix_handshake_and_setup(int *com_fd)
     unsigned char *send_buffer = NULL;
 
     //matrix_control_data.setup_command_set = MATRIX_SWITCHOVER_COMMAND;
+    //matrix_control_data.setup_command_set = MATRIX_CANCEL_SWITCHOVER_COMMAND;
+    //matrix_control_data.setup_command_set = MATRIX_CANCEL_ALL_SWITCHOVER_COMMAND;
+
     //matrix_control_data.matrix_current_switchover_in_value = 0xff;
     //matrix_control_data.matrix_current_switchover_out_value = 0x00;
 

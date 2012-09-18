@@ -1,6 +1,8 @@
 #ifndef _ENTRANCE_GUARD_H
 #define _ENTRANCE_GUARD_H
 
+#include "net_server.h"
+
 #define IS_OPENED       1
 #define IS_CLOSED       0
 #define OPEN_DOOR       1
@@ -59,8 +61,16 @@
 
 #define ENTRANCE_GUARD_BOARD_RATE   4
 
+#define ENTRANCE_GUARD_SERIAL_PORT          0
+#define ENTRANCE_GUARD_BOARD                9600
+#define ENTRANCE_GUARD_UART_DATA_BIT        3
+#define ENTRANCE_GUARD_UART_CHECK_BIT       0
+#define ENTRANCE_GUARD_UART_STOP_BIT        0
+
+
 typedef struct 
 {
+    int current_fd;
     char if_entrance_guard_alive;                 //当前门禁是否在线
     unsigned int door_lock_relay_status_setup;   //门锁继电器状态设置(常开(默认)，常闭)
     unsigned int door_contact_detection_mode_setup;      //门磁检测方式设置(短路(默认), 开路)
@@ -92,7 +102,7 @@ typedef struct
     unsigned char if_has_entrance_guard_alarm; //判断是否有门禁报警(非法开门)
     unsigned int current_normal_message_num; //当前文件中存储的普通消息总数
     unsigned int current_alarm_message_num;  //当前文件中存储的报警消息总数
-
+    SERIAL_PAMATER entrance_guard_serial_pamater;
 }entrance_guard_arg;
 
 

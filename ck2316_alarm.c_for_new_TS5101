@@ -6,6 +6,7 @@
 #include "net.h"
 #include "serial_common.h"
 
+//#define MAIN_TEST
 
 #define DEBUG
 #ifdef DEBUG
@@ -56,7 +57,7 @@ unsigned char ck2316_handshake_code[] = {CK2316_HANDSHAKE_CODE_1, CK2316_HANDSHA
 #define CK2316_USER_PASSWORD_3              0x03
 #define CK2316_USER_PASSWORD_4              0x04
 
-ck2316_alarm_arg ck2316_alarm_data = {0, NO, IS_ABANDONED, NO_ALARM, {0x00, 0x00}, {0x00, 0x00}, {0x00, 0x00}, 0, CK2316_KEYBOARD_ADDRESS, {CK2316_USER_PASSWORD_1, CK2316_USER_PASSWORD_2, CK2316_USER_PASSWORD_3,CK2316_USER_PASSWORD_4},{CK2316_SERIAL_PORT,0,0,0,{LINK_DEV_ALARM_CTL,1,ALARM_CTL_PROTOCOL_CK2316},{CK2316_UART_BOARD,CK2316_UART_DATA_BIT,CK2316_UART_STOP_BIT,CK2316_UART_CHECK_BIT}}};
+ck2316_alarm_arg ck2316_alarm_data = {0, NO, IS_ABANDONED, NO_ALARM, {0x00, 0x00}, {0x00, 0x00}, {0x00, 0x00}, 0, CK2316_KEYBOARD_ADDRESS, {CK2316_USER_PASSWORD_1, CK2316_USER_PASSWORD_2, CK2316_USER_PASSWORD_3,CK2316_USER_PASSWORD_4}};
 
 unsigned char ck2316_keyboard_code[][3] = {{0xFE,0x06,0x00},{0xFE,0x06,0x01},{0xFE,0x06,0x02},{0xFE,0x06,0x03},{0xFE,0x06,0x04},{0xFE,0x06,0x05},{0xFE,0x06,0x06},{0xFE,0x06,0x07},{0xFE,0x06,0x08},{0xFE,0x06,0x09},{0xFE,0x06,0x0A},{0xFE,0x06,0x0B},{0xFE,0x06,0x0C},{0xFE,0x06,0x0D},{0xFE,0x06,0x0E},{0xFE,0x06,0x0F}};
 
@@ -87,11 +88,27 @@ int verify_ck2316_data(unsigned char *recv_buffer, unsigned int len);
 int ck2316_user_password_setup(unsigned int user_password[4]);
 int ck2316_alarm_init(void);
 
+#ifndef MAIN_TEST
 void *pthread_ck2316_alarm(void *arg)
+#else
+int if_have_net_client_connect = NO;
+void print_string(char *string, unsigned char *buffer, unsigned int len)
+{
+    int i = 0;
+
+    printf("%s",string);
+    for (i = 0; i < len; i++) 
+    {
+        printf("%02X ",buffer[i]);
+    }
+    printf("\n");
+}
+int main(int argc, const char *argv[])
+#endif
 {
     int com_fd;
     int recv_ret = 0;
-    //unsigned char recv_buffer[72] = {0};
+    unsigned char recv_buffer[72] = {0};
 
     while (1) 
     {
@@ -204,10 +221,10 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
             default: //navy2
                 if (if_search_keyboard == YES) 
                 {
-                    for (i = 0; i < 3; i++) //3
+                    for (i = 0; i < 0; i++) //3
                         write(*com_fd, temp_test, CK2316_HANDSHAKE_SIZE);
                     //for (i = 0; i < 7; i++) 
-                    for (i = 0; i < 7; i++) //7 
+                    for (i = 0; i < 7; i++) //5 
                         write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
                     if_search_keyboard = NO;
                     if (ck2316_check_command_setup_successful_flag == CK2316_ALARM_HOST_RESET) 
@@ -421,7 +438,6 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                         {
                             //获取高防区报警记忆状态
                             ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] = recv_buffer[recv_ret-7];
-                            //ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] = recv_buffer[recv_ret-6];
                             //获取高防区实时报警状态
                             ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1] = recv_buffer[recv_ret-6];
                             //获取高防区旁路状态
@@ -480,9 +496,8 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                     }
                 }
 #ifdef DEBUG
-                //printf_debug("recv_ret = %d",recv_ret);
+                //printf_debug("recv_ret = %d\n",recv_ret);
                 //print_string("\n ", recv_buffer, recv_ret);
-                //printf_debug("\n");
 #endif
                 break;
         }

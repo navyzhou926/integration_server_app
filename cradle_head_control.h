@@ -1,6 +1,8 @@
 #ifndef _CRADLE_HEAD_CONTROL_H
 #define _CRADLE_HEAD_CONTROL_H
 
+#include "net_server.h"
+
 #define CRADLE_HEAD_CONTROL_NO_VALID_COMMAND         0xff
 
 //云台控制相关--命令
@@ -48,13 +50,22 @@
 #define WISDOM    20    //WISDOM解码器通讯协议
 #define NEOCOM    21    //耐康姆协议
 
+
+#define CRADLE_HEAD_SERIAL_PORT          2
+#define CRADLE_HEAD_UART_BOARD           9600
+#define CRADLE_HEAD_UART_DATA_BIT        3  //8bit
+#define CRADLE_HEAD_UART_CHECK_BIT       0
+#define CRADLE_HEAD_UART_STOP_BIT        0
+
 typedef struct 
 {
+    int current_fd;
     unsigned int setup_command_set;         //存储设置命令(低16位，每一位表示一个命令) 
     unsigned char cradle_head_protocol_type;     //云台协议类型
     unsigned char cradle_head_address;      //云台地址(1-255)
     unsigned char cradle_head_move_speed;   //云台移动速度(1-255)
     unsigned char cradle_head_preset_point; //云台预置点(1-32, 33-64)
+    SERIAL_PAMATER cradle_head_control_serial_pamater;
 }cradle_head_control_arg;
 
 cradle_head_control_arg cradle_head_control_data;

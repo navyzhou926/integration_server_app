@@ -1,6 +1,8 @@
 #ifndef _CK2316_ALARM_H
 #define _CK2316_ALARM_H
 
+#include "net_server.h"
+
 #define CK2316_MAX_RECV_SIZE                        64
 #define CK2316_HANDSHAKE_SIZE                        3
 
@@ -28,8 +30,16 @@
 #define CK2316_MAX_ALARM_MESSAGE_NUM                200
 #define CK2316_MAX_NORMAL_MESSAGE_NUM               200
 
+#define CK2316_SERIAL_PORT          4
+#define CK2316_UART_BOARD           2400
+#define CK2316_UART_DATA_BIT        3
+#define CK2316_UART_CHECK_BIT       2
+#define CK2316_UART_STOP_BIT        0
+
+
 typedef struct 
 {
+    int current_fd;
     char if_ck2316_alive;                   //当前CK2316报警主机是否在线
     char ck2316_defence_status;             //CK2316报警主机布撤防的状态(布防，撤防)
     unsigned char ck2316_defence_area_alarm_status; //CK2316防区报警状态(0:无报警 1:普通防区报警 2:紧急防区报警 3:普通和紧急防区都有报警)
@@ -58,6 +68,7 @@ typedef struct
     //unsigned char if_has_delete_offline_alarm;//判断是否删除门禁离线后发生的报警
     //unsigned int current_normal_message_num; //当前文件中存储的普通消息总数
     //unsigned int current_alarm_message_num;  //当前文件中存储的报警消息总数
+    SERIAL_PAMATER ck2316_alarm_serial_pamater;
 
 }ck2316_alarm_arg;
 
@@ -67,5 +78,6 @@ void *pthread_ck2316_alarm(void *arg);
 ck2316_alarm_arg ck2316_alarm_data;
 int ck2316_simulate_keyboard_address_setup(unsigned int address);
 extern unsigned char bypass_defence_area_code[][3];
+int ck2316_user_password_setup(unsigned int user_password[4]);
 
 #endif
