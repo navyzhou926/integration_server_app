@@ -354,8 +354,8 @@ start:
                             else
                             {
                                 alarm_input_output_data.alarm_linkage_input_object = net_recv_buffer[12];
-                                alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO;
                                 alarm_input_output_data.alarm_input_linkage_output_object[alarm_input_output_data.alarm_linkage_input_object-1] = net_recv_buffer[13];
+                                alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO;
                             }
                         }
                         break;
