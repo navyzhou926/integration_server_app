@@ -42,7 +42,8 @@ void *pthread_matrix_control(void *arg)
         }
         //fd nSpeed nBits nEvent nStop)
         //recv_ret = set_opt(com_fd, 9600, 3, 0, 0); //for matrix 
-        recv_ret = set_opt(com_fd, MATRIX_UART_BOARD, MATRIX_UART_DATA_BIT, MATRIX_UART_CHECK_BIT, MATRIX_UART_STOP_BIT);
+        //recv_ret = set_opt(com_fd, MATRIX_UART_BOARD, MATRIX_UART_DATA_BIT, MATRIX_UART_CHECK_BIT, MATRIX_UART_STOP_BIT);
+        recv_ret = set_opt(com_fd, matrix_control_data.matrix_control_serial_pamater.serialAttr.dwBaudRate, matrix_control_data.matrix_control_serial_pamater.serialAttr.byDataBit, matrix_control_data.matrix_control_serial_pamater.serialAttr.byParity, matrix_control_data.matrix_control_serial_pamater.serialAttr.byStopBit);
         if (recv_ret == -1) 
         {
             printf("FUNC[%s] LINE[%d]\tInit uart failed!\n",__FUNCTION__, __LINE__);

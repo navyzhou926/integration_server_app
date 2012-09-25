@@ -129,7 +129,8 @@ void *pthread_cradle_head_control(void *arg)
         }
         //fd nSpeed nBits nEvent nStop)
         //recv_ret = set_opt(com_fd, 9600, 3, 0, 0); //for cradle head  8N1
-        recv_ret = set_opt(com_fd, CRADLE_HEAD_UART_BOARD, CRADLE_HEAD_UART_DATA_BIT, CRADLE_HEAD_UART_CHECK_BIT, CRADLE_HEAD_UART_STOP_BIT);
+        //recv_ret = set_opt(com_fd, CRADLE_HEAD_UART_BOARD, CRADLE_HEAD_UART_DATA_BIT, CRADLE_HEAD_UART_CHECK_BIT, CRADLE_HEAD_UART_STOP_BIT);
+        recv_ret = set_opt(com_fd, cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.dwBaudRate, cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byDataBit, cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byParity, cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byStopBit);
         if (recv_ret == -1) 
         {
             printf("FUNC[%s] LINE[%d]\tInit uart failed!\n",__FUNCTION__, __LINE__);
@@ -175,8 +176,8 @@ int cradle_head_handshake_and_contorl(int *com_fd)
         //0xa0,0x01,0x00,0x08,0x00,0x30,0xaf 
         if (cradle_head_control_data.cradle_head_protocol_type == Palco_P) 
         {
-            PELCO_P_Table[cradle_head_control_data.setup_command_set][1] = cradle_head_control_data.cradle_head_address;
-            PELCO_P_Table[cradle_head_control_data.setup_command_set][7] = 0x00;
+            PELCO_P_Table[cradle_head_control_data.setup_command_set-1][1] = cradle_head_control_data.cradle_head_address;
+            PELCO_P_Table[cradle_head_control_data.setup_command_set-1][7] = 0x00;
             switch(cradle_head_control_data.setup_command_set)
             {
                 case CRADLE_HEAD_CONTROL_NO_VALID_COMMAND: 
@@ -190,7 +191,7 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                     else if (cradle_head_control_data.cradle_head_move_speed == 0xff) 
                         temp = 0x3f;
 
-                    PELCO_P_Table[cradle_head_control_data.setup_command_set][5] = temp;
+                    PELCO_P_Table[cradle_head_control_data.setup_command_set-1][5] = temp;
                     if_send_cradle_head_control_command = YES;
                     break;
                 case PTZ_LEFT:          //左
@@ -201,7 +202,7 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                     else if (cradle_head_control_data.cradle_head_move_speed == 0xff) 
                         temp = 0x3f;
 
-                    PELCO_P_Table[cradle_head_control_data.setup_command_set][4] = temp;
+                    PELCO_P_Table[cradle_head_control_data.setup_command_set-1][4] = temp;
                     if_send_cradle_head_control_command = YES;
                     break;
                 case PTZ_SET_PTZBIT:    //设置预置点
@@ -209,7 +210,7 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                     if (cradle_head_control_data.cradle_head_preset_point >= 1 && cradle_head_control_data.cradle_head_preset_point <= 32) 
                     {
                         //printf("FUNC[%s] LINE[%d]\tSet or call cradle head preset point successfully !\n",__FUNCTION__, __LINE__);
-                        PELCO_P_Table[cradle_head_control_data.setup_command_set][5] = cradle_head_control_data.cradle_head_preset_point;
+                        PELCO_P_Table[cradle_head_control_data.setup_command_set-1][5] = cradle_head_control_data.cradle_head_preset_point;
                     if_send_cradle_head_control_command = YES;
                     }
                     else
@@ -228,13 +229,13 @@ int cradle_head_handshake_and_contorl(int *com_fd)
             {
                 for (i = 0; i < 7; i++) 
                 {
-                    PELCO_P_Table[cradle_head_control_data.setup_command_set][7] ^= PELCO_P_Table[cradle_head_control_data.setup_command_set][i];
+                    PELCO_P_Table[cradle_head_control_data.setup_command_set-1][7] ^= PELCO_P_Table[cradle_head_control_data.setup_command_set-1][i];
                 }
 
                 #ifdef DEBUG
-                print_string(" ", PELCO_P_Table[cradle_head_control_data.setup_command_set], PELCO_P_UART_MAX_SNED_SIZE);
+                print_string(" ", PELCO_P_Table[cradle_head_control_data.setup_command_set-1], PELCO_P_UART_MAX_SNED_SIZE);
                 #endif
-                if (SendDataToCom(*com_fd, PELCO_P_Table[cradle_head_control_data.setup_command_set], PELCO_P_UART_MAX_SNED_SIZE) == -1)
+                if (SendDataToCom(*com_fd, PELCO_P_Table[cradle_head_control_data.setup_command_set-1], PELCO_P_UART_MAX_SNED_SIZE) == -1)
                 {
                     printf("FUNC[%s] LINE[%d]\tSend data to com error!\n",__FUNCTION__, __LINE__);
                     return -1;
@@ -247,8 +248,8 @@ int cradle_head_handshake_and_contorl(int *com_fd)
         }
         else if (cradle_head_control_data.cradle_head_protocol_type == Palco_D) 
         {
-            PELCO_D_Table[cradle_head_control_data.setup_command_set][1] = cradle_head_control_data.cradle_head_address + 1;
-            PELCO_D_Table[cradle_head_control_data.setup_command_set][6] = 0x00;
+            PELCO_D_Table[cradle_head_control_data.setup_command_set-1][1] = cradle_head_control_data.cradle_head_address + 1;
+            PELCO_D_Table[cradle_head_control_data.setup_command_set-1][6] = 0x00;
             switch(cradle_head_control_data.setup_command_set)
             {
                 case CRADLE_HEAD_CONTROL_NO_VALID_COMMAND: 
@@ -262,7 +263,7 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                     else if (cradle_head_control_data.cradle_head_move_speed == 0xff) 
                         temp = 0x3f;
 
-                    PELCO_D_Table[cradle_head_control_data.setup_command_set][5] = temp;
+                    PELCO_D_Table[cradle_head_control_data.setup_command_set-1][5] = temp;
                     if_send_cradle_head_control_command = YES;
                     break;
                 case PTZ_LEFT:          //左
@@ -273,14 +274,14 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                     else if (cradle_head_control_data.cradle_head_move_speed == 0xff) 
                         temp = 0x3f;
 
-                    PELCO_D_Table[cradle_head_control_data.setup_command_set][4] = temp;
+                    PELCO_D_Table[cradle_head_control_data.setup_command_set-1][4] = temp;
                     if_send_cradle_head_control_command = YES;
                     break;
                 case PTZ_SET_PTZBIT:    //设置预置点
                 case PTZ_CLE_PTZBIT:    //调用预置点
                     if (cradle_head_control_data.cradle_head_preset_point >= 1 && cradle_head_control_data.cradle_head_preset_point <= 32) 
                     {
-                        PELCO_D_Table[cradle_head_control_data.setup_command_set][5] = cradle_head_control_data.cradle_head_preset_point;
+                        PELCO_D_Table[cradle_head_control_data.setup_command_set-1][5] = cradle_head_control_data.cradle_head_preset_point;
                     }
                     else
                     {
@@ -299,10 +300,10 @@ int cradle_head_handshake_and_contorl(int *com_fd)
             {
                for (i = 0; i < 6; i++) 
                 {
-                    PELCO_D_Table[cradle_head_control_data.setup_command_set][6] += PELCO_D_Table[cradle_head_control_data.setup_command_set][i];
+                    PELCO_D_Table[cradle_head_control_data.setup_command_set-1][6] += PELCO_D_Table[cradle_head_control_data.setup_command_set-1][i];
                 }
 
-                if (SendDataToCom(*com_fd, PELCO_D_Table[cradle_head_control_data.setup_command_set], PELCO_D_UART_MAX_SNED_SIZE) == -1)
+                if (SendDataToCom(*com_fd, PELCO_D_Table[cradle_head_control_data.setup_command_set-1], PELCO_D_UART_MAX_SNED_SIZE) == -1)
                 {
                     printf("FUNC[%s] LINE[%d]\tSend data to com error!\n",__FUNCTION__, __LINE__);
                     return -1;
@@ -315,10 +316,10 @@ int cradle_head_handshake_and_contorl(int *com_fd)
         }
         else if (cradle_head_control_data.cradle_head_protocol_type == YAAN) 
         {
-            YAAN_Table[cradle_head_control_data.setup_command_set][1] = cradle_head_control_data.cradle_head_address + 1;
-            YAAN_Table[cradle_head_control_data.setup_command_set][7] = cradle_head_control_data.cradle_head_address + 1;
-            YAAN_Table[cradle_head_control_data.setup_command_set][5] = 0x00;
-            YAAN_Table[cradle_head_control_data.setup_command_set][11] = 0x00;
+            YAAN_Table[cradle_head_control_data.setup_command_set-1][1] = cradle_head_control_data.cradle_head_address + 1;
+            YAAN_Table[cradle_head_control_data.setup_command_set-1][7] = cradle_head_control_data.cradle_head_address + 1;
+            YAAN_Table[cradle_head_control_data.setup_command_set-1][5] = 0x00;
+            YAAN_Table[cradle_head_control_data.setup_command_set-1][11] = 0x00;
             switch(cradle_head_control_data.setup_command_set)
             {
                 case CRADLE_HEAD_CONTROL_NO_VALID_COMMAND: 
@@ -328,11 +329,11 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                 case PTZ_DOWN:          //下
                     if (cradle_head_control_data.cradle_head_move_speed == 0x00) 
                     {
-                        YAAN_Table[cradle_head_control_data.setup_command_set][10] = 0x01;
+                        YAAN_Table[cradle_head_control_data.setup_command_set-1][10] = 0x01;
                     }
                     else
                     {
-                        YAAN_Table[cradle_head_control_data.setup_command_set][9] = cradle_head_control_data.cradle_head_move_speed;
+                        YAAN_Table[cradle_head_control_data.setup_command_set-1][9] = cradle_head_control_data.cradle_head_move_speed;
                     }
                     if_send_cradle_head_control_command = YES;
                     break;
@@ -340,17 +341,17 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                 case PTZ_RIGHT:         //右
                     if (cradle_head_control_data.cradle_head_move_speed == 0x00) 
                     {
-                        YAAN_Table[cradle_head_control_data.setup_command_set][10] = 0x01;
+                        YAAN_Table[cradle_head_control_data.setup_command_set-1][10] = 0x01;
                     }
                     else
                     {
-                        YAAN_Table[cradle_head_control_data.setup_command_set][10] = cradle_head_control_data.cradle_head_move_speed;
+                        YAAN_Table[cradle_head_control_data.setup_command_set-1][10] = cradle_head_control_data.cradle_head_move_speed;
                     }
                     if_send_cradle_head_control_command = YES;
                     break;
                 case PTZ_SET_PTZBIT:    //设置预置点
                 case PTZ_CLE_PTZBIT:    //调用预置点
-                    YAAN_Table[cradle_head_control_data.setup_command_set][3] = cradle_head_control_data.cradle_head_preset_point;
+                    YAAN_Table[cradle_head_control_data.setup_command_set-1][3] = cradle_head_control_data.cradle_head_preset_point;
                     if_send_cradle_head_control_command = YES;
                     break;
                 default :
@@ -363,12 +364,12 @@ int cradle_head_handshake_and_contorl(int *com_fd)
 
                 if((cradle_head_control_data.setup_command_set == PTZ_SET_PTZBIT) || (cradle_head_control_data.setup_command_set == PTZ_CLE_PTZBIT))
                 {
-                    YAAN_Table[cradle_head_control_data.setup_command_set][4] = 0;
+                    YAAN_Table[cradle_head_control_data.setup_command_set-1][4] = 0;
                     for(i = 0; i < 4; i++)
                     {
-                        YAAN_Table[cradle_head_control_data.setup_command_set][4] += YAAN_Table[cradle_head_control_data.setup_command_set][i];
+                        YAAN_Table[cradle_head_control_data.setup_command_set-1][4] += YAAN_Table[cradle_head_control_data.setup_command_set-1][i];
                     }
-                    if (SendDataToCom(*com_fd, YAAN_Table[cradle_head_control_data.setup_command_set], 5) == -1)
+                    if (SendDataToCom(*com_fd, YAAN_Table[cradle_head_control_data.setup_command_set-1], 5) == -1)
                     {
                         printf("FUNC[%s] LINE[%d]\tSend data to com error!\n",__FUNCTION__, __LINE__);
                         return -1;
@@ -378,9 +379,9 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                 {
                     for(i = 6; i < 11; i++)
                     {
-                        YAAN_Table[cradle_head_control_data.setup_command_set][11] += YAAN_Table[cradle_head_control_data.setup_command_set][i];
+                        YAAN_Table[cradle_head_control_data.setup_command_set-1][11] += YAAN_Table[cradle_head_control_data.setup_command_set-1][i];
                     }         
-                    if (SendDataToCom(*com_fd, YAAN_Table[cradle_head_control_data.setup_command_set], 5) == -1)
+                    if (SendDataToCom(*com_fd, YAAN_Table[cradle_head_control_data.setup_command_set-1], 5) == -1)
                     {
                         printf("FUNC[%s] LINE[%d]\tSend data to com error!\n",__FUNCTION__, __LINE__);
                         return -1;
@@ -388,9 +389,9 @@ int cradle_head_handshake_and_contorl(int *com_fd)
 
                     for(i = 0; i < 5; i++)
                     {
-                        YAAN_Table[cradle_head_control_data.setup_command_set][5] += YAAN_Table[cradle_head_control_data.setup_command_set][i];
+                        YAAN_Table[cradle_head_control_data.setup_command_set-1][5] += YAAN_Table[cradle_head_control_data.setup_command_set-1][i];
                     }
-                    if (SendDataToCom(*com_fd, YAAN_Table[cradle_head_control_data.setup_command_set], 5) == -1)
+                    if (SendDataToCom(*com_fd, YAAN_Table[cradle_head_control_data.setup_command_set-1], 5) == -1)
                     {
                         printf("FUNC[%s] LINE[%d]\tSend data to com error!\n",__FUNCTION__, __LINE__);
                         return -1;

@@ -78,32 +78,32 @@ CBC	cradle_head_control.h	43;"	d
 CHANGE_COUNT_TO_MINUTE	alarm_input_output.c	100;"	d	file:
 CHANGE_INPUT_OUTPUT_STATUS	alarm_input_output.c	53;"	d	file:
 CHANGE_MINUTE_TO_COUNT	alarm_input_output.c	99;"	d	file:
-CK2316_ACTUAL_KEYBOARD_ADDRESS	ck2316_alarm.c	33;"	d	file:
+CK2316_ACTUAL_KEYBOARD_ADDRESS	ck2316_alarm.c	28;"	d	file:
 CK2316_ALARM_HOST_RESET	ck2316_alarm.h	25;"	d
-CK2316_ALARM_HOST_RESET_SIZE	ck2316_alarm.c	75;"	d	file:
+CK2316_ALARM_HOST_RESET_SIZE	ck2316_alarm.c	70;"	d	file:
 CK2316_BYPASS_DEFENCE_AREA	ck2316_alarm.h	24;"	d
-CK2316_BYPASS_DEFENCE_AREA_SIZE	ck2316_alarm.c	72;"	d	file:
+CK2316_BYPASS_DEFENCE_AREA_SIZE	ck2316_alarm.c	67;"	d	file:
 CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL	ck2316_alarm.h	28;"	d
 CK2316_CONFIG_FILE	ck2316_alarm.h	15;"	d
-CK2316_DEFENCE_AREA_ALARM_STATUS_MASK	ck2316_alarm.c	50;"	d	file:
-CK2316_DEFENCE_AREA_HEAD_POSITION	ck2316_alarm.c	47;"	d	file:
+CK2316_DEFENCE_AREA_ALARM_STATUS_MASK	ck2316_alarm.c	45;"	d	file:
+CK2316_DEFENCE_AREA_HEAD_POSITION	ck2316_alarm.c	42;"	d	file:
 CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	ck2316_alarm.c	/^enum CK2316_DEFENCN_AREA_ALARM_STATUS_ARG$/;"	g	file:
 CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE	ck2316_alarm.c	/^}CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE;$/;"	v	typeref:enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG
 CK2316_ELIMINATE_ALARM_MEMORY	ck2316_alarm.h	23;"	d
-CK2316_ELIMINATE_ALARM_MEMORY_SIZE	ck2316_alarm.c	69;"	d	file:
-CK2316_HANDSHAKE_CODE_1	ck2316_alarm.c	39;"	d	file:
-CK2316_HANDSHAKE_CODE_2	ck2316_alarm.c	40;"	d	file:
-CK2316_HANDSHAKE_CODE_3	ck2316_alarm.c	41;"	d	file:
-CK2316_HANDSHAKE_SIZE	ck2316_alarm.c	42;"	d	file:
+CK2316_ELIMINATE_ALARM_MEMORY_SIZE	ck2316_alarm.c	64;"	d	file:
+CK2316_HANDSHAKE_CODE_1	ck2316_alarm.c	34;"	d	file:
+CK2316_HANDSHAKE_CODE_2	ck2316_alarm.c	35;"	d	file:
+CK2316_HANDSHAKE_CODE_3	ck2316_alarm.c	36;"	d	file:
+CK2316_HANDSHAKE_SIZE	ck2316_alarm.c	37;"	d	file:
 CK2316_HANDSHAKE_SIZE	ck2316_alarm.h	7;"	d
-CK2316_HIGH_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	51;"	d	file:
-CK2316_HIGH_DEFENCE_AREA_HEAD	ck2316_alarm.c	45;"	d	file:
-CK2316_IS_DEFENCED_OR_ABANDONED_MASK	ck2316_alarm.c	49;"	d	file:
-CK2316_KEYBOARD_ADDRESS	ck2316_alarm.c	32;"	d	file:
-CK2316_KEYBOARD_ADDRESS_MASK	ck2316_alarm.c	34;"	d	file:
-CK2316_KEYBOARD_ADDRESS_SIZE	ck2316_alarm.c	35;"	d	file:
-CK2316_LOW_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	52;"	d	file:
-CK2316_LOW_DEFENCE_AREA_HEAD	ck2316_alarm.c	46;"	d	file:
+CK2316_HIGH_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	46;"	d	file:
+CK2316_HIGH_DEFENCE_AREA_HEAD	ck2316_alarm.c	40;"	d	file:
+CK2316_IS_DEFENCED_OR_ABANDONED_MASK	ck2316_alarm.c	44;"	d	file:
+CK2316_KEYBOARD_ADDRESS	ck2316_alarm.c	27;"	d	file:
+CK2316_KEYBOARD_ADDRESS_MASK	ck2316_alarm.c	29;"	d	file:
+CK2316_KEYBOARD_ADDRESS_SIZE	ck2316_alarm.c	30;"	d	file:
+CK2316_LOW_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	47;"	d	file:
+CK2316_LOW_DEFENCE_AREA_HEAD	ck2316_alarm.c	41;"	d	file:
 CK2316_MAX_ALARM_MESSAGE_NUM	ck2316_alarm.h	30;"	d
 CK2316_MAX_NORMAL_MESSAGE_NUM	ck2316_alarm.h	31;"	d
 CK2316_MAX_RECV_SIZE	ck2316_alarm.h	6;"	d
@@ -112,22 +112,18 @@ CK2316_RECV_FINISH_TIMEOUT	ck2316_alarm.h	10;"	d
 CK2316_RECV_TIMEOUT	ck2316_alarm.h	9;"	d
 CK2316_SERIAL_PORT	ck2316_alarm.h	33;"	d
 CK2316_SYSTEM_ABANDON	ck2316_alarm.h	22;"	d
-CK2316_SYSTEM_ABANDON_SIZE	ck2316_alarm.c	66;"	d	file:
+CK2316_SYSTEM_ABANDON_SIZE	ck2316_alarm.c	61;"	d	file:
 CK2316_SYSTEM_DEFENCE	ck2316_alarm.h	21;"	d
-CK2316_SYSTEM_DEFENCE_SIZE	ck2316_alarm.c	63;"	d	file:
-CK2316_UART_BOARD	ck2316_alarm.c	25;"	d	file:
+CK2316_SYSTEM_DEFENCE_SIZE	ck2316_alarm.c	58;"	d	file:
 CK2316_UART_BOARD	ck2316_alarm.h	34;"	d
-CK2316_UART_CHECK_BIT	ck2316_alarm.c	27;"	d	file:
 CK2316_UART_CHECK_BIT	ck2316_alarm.h	36;"	d
-CK2316_UART_DATA_BIT	ck2316_alarm.c	26;"	d	file:
 CK2316_UART_DATA_BIT	ck2316_alarm.h	35;"	d
 CK2316_UART_DEVICE	global.h	9;"	d
-CK2316_UART_STOP_BIT	ck2316_alarm.c	28;"	d	file:
 CK2316_UART_STOP_BIT	ck2316_alarm.h	37;"	d
-CK2316_USER_PASSWORD_1	ck2316_alarm.c	54;"	d	file:
-CK2316_USER_PASSWORD_2	ck2316_alarm.c	55;"	d	file:
-CK2316_USER_PASSWORD_3	ck2316_alarm.c	56;"	d	file:
-CK2316_USER_PASSWORD_4	ck2316_alarm.c	57;"	d	file:
+CK2316_USER_PASSWORD_1	ck2316_alarm.c	49;"	d	file:
+CK2316_USER_PASSWORD_2	ck2316_alarm.c	50;"	d	file:
+CK2316_USER_PASSWORD_3	ck2316_alarm.c	51;"	d	file:
+CK2316_USER_PASSWORD_4	ck2316_alarm.c	52;"	d	file:
 CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT	entrance_guard.h	11;"	d
 CLIENT_CONTROL_DOOR_HOLD_TIME_SEND_SIZE	entrance_guard.h	19;"	d
 CLOSE_DOOR	entrance_guard.h	9;"	d
@@ -166,7 +162,7 @@ ClrCom	uart.c	/^int ClrCom(int Device)$/;"	f
 DEBUG	alarm_input_output.c	17;"	d	file:
 DEBUG	ck2316_alarm.c	10;"	d	file:
 DEBUG	cradle_head_control.c	10;"	d	file:
-DEBUG	entrance_guard.c	11;"	d	file:
+DEBUG	entrance_guard.c	12;"	d	file:
 DEBUG	global.c	8;"	d	file:
 DEBUG	main.c	26;"	d	file:
 DEBUG	matrix_control.c	9;"	d	file:
@@ -314,7 +310,7 @@ MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT	alarm_input_output.h	24;"	d
 MAX_ALARM_IO_NUM	alarm_input_output.c	34;"	d	file:
 MAX_ALARM_LINKAGE_INPUT_OBJECT	alarm_input_output.h	23;"	d
 MAX_ALARM_MESSAGE_NUM	entrance_guard.h	59;"	d
-MAX_CHECK_COMMAND_COUNT	ck2316_alarm.c	30;"	d	file:
+MAX_CHECK_COMMAND_COUNT	ck2316_alarm.c	25;"	d	file:
 MAX_COMMAND_NUM	alarm_input_output.c	54;"	d	file:
 MAX_DAYS	net_server.h	6;"	d
 MAX_NORMAL_MESSAGE_NUM	entrance_guard.h	60;"	d
@@ -805,8 +801,8 @@ printf_debug	ck2316_alarm.c	12;"	d	file:
 printf_debug	ck2316_alarm.c	14;"	d	file:
 printf_debug	cradle_head_control.c	12;"	d	file:
 printf_debug	cradle_head_control.c	14;"	d	file:
-printf_debug	entrance_guard.c	13;"	d	file:
-printf_debug	entrance_guard.c	15;"	d	file:
+printf_debug	entrance_guard.c	14;"	d	file:
+printf_debug	entrance_guard.c	16;"	d	file:
 printf_debug	global.c	10;"	d	file:
 printf_debug	global.c	12;"	d	file:
 printf_debug	main.c	29;"	d	file:

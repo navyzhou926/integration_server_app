@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 1
+    #if 0
     //创建与报警器通信的线程
     if (pthread_create(&tid_ck2316_alarm, NULL, pthread_ck2316_alarm, NULL) != 0) 
     {
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
     #else
-        #if 1
+        #if 0
     if (pthread_create(&tid_temp_test, NULL, pthread_temp_test, NULL) != 0) 
     {
         printf("FUNC[%s] LINE[%d]\tCan't create temp test thread !\n",__FUNCTION__, __LINE__);
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 0
+    #if 1
     //创建与报警输入输出通信的线程
     if (pthread_create(&tid_alarm_input_output, NULL, pthread_alarm_input_output, NULL) != 0) 
     {
@@ -716,11 +716,11 @@ start:
                         entrance_guard_data.if_has_entrance_guard_alarm = NO;
                         printf_debug("FUNC[%s] LINE[%d]\tEntrance guard succeed to cancel alarm!\n",__FUNCTION__, __LINE__);
                         //navy 网络发送 门磁取消报警成功
+                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_CANCEL_ALARM_STATUS;
                         break;
                     default:   //无效指令
                         //网络发送无效命令
                         printf_debug("FUNC[%s] LINE[%d]\tEntrance guard invalid net command!\n",__FUNCTION__, __LINE__);
-                        entrance_guard_data.setup_command_set = ENTRANCE_GUARD_CANCEL_ALARM_STATUS;
                         break;
                 }
                 #if 0

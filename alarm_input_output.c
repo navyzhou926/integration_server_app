@@ -111,9 +111,9 @@ void *pthread_timed_alarm(void *arg)
         {
             for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++) 
             {
-                if (timed_alarm_count_array[i] > 0)
+                if (timed_alarm_count_array[i] > 1)
                     timed_alarm_count_array[i]--;
-                else
+                else if (timed_alarm_count_array[i] == 1)
                 {
                     if (alarm_input_output_data.real_time_alarm_output_objcet & (1<<i)) 
                     {
@@ -126,6 +126,10 @@ void *pthread_timed_alarm(void *arg)
                         }
                         pthread_mutex_unlock(&alarm_output_mutex);
                     }               
+                }
+                else
+                {
+                    sleep(1);
                 }
             }
             printf_debug("\nTimed alarm count: %04d %04d %04d %04d %04d %04d %04d %04d \n",timed_alarm_count_array[0], timed_alarm_count_array[1], timed_alarm_count_array[2], timed_alarm_count_array[3], timed_alarm_count_array[4], timed_alarm_count_array[5], timed_alarm_count_array[6], timed_alarm_count_array[7]);
@@ -262,10 +266,10 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                 if (entrance_guard_data.if_has_entrance_guard_alarm == YES) 
                 {
                     pthread_mutex_lock(&alarm_output_mutex);
-                    alarm_input_output_data.real_time_alarm_output_objcet |= alarm_input_output_data.alarm_input_linkage_output_object[9];
+                    alarm_input_output_data.real_time_alarm_output_objcet |= alarm_input_output_data.alarm_input_linkage_output_object[MAX_ALARM_LINKAGE_INPUT_OBJECT-1];
                     for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++) 
                     {
-                        if (alarm_input_output_data.alarm_input_linkage_output_object[9] & (1<<i)) 
+                        if (alarm_input_output_data.alarm_input_linkage_output_object[MAX_ALARM_LINKAGE_INPUT_OBJECT-1] & (1<<i)) 
                         {
                             timed_alarm_count_array[i] = temp_timed_alarm_count_array[i];
                         } 
@@ -297,6 +301,13 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                 break;
             case ALARM_INPUT_OUTPUT_SET_AND_CANCEL_LINKAGE_ALARM:
                 pthread_mutex_lock(&alarm_output_mutex);
+                for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++) 
+                {
+                    if (alarm_input_output_data.set_and_cancel_linkage_alarm_channel & (1<<i)) 
+                    {
+                        timed_alarm_count_array[i] = temp_timed_alarm_count_array[i];
+                    }
+                }
                 alarm_input_output_data.real_time_alarm_output_objcet = alarm_input_output_data.set_and_cancel_linkage_alarm_channel; 
                 if ((ret = start_alarm_output(alarm_input_output_fd)) < 0)
                 {
@@ -304,7 +315,7 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                     return ret;
                 }
                 pthread_mutex_unlock(&alarm_output_mutex);
-                //网络发送 成功取消报警输出
+                //网络发送 成功设置报警输出
                 printf_debug("FUNC[%s] LINE[%d]\tSucceed to set alarm output\n",__FUNCTION__, __LINE__);
                 alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
 
@@ -337,14 +348,14 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                 //case ALARM_INPUT_OUTPUT_GET_LINKAGE_INFO:
                 //break;
             case ALARM_INPUT_OUTPUT_SET_ALARM_DURATION:  //设置报警输出持续时间
-                if (alarm_input_output_data.alarm_linkage_output_object == 0) 
+                if (alarm_input_output_data.alarm_linkage_output_object == 0) //set all  
                 {
                     for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++) 
                     {
-                        temp_timed_alarm_count_array[i] = alarm_input_output_data.alarm_linkage_output_object;
+                        temp_timed_alarm_count_array[i] = CHANGE_MINUTE_TO_COUNT(alarm_input_output_data.alarm_duration);
                     }
                 }
-                else
+                else  //set single
                 {
                     temp_timed_alarm_count_array[alarm_input_output_data.alarm_linkage_output_object-1] = CHANGE_MINUTE_TO_COUNT(alarm_input_output_data.alarm_duration);
                 }

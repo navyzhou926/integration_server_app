@@ -7,6 +7,8 @@
 #define IS_CLOSED       0
 #define OPEN_DOOR       1
 #define CLOSE_DOOR      0
+#define NORMAL_OPEN     0
+#define NORMAL_CLOSE    1
 
 #define CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT         21
 #define BUTTON_CONTROL_DOOR_HOLD_TIME_COUNT         17     

@@ -22,11 +22,6 @@ enum CK2316_DEFENCN_AREA_ALARM_STATUS_ARG
     NORMAL_AND_EMERGENCY_ALARM = 3,
 }CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE;
 
-#define CK2316_UART_BOARD           2400
-#define CK2316_UART_DATA_BIT        3
-#define CK2316_UART_CHECK_BIT       2
-#define CK2316_UART_STOP_BIT        0
-
 #define MAX_CHECK_COMMAND_COUNT            6
 
 #define CK2316_KEYBOARD_ADDRESS            0x0E
@@ -117,7 +112,8 @@ void *pthread_ck2316_alarm(void *arg)
         //fd nSpeed nBits nEvent nStop)
         //set_opt(com_fd, 2400, 3, 2, 0); //for ck2316
         //recv_ret = set_opt(com_fd, 9600, 3, 0, 0); //for ck2316
-        recv_ret = set_opt(com_fd, CK2316_UART_BOARD, CK2316_UART_DATA_BIT, CK2316_UART_CHECK_BIT, CK2316_UART_STOP_BIT);
+        //recv_ret = set_opt(com_fd, CK2316_UART_BOARD, CK2316_UART_DATA_BIT, CK2316_UART_CHECK_BIT, CK2316_UART_STOP_BIT);
+        recv_ret = set_opt(com_fd, ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.dwBaudRate, ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byDataBit, ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byParity, ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byStopBit);
         if (recv_ret == -1) 
         {
             printf("FUNC[%s] LINE[%d]\tInit uart failed!\n",__FUNCTION__, __LINE__);
