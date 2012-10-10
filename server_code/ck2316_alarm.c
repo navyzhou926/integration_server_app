@@ -5,9 +5,13 @@
 #include "uart.h"
 #include "net.h"
 #include "serial_common.h"
+#include "net_server.h"
+#include "alarm_input_output.h"
+#include "entrance_guard.h"
 
+//#define DEBUG_DATA
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define printf_debug(fmt, arg...) printf(fmt, ##arg)
 #else
@@ -22,10 +26,18 @@ enum CK2316_DEFENCN_AREA_ALARM_STATUS_ARG
     NORMAL_AND_EMERGENCY_ALARM = 3,
 }CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE;
 
+unsigned char if_search_keyboard = YES;
+
+#define CK2316_UART_BOARD           2400
+#define CK2316_UART_DATA_BIT        3
+#define CK2316_UART_CHECK_BIT       2
+#define CK2316_UART_STOP_BIT        0
+
 #define MAX_CHECK_COMMAND_COUNT            6
 
-#define CK2316_KEYBOARD_ADDRESS            0x0E
-#define CK2316_ACTUAL_KEYBOARD_ADDRESS     (CK2316_KEYBOARD_ADDRESS+1)
+#define ADDRESS_AJUST_NUM 5
+#define CK2316_KEYBOARD_ADDRESS            0x01
+#define CK2316_ACTUAL_KEYBOARD_ADDRESS     (CK2316_KEYBOARD_ADDRESS+ADDRESS_AJUST_NUM)
 #define CK2316_KEYBOARD_ADDRESS_MASK       0x03
 #define CK2316_KEYBOARD_ADDRESS_SIZE       2
 unsigned char ck2316_keyboard_address_code[] = {CK2316_KEYBOARD_ADDRESS, CK2316_KEYBOARD_ADDRESS_MASK};
@@ -51,12 +63,15 @@ unsigned char ck2316_handshake_code[] = {CK2316_HANDSHAKE_CODE_1, CK2316_HANDSHA
 #define CK2316_USER_PASSWORD_3              0x03
 #define CK2316_USER_PASSWORD_4              0x04
 
-ck2316_alarm_arg ck2316_alarm_data = {0, NO, IS_ABANDONED, NO_ALARM, {0x00, 0x00}, {0x00, 0x00}, {0x00, 0x00}, 0, CK2316_KEYBOARD_ADDRESS, {CK2316_USER_PASSWORD_1, CK2316_USER_PASSWORD_2, CK2316_USER_PASSWORD_3,CK2316_USER_PASSWORD_4},{CK2316_SERIAL_PORT,0,0,0,{LINK_DEV_ALARM_CTL,1,ALARM_CTL_PROTOCOL_CK2316},{CK2316_UART_BOARD,CK2316_UART_DATA_BIT,CK2316_UART_STOP_BIT,CK2316_UART_CHECK_BIT}}};
+ck2316_alarm_arg ck2316_alarm_data = {0, NO, IS_ABANDONED, NO_ALARM, {0x00, 0x00}, {0x00, 0x00}, {0x00, 0x00}, 0, CK2316_KEYBOARD_ADDRESS, {CK2316_USER_PASSWORD_1, CK2316_USER_PASSWORD_2, CK2316_USER_PASSWORD_3,CK2316_USER_PASSWORD_4},{CK2316_SERIAL_PORT,{0,0,0},{LINK_DEV_ALARM_CTL,1,ALARM_CTL_PROTOCOL_CK2316},{CK2316_UART_BOARD,CK2316_UART_DATA_BIT,CK2316_UART_STOP_BIT,CK2316_UART_CHECK_BIT, 0,{0,0}},{0}},{0,0,0,0,0,0},0,0};
 
-unsigned char ck2316_keyboard_code[][3] = {{0xFE,0x06,0x00},{0xFE,0x06,0x01},{0xFE,0x06,0x02},{0xFE,0x06,0x03},{0xFE,0x06,0x04},{0xFE,0x06,0x05},{0xFE,0x06,0x06},{0xFE,0x06,0x07},{0xFE,0x06,0x08},{0xFE,0x06,0x09},{0xFE,0x06,0x0A},{0xFE,0x06,0x0B},{0xFE,0x06,0x0C},{0xFE,0x06,0x0D},{0xFE,0x06,0x0E},{0xFE,0x06,0x0F}};
+unsigned char ck2316_keyboard_code[][3] = {{0xFE,0x06,0x00},{0xFE,0x06,0x01},{0xFE,0x06,0x02},{0xFE,0x06,0x03},
+    {0xFE,0x06,0x04},{0xFE,0x06,0x05},{0xFE,0x06,0x06},{0xFE,0x06,0x07},
+    {0xFE,0x06,0x08},{0xFE,0x06,0x09},{0xFE,0x06,0x0A},{0xFE,0x06,0x0B},
+    {0xFE,0x06,0x0C},{0xFE,0x06,0x0D},{0xFE,0x06,0x0E},{0xFE,0x06,0x0F}};
 
 #define CK2316_SYSTEM_DEFENCE_SIZE          (8-1)
-unsigned char system_defence_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x02},{0xFE,0x04,0x03},{0xFE,0x04,0x06},{0xFE,0x04,0x03}};
+unsigned char system_defence_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x02},{0xFE,0x04,0x06},{0xFE,0x04,0x06},{0xFE,0x04,0x03}};
 
 #define CK2316_SYSTEM_ABANDON_SIZE          (5-0)
 unsigned char system_abandon_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};
@@ -74,6 +89,8 @@ FILE *fp_ck2316_config_file = NULL;
 
 extern int server_sock_tcp, client_sock_tcp;
 extern int if_have_net_client_connect;
+extern int entrance_alarm_upload_flag;
+extern int alarm_input_output_channel_last;
 
 extern void print_string(char *string, unsigned char *buffer, unsigned int len);
 int ck2316_alarm_handshake_and_setup(int *com_fd);
@@ -81,7 +98,7 @@ int send_handshake_packet(int *com_fd);
 int verify_ck2316_data(unsigned char *recv_buffer, unsigned int len);
 int ck2316_user_password_setup(unsigned int user_password[4]);
 int ck2316_alarm_init(void);
-
+extern int if_have_net_client_connect;
 void *pthread_ck2316_alarm(void *arg)
 {
     int com_fd;
@@ -112,8 +129,7 @@ void *pthread_ck2316_alarm(void *arg)
         //fd nSpeed nBits nEvent nStop)
         //set_opt(com_fd, 2400, 3, 2, 0); //for ck2316
         //recv_ret = set_opt(com_fd, 9600, 3, 0, 0); //for ck2316
-        //recv_ret = set_opt(com_fd, CK2316_UART_BOARD, CK2316_UART_DATA_BIT, CK2316_UART_CHECK_BIT, CK2316_UART_STOP_BIT);
-        recv_ret = set_opt(com_fd, ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.dwBaudRate, ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byDataBit, ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byParity, ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byStopBit);
+        recv_ret = set_opt(com_fd, CK2316_UART_BOARD, CK2316_UART_DATA_BIT, CK2316_UART_CHECK_BIT, CK2316_UART_STOP_BIT);
         if (recv_ret == -1) 
         {
             printf("FUNC[%s] LINE[%d]\tInit uart failed!\n",__FUNCTION__, __LINE__);
@@ -139,12 +155,15 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
     int recv_ret = 0;
     unsigned char recv_buffer[72] = {0};
     unsigned char temp_test[] = {0xaa, 0x55, 0xa5};
-    unsigned char if_search_keyboard = YES;
     int check_command_count = 0;
     int system_count = 0;
     int capture_address_count = 0;
     unsigned int ck2316_check_command_setup_successful_flag = 0;
     unsigned int before_defence_area_bypass_value = 0;
+    time_t tm;
+    struct tm *t;
+    int temp = 0;
+    //2012.09.17  frank added
 
     //ck2316_alarm_data.setup_command_set = CK2316_SYSTEM_DEFENCE;
     //ck2316_alarm_data.setup_command_set = CK2316_SYSTEM_ABANDON;
@@ -156,7 +175,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
     //ck2316_alarm_data.ck2316_defence_area_bypass_value = CK2316_BYPASS_DEFENCE_AREA;
     //bypass_defence_area_code[5][2] = 0;
     //bypass_defence_area_code[6][2] = 2;
-    
+
     //ck2316_alarm_data.setup_command_set = CK2316_ALARM_HOST_RESET;
     //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_ADDRESS_SETUP;
     //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_PASSWORD_SETUP;
@@ -167,31 +186,41 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
         switch (recv_ret)
         {
             case 0:
+#ifdef DEBUG
+                //print_string("\n ", recv_buffer, CK2316_MAX_RECV_SIZE);
+                //printf_debug("\n");
+#endif
                 if (capture_address_count++ > 4) 
                 {
                     capture_address_count = 0;
-                    //navy ç½‘ç»œå‘é€ åœ°å€è®¾ç½®é”™è¯¯æˆ–æ²¡æœ‰æ•è·æŠ¥è­¦ä¸»æœºçš„åœ°å€ç 
+                    //navy ÍøÂç·¢ËÍ µØÖ·ÉèÖÃ´íÎó»òÃ»ÓĞ²¶»ñ±¨¾¯Ö÷»úµÄµØÖ·Âë
                     printf_debug("FUNC[%s] LINE[%d]\tKeyboard address set error or did not capture CK2316 address code!\n",__FUNCTION__, __LINE__);
                     ck2316_alarm_data.if_ck2316_alive = NO;
                     if (ck2316_alarm_data.setup_command_set != CK2316_NO_VALID_COMMAND) 
                     {
-                        //navy ç½‘ç»œå‘é€ æŠ¥è­¦ä¸»æœºä¸åœ¨çº¿
+                        //navy ÍøÂç·¢ËÍ ±¨¾¯Ö÷»ú²»ÔÚÏß
                         ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
                         printf_debug("FUNC[%s] LINE[%d]\tWarning ! Timeout, ck2316 is not alive !\n",__FUNCTION__, __LINE__);
                     }
                     //ClrCom(*com_fd);
+                    //·¢ËÍ±¨¾¯Æ÷¿ØÖÆÊ§°Ü×´Ì¬»Ø¸´---------------------------------------------------------------------12.9.6  frank added
+                    //send_act_cmd(NOSUPPORT, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                 }
                 break;
             case -1:
                 if (ck2316_alarm_data.setup_command_set != CK2316_NO_VALID_COMMAND) 
                 {
-                    //navy ç½‘ç»œå‘é€ æŠ¥è­¦ä¸»æœºä¸åœ¨çº¿
+                    //navy ÍøÂç·¢ËÍ ±¨¾¯Ö÷»ú²»ÔÚÏß
                     ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
                     printf_debug("FUNC[%s] LINE[%d]\tWarning ! Timeout, ck2316 is not alive !\n",__FUNCTION__, __LINE__);
                 }
                 printf_debug("FUNC[%s] LINE[%d]\tTimeout, ck2316 is not alive ! recv_ret = %d\n",__FUNCTION__, __LINE__,recv_ret);
                 ck2316_alarm_data.if_ck2316_alive = NO;
                 if_search_keyboard = YES;
+
+                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆÊ§°Ü×´Ì¬»Ø¸´---------------------------------------------------------------------12.9.6  frank added
+                //send_act_cmd(NOSUPPORT, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+
                 //ClrCom(*com_fd);
                 break;
             case -2:
@@ -200,18 +229,22 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
             default: //navy2
                 if (if_search_keyboard == YES) 
                 {
-                    for (i = 0; i < 3; i++) //3
+                    for (i = 0; i < 0; i++) //3
                         write(*com_fd, temp_test, CK2316_HANDSHAKE_SIZE);
                     //for (i = 0; i < 7; i++) 
-                    for (i = 0; i < 7; i++) //7 
+                    for (i = 0; i < 20; i++) //7 
                         write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
                     if_search_keyboard = NO;
                     if (ck2316_check_command_setup_successful_flag == CK2316_ALARM_HOST_RESET) 
                     {
                         ck2316_check_command_setup_successful_flag = CK2316_NO_VALID_COMMAND; 
-                        //navy ç½‘ç»œå‘é€ æŠ¥è­¦ä¸»æœºæˆåŠŸå¤ä½
+                        //navy ÍøÂç·¢ËÍ ±¨¾¯Ö÷»ú³É¹¦¸´Î»
                         printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to reset!\n",__FUNCTION__, __LINE__);
+
+                        //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                        send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                     }
+                    sleep(2);
                 }
                 else
                 {
@@ -219,36 +252,57 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                     {
                         switch(ck2316_alarm_data.setup_command_set)
                         {
-                            case CK2316_NO_VALID_COMMAND:  //æ²¡æœ‰åˆæ³•çš„å‘½ä»¤ï¼Œåˆ™å‘é€æ¡æ‰‹ç    
+                            case CK2316_NO_VALID_COMMAND:  //Ã»ÓĞºÏ·¨µÄÃüÁî£¬Ôò·¢ËÍÎÕÊÖÂë   
                                 write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
                                 ck2316_alarm_data.if_ck2316_alive = YES;
                                 break;
-                            case CK2316_SYSTEM_DEFENCE: //ç³»ç»Ÿå¸ƒé˜²
+                            case CK2316_SYSTEM_DEFENCE: //ÏµÍ³²¼·À
                                 if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
                                 {
                                     write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
-                                    //navy ç½‘ç»œå‘é€ ç³»ç»Ÿå·²ç»å¸ƒé˜²ï¼Œç°åœ¨ä¸ç”¨å¸ƒé˜²
+                                    //navy ÍøÂç·¢ËÍ ÏµÍ³ÒÑ¾­²¼·À£¬ÏÖÔÚ²»ÓÃ²¼·À
                                     printf_debug("FUNC[%s] LINE[%d]\tWarning ! CK2316 has been defence status !\n",__FUNCTION__, __LINE__);
                                     ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
                                 }
                                 else
                                 {
-                                    write(*com_fd, system_defence_code[system_count], CK2316_HANDSHAKE_SIZE);
-                                    system_count++;
-                                    if (system_count >= CK2316_SYSTEM_DEFENCE_SIZE) 
+#if 0
+                                    if(system_count == 6)
                                     {
-                                        system_count = 0;
-                                        //ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                        ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
-                                        ck2316_check_command_setup_successful_flag = CK2316_SYSTEM_DEFENCE;
+
+                                        if(system_count1++ > 100)
+                                        {
+                                            system_count1 = 0;
+                                            write(*com_fd, system_defence_code[system_count], CK2316_HANDSHAKE_SIZE);
+                                            system_count++;
+                                        }
+                                        else
+
+                                            write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);	
+                                    }
+                                    else
+#endif
+                                    {
+                                        write(*com_fd, system_defence_code[system_count], CK2316_HANDSHAKE_SIZE);
+                                        system_count++;
+                                        if (system_count >= CK2316_SYSTEM_DEFENCE_SIZE) 
+                                        {
+                                            system_count = 0;
+                                            //ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                                            ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
+                                            ck2316_check_command_setup_successful_flag = CK2316_SYSTEM_DEFENCE;
+                                        }
                                     }
                                 }
+                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+
                                 break;
-                            case CK2316_SYSTEM_ABANDON://ç³»ç»Ÿæ’¤é˜²
+                            case CK2316_SYSTEM_ABANDON://ÏµÍ³³··À
                                 if ((ck2316_alarm_data.ck2316_defence_status == IS_ABANDONED) && ((ck2316_alarm_data.ck2316_defence_area_alarm_status & EMERGENCY_ALARM) != EMERGENCY_ALARM)) 
                                 {
                                     write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
-                                    //navy ç½‘ç»œå‘é€ ç³»ç»Ÿå·²ç»æ’¤é˜²ï¼Œç°åœ¨ä¸ç”¨æ’¤é˜²
+                                    //navy ÍøÂç·¢ËÍ ÏµÍ³ÒÑ¾­³··À£¬ÏÖÔÚ²»ÓÃ³··À
                                     printf_debug("FUNC[%s] LINE[%d]\tWarning ! CK2316 has been abandoned status !\n",__FUNCTION__, __LINE__);
                                     ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
                                 }
@@ -264,8 +318,11 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                         ck2316_check_command_setup_successful_flag = CK2316_SYSTEM_ABANDON;
                                     }
                                 }
+                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+
                                 break;
-                            case CK2316_ELIMINATE_ALARM_MEMORY://æ¶ˆé™¤æŠ¥è­¦è®°å¿†
+                            case CK2316_ELIMINATE_ALARM_MEMORY://Ïû³ı±¨¾¯¼ÇÒä
                                 write(*com_fd, eliminate_alarm_memory_code[system_count], CK2316_HANDSHAKE_SIZE);
                                 system_count++;
                                 if (system_count >= CK2316_ELIMINATE_ALARM_MEMORY_SIZE) 
@@ -275,13 +332,18 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                     ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
                                     ck2316_check_command_setup_successful_flag = CK2316_ELIMINATE_ALARM_MEMORY;
                                 }
+                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                 break;
-                            case CK2316_BYPASS_DEFENCE_AREA: //ç³»ç»Ÿæ—è·¯
+                            case CK2316_BYPASS_DEFENCE_AREA: //ÏµÍ³ÅÔÂ·
                                 if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
                                 {
-                                    //navy ç½‘ç»œå‘é€ è¯·æ’¤é˜²åå†æ—è·¯
+                                    //navy ÍøÂç·¢ËÍ Çë³··ÀºóÔÙÅÔÂ·
                                     printf_debug("FUNC[%s] LINE[%d]\tPlease abandon ,then bypass defence area!\n",__FUNCTION__, __LINE__);
                                     ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+
+                                    //·¢ËÍ±¨¾¯Æ÷¿ØÖÆÊ§°Ü×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                    //send_act_cmd(NOSUPPORT, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                 }
                                 else
                                 {
@@ -302,9 +364,13 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                         ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
                                         ck2316_check_command_setup_successful_flag = CK2316_BYPASS_DEFENCE_AREA;
                                     }
+
+                                    //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                    send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+
                                 }
                                 break;
-                            case CK2316_ALARM_HOST_RESET: //æŠ¥è­¦ä¸»æœºå¤ä½
+                            case CK2316_ALARM_HOST_RESET: //±¨¾¯Ö÷»ú¸´Î»
                                 write(*com_fd, alarm_host_reset_code[system_count], CK2316_HANDSHAKE_SIZE);
                                 system_count++;
                                 if (system_count >= CK2316_ALARM_HOST_RESET_SIZE) 
@@ -314,22 +380,25 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                     //ck2316_alarm_data.setup_command_set = CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL;
                                     ck2316_check_command_setup_successful_flag = CK2316_ALARM_HOST_RESET;
                                     if_search_keyboard = YES;
+
+                                    //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                    send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                 }
                                 break;
-                            /*
-                            case CK2316_SIMULATE_KEYBOARD_ADDRESS_SETUP: //æŠ¥è­¦ä¸»æœºæ¨¡æ‹Ÿé”®ç›˜åœ°å€è®¾ç½®
-                                write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
-                                ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                //navy ç½‘ç»œå‘é€ æŠ¥è­¦ä¸»æœºæ¨¡æ‹Ÿé”®ç›˜åœ°å€è®¾ç½®æˆåŠŸ
+                                /*
+                                   case CK2316_SIMULATE_KEYBOARD_ADDRESS_SETUP: //±¨¾¯Ö÷»úÄ£Äâ¼üÅÌµØÖ·ÉèÖÃ
+                                   write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
+                                   ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
+                                //navy ÍøÂç·¢ËÍ ±¨¾¯Ö÷»úÄ£Äâ¼üÅÌµØÖ·ÉèÖÃ³É¹¦
                                 printf_debug("\n\nCK2316 change keyboard address as: 0x%02x\n\n",ck2316_alarm_data.ck2316_simulate_keyboard_address);
                                 break;
-                            case CK2316_SIMULATE_KEYBOARD_PASSWORD_SETUP: //æŠ¥è­¦ä¸»æœºæ¨¡å¯†ç è®¾ç½®
+                                case CK2316_SIMULATE_KEYBOARD_PASSWORD_SETUP: //±¨¾¯Ö÷»úÄ£ÃÜÂëÉèÖÃ
                                 write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
                                 ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                                //navy ç½‘ç»œå‘é€ æŠ¥è­¦ä¸»æœºæ¨¡æ‹Ÿé”®ç›˜ç”¨æˆ·å¯†ç è®¾ç½®æˆåŠŸ
+                                //navy ÍøÂç·¢ËÍ ±¨¾¯Ö÷»úÄ£Äâ¼üÅÌÓÃ»§ÃÜÂëÉèÖÃ³É¹¦
                                 printf_debug("\n\nCK2316 change keyboard password as: %02d %02d %02d %02d\n\n",ck2316_alarm_data.ck2316_user_password[0], ck2316_alarm_data.ck2316_user_password[1], ck2316_alarm_data.ck2316_user_password[2], ck2316_alarm_data.ck2316_user_password[3]);
                                 break;
-                            */
+                                */
                             case CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL:
                                 write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
                                 check_command_count++;
@@ -340,37 +409,55 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                         case CK2316_SYSTEM_DEFENCE:   
                                             if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
                                             {
-                                                //navy ç½‘ç»œå‘é€ ç³»ç»Ÿå¸ƒé˜²æˆåŠŸ
+                                                //navy ÍøÂç·¢ËÍ ÏµÍ³²¼·À³É¹¦
                                                 printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to defence !\n",__FUNCTION__, __LINE__);
+
+                                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                             }
                                             else
                                             {
-                                                //navy ç½‘ç»œå‘é€ ç³»ç»Ÿå¸ƒé˜²å¤±è´¥
+                                                //navy ÍøÂç·¢ËÍ ÏµÍ³²¼·ÀÊ§°Ü
                                                 printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to defence !\n",__FUNCTION__, __LINE__);
+
+                                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆÊ§°Ü×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                                send_act_cmd(ERRORDATA, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                             }
                                             break;
                                         case CK2316_SYSTEM_ABANDON:   
                                             if (ck2316_alarm_data.ck2316_defence_status == IS_ABANDONED) 
                                             {
-                                                //navy ç½‘ç»œå‘é€ ç³»ç»Ÿæ’¤é˜²æˆåŠŸ
+                                                //navy ÍøÂç·¢ËÍ ÏµÍ³³··À³É¹¦
                                                 printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to abandon !\n",__FUNCTION__, __LINE__);
+
+                                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                             }
                                             else
                                             {
-                                                //navy ç½‘ç»œå‘é€ ç³»ç»Ÿæ’¤é˜²å¤±è´¥
+                                                //navy ÍøÂç·¢ËÍ ÏµÍ³³··ÀÊ§°Ü
                                                 printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to abandon !\n",__FUNCTION__, __LINE__);
+
+                                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆÊ§°Ü×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                                send_act_cmd(ERRORDATA, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                             }
                                             break;
                                         case CK2316_ELIMINATE_ALARM_MEMORY:   
                                             if (ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] == 0x00 && ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] == 0x00) 
                                             {
-                                                //navy ç½‘ç»œå‘é€ ç³»ç»Ÿå·²ç»æˆåŠŸæ¶ˆé™¤æŠ¥è­¦è®°å¿†
+                                                //navy ÍøÂç·¢ËÍ ÏµÍ³ÒÑ¾­³É¹¦Ïû³ı±¨¾¯¼ÇÒä
                                                 printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to eliminate alarm memory!\n",__FUNCTION__, __LINE__);
+
+                                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);		
                                             }
                                             else
                                             {
-                                                //navy ç½‘ç»œå‘é€ ç³»ç»Ÿæ¶ˆé™¤æŠ¥è­¦è®°å¿†å¤±è´¥
+                                                //navy ÍøÂç·¢ËÍ ÏµÍ³Ïû³ı±¨¾¯¼ÇÒäÊ§°Ü
                                                 printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to eliminate alarm memory!\n",__FUNCTION__, __LINE__);
+
+                                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆÊ§°Ü×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                                send_act_cmd(ERRORDATA, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                             }
 
                                             break;
@@ -379,19 +466,24 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                             {
                                                 if (before_defence_area_bypass_value & (1<<(bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]-1))) 
                                                 {
-                                                    //navy ç½‘ç»œå‘é€ ç³»ç»Ÿå·²ç»æˆåŠŸå–æ¶ˆæ—è·¯é˜²åŒº
+                                                    //navy ÍøÂç·¢ËÍ ÏµÍ³ÒÑ¾­³É¹¦È¡ÏûÅÔÂ··ÀÇø
                                                     printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to cancel bypass defence area %d\n",__FUNCTION__, __LINE__, bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]);
                                                 }
                                                 else
                                                 {
-                                                    //navy ç½‘ç»œå‘é€ ç³»ç»Ÿå·²ç»æˆåŠŸæ—è·¯é˜²åŒº
+                                                    //navy ÍøÂç·¢ËÍ ÏµÍ³ÒÑ¾­³É¹¦ÅÔÂ··ÀÇø
                                                     printf_debug("FUNC[%s] LINE[%d]\tCK2316 succeed to bypass defence area %d\n",__FUNCTION__, __LINE__, bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]);
                                                 }
+                                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆ³É¹¦×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                             }
                                             else
                                             {
-                                                    //navy ç½‘ç»œå‘é€ ç³»ç»Ÿæ—è·¯æˆ–å–æ¶ˆé˜²åŒºå¤±è´¥
-                                                    printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to bypass or cancel bypass defence area %d\n",__FUNCTION__, __LINE__, bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]);
+                                                //navy ÍøÂç·¢ËÍ ÏµÍ³ÅÔÂ·»òÈ¡Ïû·ÀÇøÊ§°Ü
+                                                printf_debug("FUNC[%s] LINE[%d]\tCK2316 failed to bypass or cancel bypass defence area %d\n",__FUNCTION__, __LINE__, bypass_defence_area_code[5][2]*10 + bypass_defence_area_code[6][2]);
+
+                                                //·¢ËÍ±¨¾¯Æ÷¿ØÖÆÊ§°Ü×´Ì¬»Ø¸´------------------------------------------------------------12.9.6  frank added
+                                                send_act_cmd(ERRORDATA, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                             }
                                             break;
                                         case CK2316_ALARM_HOST_RESET:
@@ -408,54 +500,101 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                 break;
                         }
                         /*
-                        FE 04 03 FF 02 00 00 00 00 00 0F 03 
-                        FE 04 03 A5 10 00 00 00 00 00 00 0F 03 
-                        FE 04 03 A5 11 00 00 00 00 00 00 0F 03 
-                        FE 04 03 A5 12 00 00 00 00 00 00 0F 03 
-                        FE 04 03 FF 09 00 00 00 00 00 08 0F 03 */
-                        if (recv_buffer[recv_ret-8] == CK2316_HIGH_DEFENCE_AREA_HEAD)    //é«˜é˜²åŒº 
+                           FE 04 03 FF 02 00 00 00 00 00 0F 03 
+                           FE 04 03 A5 10 00 00 00 00 00 00 0F 03 
+                           FE 04 03 A5 11 00 00 00 00 00 00 0F 03 
+                           FE 04 03 A5 12 00 00 00 00 00 00 0F 03 
+                           FE 04 03 FF 09 00 00 00 00 00 08 0F 03 */
+                        if (recv_buffer[recv_ret-8] == CK2316_HIGH_DEFENCE_AREA_HEAD)    //¸ß·ÀÇø 
                         {
-                            //è·å–é«˜é˜²åŒºæŠ¥è­¦è®°å¿†çŠ¶æ€
+                            //»ñÈ¡¸ß·ÀÇø±¨¾¯¼ÇÒä×´Ì¬
                             ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] = recv_buffer[recv_ret-7];
                             //ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] = recv_buffer[recv_ret-6];
-                            //è·å–é«˜é˜²åŒºå®æ—¶æŠ¥è­¦çŠ¶æ€
+                            //»ñÈ¡¸ß·ÀÇøÊµÊ±±¨¾¯×´Ì¬
                             ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1] = recv_buffer[recv_ret-6];
-                            //è·å–é«˜é˜²åŒºæ—è·¯çŠ¶æ€
+                            //»ñÈ¡¸ß·ÀÇøÅÔÂ·×´Ì¬
                             ck2316_alarm_data.ck2316_defence_area_bypass_value[1] = recv_buffer[recv_ret-4];
                         }
-                        else if (recv_buffer[recv_ret-9] == CK2316_LOW_DEFENCE_AREA_HEAD) //ä½é˜²åŒº
+                        else if (recv_buffer[recv_ret-9] == CK2316_LOW_DEFENCE_AREA_HEAD) //µÍ·ÀÇø
                         {
-                            //è·å–å¸ƒæ’¤é˜²çŠ¶æ€ï¼ˆå¸ƒé˜²ï¼Œæ’¤é˜²ï¼‰
+                            //»ñÈ¡²¼³··À×´Ì¬£¨²¼·À£¬³··À£©
                             if (recv_buffer[recv_ret-4] & CK2316_IS_DEFENCED_OR_ABANDONED_MASK) 
                                 ck2316_alarm_data.ck2316_defence_status = IS_DEFENCED;
                             else
                                 ck2316_alarm_data.ck2316_defence_status = IS_ABANDONED;
+
                             printf_debug("ck2316_defence_status = 0x%02x\t",ck2316_alarm_data.ck2316_defence_status);
                             printf_debug("keyboard_address = 0x%02X\n",ck2316_alarm_data.ck2316_simulate_keyboard_address);
-                            //è·å–ä½é˜²åŒºæŠ¥è­¦è®°å¿†çŠ¶æ€
+
+                            //»ñÈ¡µÍ·ÀÇø±¨¾¯¼ÇÒä×´Ì¬
                             ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] = recv_buffer[recv_ret-8];
                             if (ck2316_alarm_data.ck2316_defence_area_alarm_status & EMERGENCY_ALARM)
                             {
                                 ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] = recv_buffer[recv_ret-8] | 0x80;
                             }
-                            //è·å–ä½é˜²åŒºå®æ—¶æŠ¥è­¦çŠ¶æ€
+                            //»ñÈ¡µÍ·ÀÇøÊµÊ±±¨¾¯×´Ì¬
                             ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0] = recv_buffer[recv_ret-7] | (recv_buffer[recv_ret-6] & 0x80);
-                            //è·å–ä½é˜²åŒºæ—è·¯çŠ¶æ€
+                            //»ñÈ¡µÍ·ÀÇøÅÔÂ·×´Ì¬
                             ck2316_alarm_data.ck2316_defence_area_bypass_value[0] = recv_buffer[recv_ret-5];
-                            //CK2316é˜²åŒºæŠ¥è­¦çŠ¶æ€(0:æ— æŠ¥è­¦ 1:æ™®é€šé˜²åŒºæŠ¥è­¦ 2:ç´§æ€¥é˜²åŒºæŠ¥è­¦ 3:æ™®é€šå’Œç´§æ€¥é˜²åŒºéƒ½æœ‰æŠ¥è­¦)
+                            //CK2316·ÀÇø±¨¾¯×´Ì¬(0:ÎŞ±¨¾¯ 1:ÆÕÍ¨·ÀÇø±¨¾¯ 2:½ô¼±·ÀÇø±¨¾¯ 3:ÆÕÍ¨ºÍ½ô¼±·ÀÇø¶¼ÓĞ±¨¾¯)
+                            //CK2316·ÀÇø±¨¾¯×´Ì¬(0:ÎŞ±¨¾¯ >0:ÓĞ±¨¾¯)
                             ck2316_alarm_data.ck2316_defence_area_alarm_status = recv_buffer[recv_ret-3] & CK2316_DEFENCE_AREA_ALARM_STATUS_MASK;
                             switch(ck2316_alarm_data.ck2316_defence_area_alarm_status)
                             {
                                 case NO_ALARM:
-                                    break;
+                                    {
+                                        break;
+                                    }
                                 case NORMAL_ALARM:
-                                case EMERGENCY_ALARM:
+                                case EMERGENCY_ALARM:						
                                 case NORMAL_AND_EMERGENCY_ALARM:
-                                    if (if_have_net_client_connect == YES) 
-                                    //navy æŠ¥è­¦ä¸Šä¼ 
-                                        printf_debug("Warning ! Defence area alarm\t0x%02X%02X 0x%02X%02X 0x%02X%02X 0x%02X 0x%02X\n",ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1], ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0], ck2316_alarm_data.ck2316_defence_area_bypass_value[1], ck2316_alarm_data.ck2316_defence_area_bypass_value[0], ck2316_alarm_data.ck2316_defence_status, ck2316_alarm_data.ck2316_defence_area_alarm_status);
-                                    else
-                                        printf_debug("Warning no net connect! Defence area alarm\t0x%02X%02X 0x%02X%02X 0x%02X%02X 0x%02X 0x%02X\n",ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1], ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0], ck2316_alarm_data.ck2316_defence_area_bypass_value[1], ck2316_alarm_data.ck2316_defence_area_bypass_value[0], ck2316_alarm_data.ck2316_defence_status, ck2316_alarm_data.ck2316_defence_area_alarm_status);
+                                    //printf_debug("test 111111111111111111111111111111111111\n");
+
+
+                                    //ÊµÏÖ±¨¾¯Ö»ÉÏ´«Ò»´Î
+                                    if (temp != ((ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] <<8) |ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] ))
+                                    {
+                                        ck2316_alarm_data.last_alarm_memory_channle = ((ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] <<8) |ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0]) ^ temp;
+
+                                        for(i = 0; i < 32; i++)
+                                        {
+                                            if ((ck2316_alarm_data.last_alarm_memory_channle >> i) & 0x01)
+                                            {
+                                                ck2316_alarm_data.last_alarm_memory_channle = i+1;
+                                                break;
+                                            }							
+                                        }
+                                        if(ck2316_alarm_data.last_alarm_memory_channle == 8)
+                                            ck2316_alarm_data.last_alarm_status = 2;		
+                                        else
+                                            ck2316_alarm_data.last_alarm_status = 1;	
+                                        temp = (ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] <<8) |ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0];
+                                        if (YES == if_have_net_client_connect) 
+                                            //navy ±¨¾¯ÉÏ´«
+                                        {
+                                            tm = time(NULL);
+                                            t = localtime(&tm);
+                                            //fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 1);
+                                            ck2316_alarm_data.upload_time.Year = t->tm_year + 1900 -2000;
+                                            ck2316_alarm_data.upload_time.Month = t->tm_mon + 1;
+                                            ck2316_alarm_data.upload_time.Day =  t->tm_mday;
+                                            ck2316_alarm_data.upload_time.Hour = t->tm_hour;
+                                            ck2316_alarm_data.upload_time.Minute = t->tm_min;
+                                            ck2316_alarm_data.upload_time.Second =  t->tm_sec;
+
+                                            alarm_upload(t,ALARM_DEV_UPLOAD,YES);
+
+#ifdef DEBUG_DATA
+                                            printf("upload the alarm\n");
+#endif	
+                                            printf_debug("Warning ! Defence area alarm\t0x%02X%02X 0x%02X%02X 0x%02X%02X 0x%02X 0x%02X\n",ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1], ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0], ck2316_alarm_data.ck2316_defence_area_bypass_value[1], ck2316_alarm_data.ck2316_defence_area_bypass_value[0], ck2316_alarm_data.ck2316_defence_status, ck2316_alarm_data.ck2316_defence_area_alarm_status);
+                                        }
+                                        else
+                                        {
+                                            printf_debug("Warning no net connect! Defence area alarm\t0x%02X%02X 0x%02X%02X 0x%02X%02X 0x%02X 0x%02X\n",ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1], ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0], ck2316_alarm_data.ck2316_defence_area_bypass_value[1], ck2316_alarm_data.ck2316_defence_area_bypass_value[0], ck2316_alarm_data.ck2316_defence_status, ck2316_alarm_data.ck2316_defence_area_alarm_status);
+                                        }	
+                                    }
+
                                     break;
                             }
                         }
@@ -464,11 +603,13 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                     {
                         if (ck2316_alarm_data.ck2316_simulate_keyboard_address != recv_buffer[recv_ret-2]) 
                         {
-                            //navy ç½‘ç»œå‘é€ åœ°å€è®¾ç½®é”™è¯¯
+                            //navy ÍøÂç·¢ËÍ µØÖ·ÉèÖÃ´íÎó
+                            //·¢ËÍ¼üÅÌµØÖ·ÉèÖÃÊ§°Ü×´Ì¬»Ø¸´------------------------------------------------------------12.9.17  frank added
+                            send_act_cmd(ERRORDATA, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_SET_ADDR_PARAM, ck2316_alarm_data.current_fd);
                             printf_debug("FUNC[%s] LINE[%d]\tKeyboard address set error ! simulate keyboard address = 0x%X\n",__FUNCTION__, __LINE__, ck2316_alarm_data.ck2316_simulate_keyboard_address);
-            #ifdef DEBUG
+#ifdef DEBUG
                             //print_string("\n ", recv_buffer, recv_ret);
-            #endif
+#endif
                             ClrCom(*com_fd);
                             sleep(1);
                         }
@@ -476,9 +617,9 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                     }
                 }
 #ifdef DEBUG
-                printf_debug("recv_ret = %d",recv_ret);
-                print_string("\n ", recv_buffer, recv_ret);
-                printf_debug("\n");
+                //printf_debug("recv_ret = %d",recv_ret);
+                //print_string("\n ", recv_buffer, recv_ret);
+                //printf_debug("\n");
 #endif
                 break;
         }
@@ -495,7 +636,8 @@ int verify_ck2316_data(unsigned char *recv_buffer, unsigned int len)
     }
     else if (len == 2) // 0F 03
     {
-        if ((recv_buffer[0] == ck2316_actual_keyboard_address_code[0]) && (recv_buffer[1] == ck2316_actual_keyboard_address_code[1])) 
+        //if ((recv_buffer[0] == ck2316_actual_keyboard_address_code[0]) && (recv_buffer[1] == ck2316_actual_keyboard_address_code[1])) 
+        if ((recv_buffer[0] == ck2316_alarm_data.ck2316_simulate_keyboard_address) && (recv_buffer[1] == ck2316_actual_keyboard_address_code[1])) 
         {
             return 0;
         }
@@ -506,7 +648,8 @@ int verify_ck2316_data(unsigned char *recv_buffer, unsigned int len)
     }
     else if (len == 5) //FE 04 03 0F 03
     {
-        if ((recv_buffer[0] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[1] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[2] == CK2316_HANDSHAKE_CODE_3) && (recv_buffer[3] == ck2316_actual_keyboard_address_code[0]) && (recv_buffer[4] == ck2316_actual_keyboard_address_code[1])) 
+        //if ((recv_buffer[0] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[1] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[2] == CK2316_HANDSHAKE_CODE_3) && (recv_buffer[3] == ck2316_actual_keyboard_address_code[0]) && (recv_buffer[4] == ck2316_actual_keyboard_address_code[1])) 
+        if ((recv_buffer[0] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[1] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[2] == CK2316_HANDSHAKE_CODE_3) && (recv_buffer[3] == ck2316_alarm_data.ck2316_simulate_keyboard_address) && (recv_buffer[4] == ck2316_actual_keyboard_address_code[1])) 
         {
             return 0;
         }
@@ -528,7 +671,8 @@ int verify_ck2316_data(unsigned char *recv_buffer, unsigned int len)
         if ((recv_buffer[0] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[1] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[2] == CK2316_HANDSHAKE_CODE_3)) 
 #else
             //if ((recv_buffer[len-2] == ck2316_actual_keyboard_address_code[0]) && (recv_buffer[len-1] == ck2316_actual_keyboard_address_code[1])) 
-            if ((recv_buffer[0] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[len-2] == ck2316_actual_keyboard_address_code[0]) && (recv_buffer[len-1] == ck2316_actual_keyboard_address_code[1])) 
+            //if ((recv_buffer[0] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[len-2] == ck2316_actual_keyboard_address_code[0]) && (recv_buffer[len-1] == ck2316_actual_keyboard_address_code[1])) 
+            if ((recv_buffer[0] == CK2316_HANDSHAKE_CODE_1) && (recv_buffer[len-2] == ck2316_alarm_data.ck2316_simulate_keyboard_address) && (recv_buffer[len-1] == ck2316_actual_keyboard_address_code[1])) 
                 //if ((recv_buffer[len-1] == ck2316_actual_keyboard_address_code[0])) 
 #endif
             {
@@ -555,14 +699,28 @@ int send_handshake_packet(int *com_fd)
 int ck2316_simulate_keyboard_address_setup(unsigned int address)
 {
     ck2316_actual_keyboard_address_code[0] = address;
-    if (address != 0x00) 
-    {
-        ck2316_keyboard_address_code[0] = ck2316_actual_keyboard_address_code[0] - 1;
-    }
-    else
-    {
-        ck2316_keyboard_address_code[0] = ck2316_actual_keyboard_address_code[0];
-    }
+#if ADDRESS_AJUST_NUM == 1
+            if (address > 0x00) 
+#elif ADDRESS_AJUST_NUM == 2
+            if (address > 0x01) 
+#elif  ADDRESS_AJUST_NUM == 3
+            if (address > 0x02) 
+#elif  ADDRESS_AJUST_NUM == 4
+            if (address > 0x03) 
+#elif  ADDRESS_AJUST_NUM == 5
+            if (address > 0x04) 
+#else
+            if (0) 
+#endif
+            {
+                ck2316_keyboard_address_code[0] = ck2316_actual_keyboard_address_code[0] - ADDRESS_AJUST_NUM;
+            }
+            else
+            {
+                ck2316_keyboard_address_code[0] = 0x00;
+                ck2316_actual_keyboard_address_code[0] = ck2316_keyboard_address_code[0] + ADDRESS_AJUST_NUM;
+                ck2316_alarm_data.ck2316_simulate_keyboard_address = ck2316_actual_keyboard_address_code[0];
+            }
 
     fseek(fp_ck2316_config_file, 0, SEEK_SET);
     fprintf(fp_ck2316_config_file, "%02d %02d %02d %02d %02d",ck2316_alarm_data.ck2316_simulate_keyboard_address, ck2316_alarm_data.ck2316_user_password[0], ck2316_alarm_data.ck2316_user_password[1], ck2316_alarm_data.ck2316_user_password[2], ck2316_alarm_data.ck2316_user_password[3]);
@@ -593,11 +751,11 @@ int ck2316_alarm_init(void)
 {
     int i = 0;
     //15 01 02 03 04
-    //æ‰“å¼€å­˜å‚¨é—¨ç¦æ§åˆ¶å™¨ä¸€äº›å‚æ•°çš„æ–‡ä»¶
-    //ä¸€å…±å­˜å‚¨5ä¸ªå‚æ•°ï¼Œä»ä¸Šåˆ°ä¸‹é¡ºåºä¸ºï¼š
-    //door_lock_relay_status_setup (1:å¸¸å¼€, 0:å¸¸é—­)   
-    //door_contact_detection_mode_setup (1:å¼€è·¯ï¼Œ0:çŸ­è·¯)
-    //door_status (1:å¼€é—¨ï¼Œ0:å…³é—¨)
+    //´ò¿ª´æ´¢ÃÅ½û¿ØÖÆÆ÷Ò»Ğ©²ÎÊıµÄÎÄ¼ş
+    //Ò»¹²´æ´¢5¸ö²ÎÊı£¬´ÓÉÏµ½ÏÂË³ĞòÎª£º
+    //door_lock_relay_status_setup (1:³£¿ª, 0:³£±Õ)   
+    //door_contact_detection_mode_setup (1:¿ªÂ·£¬0:¶ÌÂ·)
+    //door_status (1:¿ªÃÅ£¬0:¹ØÃÅ)
     //client_set_door_hold_time (0-255s)
     //button_set_door_hold_time (0-255s)
     if ((fp_ck2316_config_file = fopen(CK2316_CONFIG_FILE, "a+")) == NULL)
@@ -615,7 +773,7 @@ int ck2316_alarm_init(void)
     else
     {
         ck2316_actual_keyboard_address_code[0] = ck2316_alarm_data.ck2316_simulate_keyboard_address;
-        ck2316_keyboard_address_code[0] = ck2316_actual_keyboard_address_code[0] - 1;
+        ck2316_keyboard_address_code[0] = ck2316_actual_keyboard_address_code[0] - ADDRESS_AJUST_NUM;
     }
 
     if ((fscanf(fp_ck2316_config_file, "%02d %02d %02d %02d",&ck2316_alarm_data.ck2316_user_password[0], &ck2316_alarm_data.ck2316_user_password[1], &ck2316_alarm_data.ck2316_user_password[2], &ck2316_alarm_data.ck2316_user_password[3])) != 4)
@@ -648,5 +806,122 @@ int ck2316_alarm_init(void)
     fflush(fp_ck2316_config_file);
 
     return 0;
+}
+
+//---------------------------------±¨¾¯ÉÏ´«
+int alarm_upload(struct tm *t,int alarm_type,int flag)
+{
+    INTER_DOOR_ALMOUT_SEND send_buf;
+    int check_ret = 1,len = 0;
+    user_info * pb=head;
+
+    memset(&send_buf,0,sizeof(INTER_DOOR_ALMOUT_SEND));
+
+    //ÔİÊ±Ã»ÓĞ£¬²âÊÔĞèÒª
+    send_buf.alarm_para.byDevID = 1;
+
+    printf("alarm_type:::::%d\n",alarm_type);
+    //ÃÅ½û±¨¾¯:0    ±¨¾¯Ö÷»ú±¨¾¯ :1    ¿ª¹ØÁ¿±¨¾¯:2
+    if(ALARM_DEV_UPLOAD == alarm_type)
+    {
+        send_buf.alarm_para.Year = ck2316_alarm_data.upload_time.Year;
+        send_buf.alarm_para.Second =ck2316_alarm_data.upload_time.Second;
+        send_buf.alarm_para.Month =  ck2316_alarm_data.upload_time.Month;
+        send_buf.alarm_para.Minute =  ck2316_alarm_data.upload_time.Minute;
+        send_buf.alarm_para.Hour =  ck2316_alarm_data.upload_time.Hour;
+        send_buf.alarm_para.Day =  ck2316_alarm_data.upload_time.Day;
+        send_buf.alarm_para.byAlmType = ALARM_DEV_UPLOAD;
+
+        printf("test2222222222222222222222222222222222222:%d\n",ck2316_alarm_data.last_alarm_status);
+        if (ck2316_alarm_data.last_alarm_status == 0)
+        {
+            send_buf.alarm_para.alarmCtl.sAlarmHost.byHostAlmType = 2;     //ÎŞ±¨¾¯
+        }
+        else if (ck2316_alarm_data.last_alarm_status == 1)
+        {
+            send_buf.alarm_para.alarmCtl.sAlarmHost.byHostAlmType = 1;    //ÆÕÍ¨±¨¾¯
+        }
+        else if (ck2316_alarm_data.last_alarm_status == 2)
+        {
+            send_buf.alarm_para.alarmCtl.sAlarmHost.byHostAlmType = 0;    //½ô¼±±¨¾¯
+        }
+
+        send_buf.alarm_para.alarmCtl.sAlarmHost.dwAlarmID = htonl(ck2316_alarm_data.last_alarm_memory_channle);
+    }
+    else if(ENTRANCE_ALARM_UPLOAD == alarm_type)
+    {
+        send_buf.alarm_para.Year = entrance_guard_data.upload_time.Year;
+        send_buf.alarm_para.Second =entrance_guard_data.upload_time.Second;
+        send_buf.alarm_para.Month =  entrance_guard_data.upload_time.Month;
+        send_buf.alarm_para.Minute =  entrance_guard_data.upload_time.Minute;
+        send_buf.alarm_para.Hour =  entrance_guard_data.upload_time.Hour;
+        send_buf.alarm_para.Day =  entrance_guard_data.upload_time.Day;
+        send_buf.alarm_para.byAlmType = ENTRANCE_ALARM_UPLOAD;
+        send_buf.alarm_para.alarmCtl.sDoorSysAlm.byDevNo = 1;
+        send_buf.alarm_para.alarmCtl.sDoorSysAlm.byDoorNo = 1;
+        if(1 == entrance_alarm_upload_flag)
+        {
+            send_buf.alarm_para.alarmCtl.sDoorSysAlm.byDoorAlmType = DOOR_FORCE_OPEN;
+        }
+        else
+        {
+            send_buf.alarm_para.alarmCtl.sDoorSysAlm.byDoorAlmType = DOOR_NO_ALARM;
+            printf_debug("entrance no alarm\n");
+        }
+    }
+    else if(SWITCH_ALARM_UPLOAD == alarm_type)
+    {
+
+        send_buf.alarm_para.Year = alarm_input_output_data.upload_time.Year;
+        send_buf.alarm_para.Second =alarm_input_output_data.upload_time.Second;
+        send_buf.alarm_para.Month =  alarm_input_output_data.upload_time.Month;
+        send_buf.alarm_para.Minute =  alarm_input_output_data.upload_time.Minute;
+        send_buf.alarm_para.Hour =  alarm_input_output_data.upload_time.Hour;
+        send_buf.alarm_para.Day =  alarm_input_output_data.upload_time.Day;
+        send_buf.alarm_para.byAlmType = SWITCH_ALARM_UPLOAD;
+        send_buf.alarm_para.alarmCtl.sSwitchIn.byChannelID = htonl(alarm_input_output_channel_last);
+        if(alarm_input_output_channel_last != 0)
+        {
+            send_buf.alarm_para.alarmCtl.sSwitchIn.byStatus = htonl(YES);//ÓĞ±¨¾¯
+        }
+        else
+        {
+            send_buf.alarm_para.alarmCtl.sSwitchIn.byStatus = htonl(NO);//ÎŞ±¨¾¯
+        }
+    }
+#ifdef DEBUG_DATA
+    printf("alarm_upload_time:%04d-%02d-%02d:%02d:%02d:%02d\n",send_buf.alarm_para.Year,send_buf.alarm_para.Month,send_buf.alarm_para.Day,send_buf.alarm_para.Hour,send_buf.alarm_para.Minute,send_buf.alarm_para.Second);
+    //printf("alarm_upload_data:byDevID:%d,byHostAlmType:%d,dwAlarmID:%d\n",send_buf.alarm_para.byDevID,send_buf.alarm_para.alarmCtl.sAlarmHost.byHostAlmType,send_buf.alarm_para.alarmCtl.sAlarmHost.dwAlarmID);
+#endif
+
+    send_buf.sxdHeader.checkSum=htonl(check_ret);
+    if(0 == flag)
+    {
+        send_buf.sxdHeader.requestID = htonl(SXC_ALARM_UPLOAD_MANU);
+    }
+    else if(1 == flag)
+    {
+        send_buf.sxdHeader.requestID = htonl(SXC_ALARM_UPLOAD_AUTO);
+    }
+    send_buf.sxdHeader.status = htonl(QULIFIED); 						
+    send_buf.sxdHeader.length = htonl(sizeof(INTER_DOOR_ALMOUT_SEND));
+    len = sizeof(INTER_DOOR_ALMOUT_SEND);
+    send_buf.sxdHeader.version = htonl(SDK_VERSION);
+    if(pb ==NULL)
+    {
+        printf_debug("no user on-line\n");
+    }
+    while(pb!=NULL)
+    {
+        if(send_data_intime_over(pb->sockfd_client, MAX_TIME_OUT_MS, (char *)&send_buf, len))
+        {
+#ifdef DEBUG_DATA
+            printf("successful alarm_upload to :%d\n",pb->sockfd_client);
+#endif
+        }
+        pb=pb->next;
+    }
+    return 1;
+
 }
 

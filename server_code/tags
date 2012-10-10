@@ -1,0 +1,1083 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ADDRESS_AJUST_NUM	ck2316_alarm.c	36;"	d	file:
+ALAEMCTL_DEV_OTHER_DISARMING	net_server.h	/^    ALAEMCTL_DEV_OTHER_DISARMING,		\/\/ 旁路防区$/;"	e	enum:__anon32
+ALARMCTL_DEV_ALARM_STATE	net_server.h	/^} ALARMCTL_DEV_ALARM_STATE;$/;"	t	typeref:struct:__anon29
+ALARMCTL_DEV_ARMED	net_server.h	/^    ALARMCTL_DEV_ARMED ,					\/\/ 已布防$/;"	e	enum:__anon28
+ALARMCTL_DEV_ARMING	net_server.h	/^    ALARMCTL_DEV_ARMING,        				 \/\/布防命令$/;"	e	enum:__anon32
+ALARMCTL_DEV_CLOSE	net_server.h	/^    ALARMCTL_DEV_CLOSE,					\/\/ 关闭命令$/;"	e	enum:__anon32
+ALARMCTL_DEV_CLOSED	net_server.h	/^    ALARMCTL_DEV_CLOSED=0,				\/\/ 设备关闭$/;"	e	enum:__anon27
+ALARMCTL_DEV_CMD_NUM	net_server.h	/^    ALARMCTL_DEV_CMD_NUM,$/;"	e	enum:__anon32
+ALARMCTL_DEV_CMD_TYPE	net_server.h	/^} ALARMCTL_DEV_CMD_TYPE;$/;"	t	typeref:enum:__anon32
+ALARMCTL_DEV_DEFENCE_STATE	net_server.h	/^} ALARMCTL_DEV_DEFENCE_STATE;$/;"	t	typeref:enum:__anon28
+ALARMCTL_DEV_DISARMED	net_server.h	/^    ALARMCTL_DEV_DISARMED = 0,			\/\/ 未布防$/;"	e	enum:__anon28
+ALARMCTL_DEV_DISARMING	net_server.h	/^    ALARMCTL_DEV_DISARMING,				\/\/ 撤防命令$/;"	e	enum:__anon32
+ALARMCTL_DEV_FIRE_POLICE	net_server.h	/^    ALARMCTL_DEV_FIRE_POLICE,			\/\/ 消警命令$/;"	e	enum:__anon32
+ALARMCTL_DEV_OPEN	net_server.h	/^    ALARMCTL_DEV_OPEN=0,					\/\/ 打开命令$/;"	e	enum:__anon32
+ALARMCTL_DEV_OPENED	net_server.h	/^    ALARMCTL_DEV_OPENED,				\/\/ 设备启用$/;"	e	enum:__anon27
+ALARMCTL_DEV_PATROL_CHECK	net_server.h	/^    ALARMCTL_DEV_PATROL_CHECK,			\/\/ 巡检$/;"	e	enum:__anon26
+ALARMCTL_DEV_RESET	net_server.h	/^    ALARMCTL_DEV_RESET,					\/\/ 复位命令$/;"	e	enum:__anon32
+ALARMCTL_DEV_RUNNING_STATE	net_server.h	/^    ALARMCTL_DEV_RUNNING_STATE=0,		\/\/ 设备开关状态$/;"	e	enum:__anon26
+ALARMCTL_DEV_STATE	net_server.h	/^} ALARMCTL_DEV_STATE;$/;"	t	typeref:enum:__anon27
+ALARMCTL_DEV_STATE_CMD_NUM	net_server.h	/^    ALARMCTL_DEV_STATE_CMD_NUM,	$/;"	e	enum:__anon26
+ALARMCTL_DEV_STATE_CMD_TYPE	net_server.h	/^}ALARMCTL_DEV_STATE_CMD_TYPE;$/;"	t	typeref:enum:__anon26
+ALARMCTL_DEV_WORK_STATE	net_server.h	/^    ALARMCTL_DEV_WORK_STATE,			\/\/ 布撤防查询功能$/;"	e	enum:__anon26
+ALARM_CLT_PROTOCOL_TYPE	net_server.h	/^}ALARM_CLT_PROTOCOL_TYPE;$/;"	t	typeref:enum:__anon47
+ALARM_CTL_PROTOCOL_CK2316	net_server.h	/^    ALARM_CTL_PROTOCOL_CK2316,        $/;"	e	enum:__anon47
+ALARM_CTL_PROTOCOL_NUM	net_server.h	/^    ALARM_CTL_PROTOCOL_NUM, $/;"	e	enum:__anon47
+ALARM_CTL_PROTOCOL_UNKNOW	net_server.h	/^    ALARM_CTL_PROTOCOL_UNKNOW=0,        $/;"	e	enum:__anon47
+ALARM_CTL_PROTOCOL_VISTA120	net_server.h	/^    ALARM_CTL_PROTOCOL_VISTA120,        $/;"	e	enum:__anon47
+ALARM_DEV_UPLOAD	net_server.h	/^    ALARM_DEV_UPLOAD,$/;"	e	enum:__anon52
+ALARM_GPIO_DEVICE_NAME	alarm_input_output.c	25;"	d	file:
+ALARM_INPUT_OUTPUT_CONFIG_FILE	alarm_input_output.h	9;"	d
+ALARM_INPUT_OUTPUT_GET_ALARM_DURATION	alarm_input_output.h	19;"	d
+ALARM_INPUT_OUTPUT_GET_LINKAGE_INFO	alarm_input_output.h	15;"	d
+ALARM_INPUT_OUTPUT_NORMAL_OPERATION	alarm_input_output.h	13;"	d
+ALARM_INPUT_OUTPUT_RESTORE_TO_DEFAULT	alarm_input_output.h	17;"	d
+ALARM_INPUT_OUTPUT_SET_ALARM_DURATION	alarm_input_output.h	18;"	d
+ALARM_INPUT_OUTPUT_SET_AND_CANCEL_LINKAGE_ALARM	alarm_input_output.h	16;"	d
+ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO	alarm_input_output.h	14;"	d
+ALARM_INPUT_OUTPUT_TIMED_ALARM_FILE	alarm_input_output.h	10;"	d
+ALARM_LINKAGE_OUTPUT_OBJECT_1	alarm_input_output.c	64;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_2	alarm_input_output.c	65;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_3	alarm_input_output.c	66;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_4	alarm_input_output.c	67;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_5	alarm_input_output.c	68;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_6	alarm_input_output.c	69;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_7	alarm_input_output.c	70;"	d	file:
+ALARM_LINKAGE_OUTPUT_OBJECT_8	alarm_input_output.c	71;"	d	file:
+ALARM_LINKAGE_PARA	net_server.h	/^}ALARM_LINKAGE_PARA;$/;"	t	typeref:struct:__anon59
+ALARM_LINKAGE_PARA_SEND	net_server.h	/^}ALARM_LINKAGE_PARA_SEND;$/;"	t	typeref:struct:__anon60
+ALARM_OUTPUT_DURATION_CFG_SEND	net_server.h	/^}ALARM_OUTPUT_DURATION_CFG_SEND;$/;"	t	typeref:struct:__anon62
+ALARM_OUTPUT_DURATION_CFG_V1	net_server.h	/^}ALARM_OUTPUT_DURATION_CFG_V1;$/;"	t	typeref:struct:__anon61
+ALARM_OUTPUT_NORMALLY_CLOSE	alarm_input_output.c	58;"	d	file:
+ALARM_OUTPUT_NORMALLY_OPEN	alarm_input_output.c	57;"	d	file:
+ANT	cradle_head_control.h	41;"	d
+AT91_ALARM_IO1	alarm_input_output.c	27;"	d	file:
+AT91_ALARM_IO2	alarm_input_output.c	28;"	d	file:
+AT91_ALARM_IO3	alarm_input_output.c	29;"	d	file:
+AT91_ALARM_IO4	alarm_input_output.c	30;"	d	file:
+AT91_ALARM_IO5	alarm_input_output.c	31;"	d	file:
+AT91_ALARM_IO6	alarm_input_output.c	32;"	d	file:
+AT91_ALARM_IO7	alarm_input_output.c	33;"	d	file:
+AT91_ALARM_IO8	alarm_input_output.c	34;"	d	file:
+AUX_PWROFF1	net_server.h	49;"	d
+AUX_PWROFF2	net_server.h	51;"	d
+AUX_PWRON1	net_server.h	48;"	d
+AUX_PWRON2	net_server.h	50;"	d
+BRD_SOCK	net_server.h	/^    BRD_SOCK,$/;"	e	enum:tag_sock_type
+BUTTON_CONTROL_DOOR_HOLD_TIME_COUNT	entrance_guard.h	15;"	d
+BUTTON_CONTROL_DOOR_HOLD_TIME_SEND_SIZE	entrance_guard.h	23;"	d
+CBC	cradle_head_control.h	42;"	d
+CHANGE_COUNT_TO_MINUTE	alarm_input_output.c	104;"	d	file:
+CHANGE_INPUT_OUTPUT_STATUS	alarm_input_output.c	54;"	d	file:
+CHANGE_MINUTE_TO_COUNT	alarm_input_output.c	103;"	d	file:
+CK2316_ACTUAL_KEYBOARD_ADDRESS	ck2316_alarm.c	38;"	d	file:
+CK2316_ALARM_HOST_RESET	ck2316_alarm.h	27;"	d
+CK2316_ALARM_HOST_RESET_SIZE	ck2316_alarm.c	83;"	d	file:
+CK2316_BYPASS_DEFENCE_AREA	ck2316_alarm.h	26;"	d
+CK2316_BYPASS_DEFENCE_AREA_SIZE	ck2316_alarm.c	80;"	d	file:
+CK2316_CHECK_COMMAND_IF_SETUP_SUCCESSFUL	ck2316_alarm.h	30;"	d
+CK2316_CONFIG_FILE	ck2316_alarm.h	17;"	d
+CK2316_DEFENCE_AREA_ALARM_STATUS_MASK	ck2316_alarm.c	55;"	d	file:
+CK2316_DEFENCE_AREA_HEAD_POSITION	ck2316_alarm.c	52;"	d	file:
+CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	ck2316_alarm.c	/^enum CK2316_DEFENCN_AREA_ALARM_STATUS_ARG$/;"	g	file:
+CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE	ck2316_alarm.c	/^}CK2316_DEFENCN_AREA_ALARM_STATUS_VALUE;$/;"	v	typeref:enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG
+CK2316_ELIMINATE_ALARM_MEMORY	ck2316_alarm.h	25;"	d
+CK2316_ELIMINATE_ALARM_MEMORY_SIZE	ck2316_alarm.c	77;"	d	file:
+CK2316_HANDSHAKE_CODE_1	ck2316_alarm.c	44;"	d	file:
+CK2316_HANDSHAKE_CODE_2	ck2316_alarm.c	45;"	d	file:
+CK2316_HANDSHAKE_CODE_3	ck2316_alarm.c	46;"	d	file:
+CK2316_HANDSHAKE_SIZE	ck2316_alarm.c	47;"	d	file:
+CK2316_HANDSHAKE_SIZE	ck2316_alarm.h	9;"	d
+CK2316_HIGH_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	56;"	d	file:
+CK2316_HIGH_DEFENCE_AREA_HEAD	ck2316_alarm.c	50;"	d	file:
+CK2316_IS_DEFENCED_OR_ABANDONED_MASK	ck2316_alarm.c	54;"	d	file:
+CK2316_KEYBOARD_ADDRESS	ck2316_alarm.c	37;"	d	file:
+CK2316_KEYBOARD_ADDRESS_MASK	ck2316_alarm.c	39;"	d	file:
+CK2316_KEYBOARD_ADDRESS_SIZE	ck2316_alarm.c	40;"	d	file:
+CK2316_LOW_BYPASS_DEFENCE_AREA_MASK	ck2316_alarm.c	57;"	d	file:
+CK2316_LOW_DEFENCE_AREA_HEAD	ck2316_alarm.c	51;"	d	file:
+CK2316_MAX_ALARM_MESSAGE_NUM	ck2316_alarm.h	32;"	d
+CK2316_MAX_NORMAL_MESSAGE_NUM	ck2316_alarm.h	33;"	d
+CK2316_MAX_RECV_SIZE	ck2316_alarm.h	8;"	d
+CK2316_NO_VALID_COMMAND	ck2316_alarm.h	22;"	d
+CK2316_RECV_FINISH_TIMEOUT	ck2316_alarm.h	12;"	d
+CK2316_RECV_TIMEOUT	ck2316_alarm.h	11;"	d
+CK2316_SERIAL_PORT	ck2316_alarm.h	35;"	d
+CK2316_SYSTEM_ABANDON	ck2316_alarm.h	24;"	d
+CK2316_SYSTEM_ABANDON_SIZE	ck2316_alarm.c	74;"	d	file:
+CK2316_SYSTEM_DEFENCE	ck2316_alarm.h	23;"	d
+CK2316_SYSTEM_DEFENCE_SIZE	ck2316_alarm.c	71;"	d	file:
+CK2316_UART_BOARD	ck2316_alarm.c	29;"	d	file:
+CK2316_UART_BOARD	ck2316_alarm.h	36;"	d
+CK2316_UART_CHECK_BIT	ck2316_alarm.c	31;"	d	file:
+CK2316_UART_CHECK_BIT	ck2316_alarm.h	38;"	d
+CK2316_UART_DATA_BIT	ck2316_alarm.c	30;"	d	file:
+CK2316_UART_DATA_BIT	ck2316_alarm.h	37;"	d
+CK2316_UART_DEVICE	global.h	8;"	d
+CK2316_UART_STOP_BIT	ck2316_alarm.c	32;"	d	file:
+CK2316_UART_STOP_BIT	ck2316_alarm.h	39;"	d
+CK2316_USER_PASSWORD_1	ck2316_alarm.c	59;"	d	file:
+CK2316_USER_PASSWORD_2	ck2316_alarm.c	60;"	d	file:
+CK2316_USER_PASSWORD_3	ck2316_alarm.c	61;"	d	file:
+CK2316_USER_PASSWORD_4	ck2316_alarm.c	62;"	d	file:
+CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT	entrance_guard.h	14;"	d
+CLIENT_CONTROL_DOOR_HOLD_TIME_SEND_SIZE	entrance_guard.h	22;"	d
+CLOSE_DOOR	entrance_guard.h	10;"	d
+CLOSE_DOOR_SEND_SIZE	entrance_guard.h	19;"	d
+CLT_168	cradle_head_control.h	37;"	d
+CONCORD	cradle_head_control.h	44;"	d
+CRADLE_HEAD_APERTURE_BIG	cradle_head_control.c	/^unsigned char CRADLE_HEAD_APERTURE_BIG[8] = {0xa0,0x00,0x04,0x00,0x00,0x00,0xaf,0x0b};  \/\/光圈大$/;"	v
+CRADLE_HEAD_APERTURE_SMALL	cradle_head_control.c	/^unsigned char CRADLE_HEAD_APERTURE_SMALL[8] = {0xa0,0x00,0x08,0x00,0x00,0x00,0xaf,0x07};\/\/光圈小$/;"	v
+CRADLE_HEAD_CONTROL_NO_VALID_COMMAND	cradle_head_control.h	5;"	d
+CRADLE_HEAD_DEFAULT_ADDRESS	cradle_head_control.c	22;"	d	file:
+CRADLE_HEAD_DEFAULT_MOVE_SPEED	cradle_head_control.c	24;"	d	file:
+CRADLE_HEAD_DEFAULT_PRESET_POINT	cradle_head_control.c	25;"	d	file:
+CRADLE_HEAD_DEFAULT_PROTOCOL_TYPE	cradle_head_control.c	23;"	d	file:
+CRADLE_HEAD_DOWN	cradle_head_control.c	/^unsigned char CRADLE_HEAD_DOWN[8] = {0xa0,0x00,0x00,0x10,0x00,0x0f,0xaf,0x10}; \/\/下$/;"	v
+CRADLE_HEAD_FOCUS_IN	cradle_head_control.c	/^unsigned char CRADLE_HEAD_FOCUS_IN[8] = {0xa0,0x00,0x02,0x00,0x00,0x00,0xaf,0x0d};\/\/聚焦近$/;"	v
+CRADLE_HEAD_FOCUS_OUT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_FOCUS_OUT[8] = {0xa0,0x00,0x01,0x00,0x00,0x00,0xaf,0x0e};\/\/聚焦远$/;"	v
+CRADLE_HEAD_LEFT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_LEFT[8] = {0xa0,0x00,0x00,0x04,0x0f,0x00,0xaf,0x04}; \/\/左$/;"	v
+CRADLE_HEAD_RIGHT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_RIGHT[8] = {0xa0,0x00,0x00,0x02,0x0f,0x00,0xaf,0x02};\/\/右$/;"	v
+CRADLE_HEAD_SERIAL_PORT	cradle_head_control.h	53;"	d
+CRADLE_HEAD_SET_PRESET_POINT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_SET_PRESET_POINT[8] = {0xa0,0x00,0x00,0x03,0x00,0x01,0xaf,0x0d};\/\/设置预置点001$/;"	v
+CRADLE_HEAD_STOP	cradle_head_control.c	/^unsigned char CRADLE_HEAD_STOP[8] = {0xa0,0x00,0x00,0x00,0x00,0x00,0xaf,0x00}; \/\/停止$/;"	v
+CRADLE_HEAD_TURN_TO_PRESET_POINT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_TURN_TO_PRESET_POINT[8] = {0xa0,0x00,0x00,0x07,0x00,0x01,0xaf,0x09};\/\/转至预置点001$/;"	v
+CRADLE_HEAD_UART_BOARD	cradle_head_control.h	54;"	d
+CRADLE_HEAD_UART_CHECK_BIT	cradle_head_control.h	56;"	d
+CRADLE_HEAD_UART_DATA_BIT	cradle_head_control.h	55;"	d
+CRADLE_HEAD_UART_DEVICE	global.h	10;"	d
+CRADLE_HEAD_UART_STOP_BIT	cradle_head_control.h	57;"	d
+CRADLE_HEAD_UP	cradle_head_control.c	/^unsigned char CRADLE_HEAD_UP[8] = {0xa0,0x00,0x00,0x08,0x00,0x0f,0xaf,0x08};   \/\/上$/;"	v
+CRADLE_HEAD_ZOOM_IN	cradle_head_control.c	/^unsigned char CRADLE_HEAD_ZOOM_IN[8] = {0xa0,0x00,0x00,0x20,0x00,0x00,0xaf,0x2f}; \/\/变倍长(特写, 放大)$/;"	v
+CRADLE_HEAD_ZOOM_OUT	cradle_head_control.c	/^unsigned char CRADLE_HEAD_ZOOM_OUT[8] = {0xa0,0x00,0x00,0x40,0x00,0x00,0xaf,0x4f};\/\/变倍短(广角, 缩小)$/;"	v
+CS850A	cradle_head_control.h	43;"	d
+CURRENT_MATRIX_MAX_OUT_CHANNEL_NUM	matrix_control.c	21;"	d	file:
+CURRENT_NOALIVE	net_server.h	22;"	d
+CloseCom	uart.c	/^int CloseCom(int Device)$/;"	f
+CloseConsole	serial_common.c	/^int CloseConsole(void)$/;"	f
+ClrCom	uart.c	/^int ClrCom(int Device)$/;"	f
+DEBUG	ck2316_alarm.c	14;"	d	file:
+DEBUG	global.c	9;"	d	file:
+DEBUG	main.c	26;"	d	file:
+DEBUG	matrix_control.c	11;"	d	file:
+DEBUG_DATA	ck2316_alarm.c	12;"	d	file:
+DEBUG_ERROR	net_server.c	34;"	d	file:
+DEFAULT_ALARM_DURATION	alarm_input_output.c	74;"	d	file:
+DELAY_N_SECOND	alarm_input_output.c	101;"	d	file:
+DEV_COMM_VERSION	net_server.h	116;"	d
+DEV_COM_NUM	net_server.h	117;"	d
+DEV_HARD_VERSION	net_server.h	115;"	d
+DEV_ID_VERSION	net_server.h	112;"	d
+DEV_SERIAL_Num	net_server.h	113;"	d
+DEV_SOFT_VERSION	net_server.h	114;"	d
+DISABLE_ALARM_OUTPUT	alarm_input_output.c	61;"	d	file:
+DOORCTL_CLOSE	net_server.h	/^    DOORCTL_CLOSE=0,					     		\/\/ 关闭$/;"	e	enum:__anon19
+DOORCTL_CMD_NUM	net_server.h	/^    DOORCTL_CMD_NUM,$/;"	e	enum:__anon19
+DOORCTL_CMD_TYPE	net_server.h	/^}DOORCTL_CMD_TYPE;$/;"	t	typeref:enum:__anon19
+DOORCTL_OPEN	net_server.h	/^    DOORCTL_OPEN ,					  	        \/\/ 打开$/;"	e	enum:__anon19
+DOOR_CLOSE	net_server.h	/^    DOOR_CLOSE,$/;"	e	enum:__anon53
+DOOR_CONTACT_DEFAULT_CLOSE_SETUP_SEND_SIZE	entrance_guard.h	25;"	d
+DOOR_CONTACT_DEFAULT_OPEN_SETUP_SEND_SIZE	entrance_guard.h	24;"	d
+DOOR_CONTACT_OPEN_CIRCUIT	net_server.h	/^    DOOR_CONTACT_OPEN_CIRCUIT = 0,	             \/\/ 开路$/;"	e	enum:__anon21
+DOOR_CONTACT_OPEN_SHORT_CIRCUIT	net_server.h	/^    DOOR_CONTACT_OPEN_SHORT_CIRCUIT, 	     \/\/ 开路和短路都检测$/;"	e	enum:__anon21
+DOOR_CONTACT_OPEN_SHORT_CIRCUT_NO	net_server.h	/^    DOOR_CONTACT_OPEN_SHORT_CIRCUT_NO,    \/\/ 开路和短路都不检测$/;"	e	enum:__anon21
+DOOR_CONTACT_SHORT_CIRCUIT	net_server.h	/^    DOOR_CONTACT_SHORT_CIRCUIT,	             \/\/ 短路$/;"	e	enum:__anon21
+DOOR_CTL_PROTOCOL_COSON	net_server.h	/^    DOOR_CTL_PROTOCOL_COSON,        $/;"	e	enum:__anon48
+DOOR_CTL_PROTOCOL_NUM	net_server.h	/^    DOOR_CTL_PROTOCOL_NUM, $/;"	e	enum:__anon48
+DOOR_CTL_PROTOCOL_UNKNOW	net_server.h	/^    DOOR_CTL_PROTOCOL_UNKNOW=0,        $/;"	e	enum:__anon48
+DOOR_CTL_PROTOCOL_WESTINGHOUSE	net_server.h	/^    DOOR_CTL_PROTOCOL_WESTINGHOUSE,        $/;"	e	enum:__anon48
+DOOR_FORCE_OPEN	net_server.h	/^    DOOR_FORCE_OPEN,$/;"	e	enum:__anon53
+DOOR_LOCK_DEFAULT_CLOSE_SETUP_SEND_SIZE	entrance_guard.h	21;"	d
+DOOR_LOCK_DEFAULT_OPEN_SETUP_SEND_SIZE	entrance_guard.h	20;"	d
+DOOR_NO_ALARM	net_server.h	/^    DOOR_NO_ALARM,$/;"	e	enum:__anon53
+DOOR_OPEN	net_server.h	/^    DOOR_OPEN = 0,$/;"	e	enum:__anon53
+DOOR_PROTOCOL_TYPE	net_server.h	/^}DOOR_PROTOCOL_TYPE;$/;"	t	typeref:enum:__anon48
+Day	global.h	/^	char Day;				\/\/ 日。 根据月份来确定。范围：1~31$/;"	m	struct:__anon5
+Day	net_server.h	/^    char  Day;	\/\/ 日。 根据月份来确定。范围：1~31$/;"	m	struct:__anon69
+Day	net_server.h	/^    char Day;							\/\/ 日。 根据月份来确定。范围：1~31$/;"	m	struct:__anon57
+Decode	md5.c	/^void Decode (UINT4 *output,unsigned char *input,unsigned int len)$/;"	f
+EMERGENCY_ALARM	ck2316_alarm.c	/^    EMERGENCY_ALARM = 2,$/;"	e	enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	file:
+ENABLE_ALARM_OUTPUT	alarm_input_output.c	60;"	d	file:
+ENTRANCE_ALARM_UPLOAD	net_server.h	/^    ENTRANCE_ALARM_UPLOAD,$/;"	e	enum:__anon52
+ENTRANCE_GUARD_ALARM_MESSAGE_FILE	entrance_guard.h	37;"	d
+ENTRANCE_GUARD_BOARD	entrance_guard.h	68;"	d
+ENTRANCE_GUARD_BOARD_RATE	entrance_guard.h	65;"	d
+ENTRANCE_GUARD_BUTTON_SET_DOOR_HOLD_TIME	entrance_guard.h	46;"	d
+ENTRANCE_GUARD_CANCEL_ALARM_STATUS	entrance_guard.h	51;"	d
+ENTRANCE_GUARD_CLIENT_SET_DOOR_HOLD_TIME	entrance_guard.h	45;"	d
+ENTRANCE_GUARD_CLOSE_DOOR	entrance_guard.h	42;"	d
+ENTRANCE_GUARD_CONFIG_FILE	entrance_guard.h	35;"	d
+ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_CLOSE	entrance_guard.h	50;"	d
+ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_OPEN	entrance_guard.h	49;"	d
+ENTRANCE_GUARD_GET_ALARM_MESSAGE	entrance_guard.h	48;"	d
+ENTRANCE_GUARD_GET_NORMAL_MESSAGE	entrance_guard.h	47;"	d
+ENTRANCE_GUARD_MESSAGE_COUNT_FILE	entrance_guard.h	38;"	d
+ENTRANCE_GUARD_NORMAL_MESSAGE_FILE	entrance_guard.h	36;"	d
+ENTRANCE_GUARD_NO_VALID_COMMAND	entrance_guard.h	40;"	d
+ENTRANCE_GUARD_OPEN_DOOR	entrance_guard.h	41;"	d
+ENTRANCE_GUARD_RECV_OVER_TIME	entrance_guard.h	32;"	d
+ENTRANCE_GUARD_RELAY_CLOSE_DOOR	entrance_guard.h	44;"	d
+ENTRANCE_GUARD_RELAY_OPEN_DOOR	entrance_guard.h	43;"	d
+ENTRANCE_GUARD_SERIAL_PORT	entrance_guard.h	67;"	d
+ENTRANCE_GUARD_UART_CHECK_BIT	entrance_guard.h	70;"	d
+ENTRANCE_GUARD_UART_DATA_BIT	entrance_guard.h	69;"	d
+ENTRANCE_GUARD_UART_DEVICE	global.h	7;"	d
+ENTRANCE_GUARD_UART_STOP_BIT	entrance_guard.h	71;"	d
+ERRORDATA	net_server.h	17;"	d
+ERRORPASSWD	net_server.h	16;"	d
+EXEP_PORT	serial_common.h	/^	EXEP_PORT,$/;"	e	enum:__anon70
+E_SOCK_TYPE	net_server.h	/^}E_SOCK_TYPE;$/;"	t	typeref:enum:tag_sock_type
+E_SOCK_TYPE_DEFAULT_PATCH	net_server.h	/^    E_SOCK_TYPE_DEFAULT_PATCH$/;"	e	enum:tag_sock_type
+Encode	md5.c	/^void Encode (unsigned char *output,UINT4 *input,unsigned int len)$/;"	f
+F	md5.h	35;"	d
+FF	md5.h	51;"	d
+G	md5.h	36;"	d
+GET_ALARM_INPUT_VALUE	alarm_input_output.c	62;"	d	file:
+GET_IO_DATA	alarm_input_output.c	53;"	d	file:
+GG	md5.h	53;"	d
+H	md5.h	37;"	d
+HANDSHAKE_SEND_SIZE	entrance_guard.h	17;"	d
+HANDSHAKE_SETUP_RECV_SIZE	entrance_guard.h	29;"	d
+HD600	cradle_head_control.h	45;"	d
+HH	md5.h	57;"	d
+Hour	global.h	/^	char Hour; 			\/\/ 时。范围： 0~23$/;"	m	struct:__anon5
+Hour	net_server.h	/^    char  Hour; 	\/\/ 时。范围： 0~23$/;"	m	struct:__anon69
+Hour	net_server.h	/^    char Hour; 							\/\/ 时。范围： 0~23$/;"	m	struct:__anon57
+I	md5.h	38;"	d
+II	md5.h	61;"	d
+INPUT	alarm_input_output.c	48;"	d	file:
+INTER_ALARMOUTCFG	net_server.h	/^}INTER_ALARMOUTCFG,*LPINTER_ALARMOUTCFG;$/;"	t	typeref:struct:__anon39
+INTER_DOOR_ALMOUT	net_server.h	/^}INTER_DOOR_ALMOUT, *LP_INTER_DOOR_ALMOUT;$/;"	t	typeref:struct:__anon57
+INTER_DOOR_ALMOUT_SEND	net_server.h	/^}INTER_DOOR_ALMOUT_SEND;$/;"	t	typeref:struct:__anon58
+INTER_DOOR_STATUS	net_server.h	/^}INTER_DOOR_STATUS,*LP_INTER_DOOR_STATUS;$/;"	t	typeref:struct:__anon23
+INTER_MMS_ALARMINCFG	net_server.h	/^}INTER_MMS_ALARMINCFG,*LPINTER_MMS_ALARMINCFG;$/;"	t	typeref:struct:__anon38
+INTER_NETCFG	net_server.h	/^}INTER_NETCFG,*LPINTER_NETCFG;$/;"	t	typeref:struct:__anon41
+INTER_NETCFG_FILE	net_server.h	/^}INTER_NETCFG_FILE,*LPINTER_NETCFG_FILE;$/;"	t	typeref:struct:__anon42
+INTER_NETCFG_SEND	net_server.h	/^}INTER_NETCFG_SEND,*LPINTER_NETCFG_SEND;$/;"	t	typeref:struct:__anon43
+INTER_SCHEDTIME	net_server.h	/^}INTER_SCHEDTIME,*LPINTER_SCHEDTIME;$/;"	t	typeref:struct:__anon37
+INTER_SXC_HEAD	net_server.h	/^} INTER_SXC_HEAD;$/;"	t	typeref:struct:__anon8
+INTER_SXD_ALARM_STATUS_SEND	net_server.h	/^} INTER_SXD_ALARM_STATUS_SEND;$/;"	t	typeref:struct:__anon31
+INTER_SXD_DOOR_PARA_SEND	net_server.h	/^}INTER_SXD_DOOR_PARA_SEND;$/;"	t	typeref:struct:__anon24
+INTER_SXD_DOOR_STATUS_SEND	net_server.h	/^}INTER_SXD_DOOR_STATUS_SEND;$/;"	t	typeref:struct:__anon25
+INTER_SXD_HEAD	net_server.h	/^}INTER_SXD_HEAD,*LPINTER_SXD_HEAD;$/;"	t	typeref:struct:__anon9
+INTER_SXD_LOGIN_RET	net_server.h	/^}INTER_SXD_LOGIN_RET,*LP_INTER_SXD_LOGIN_RET;$/;"	t	typeref:struct:__anon16
+INTER_TIME	net_server.h	/^}INTER_TIME,*LPINTER_TIME;$/;"	t	typeref:struct:__anon69
+INVALID_OPEN_DOOR_CONTACT_1	entrance_guard.h	59;"	d
+INVALID_OPEN_DOOR_CONTACT_2	entrance_guard.h	60;"	d
+IPMISMATCH	net_server.h	93;"	d
+IS_ABANDONED	ck2316_alarm.h	15;"	d
+IS_CLOSED	entrance_guard.h	8;"	d
+IS_DEFENCED	ck2316_alarm.h	14;"	d
+IS_OPENED	entrance_guard.h	7;"	d
+InitCom	uart.c	/^int InitCom(char *UART_DEVICE_ttySx, int speed)$/;"	f
+InitCom_ck2316	uart.c	/^int InitCom_ck2316(char *UART_DEVICE_ttySx, int speed)$/;"	f
+Inter_sxc_head	net_server.h	/^    INTER_SXC_HEAD Inter_sxc_head;$/;"	m	struct:ck_fd
+LAST_ALARM_UPLOAD_TIME	global.h	/^}LAST_ALARM_UPLOAD_TIME;$/;"	t	typeref:struct:__anon5
+LINK_DEV_ALARM_CTL	net_server.h	/^    LINK_DEV_ALARM_CTL,				\/\/ 报警控制器$/;"	e	enum:__anon44
+LINK_DEV_CRADLE_HEAD	net_server.h	/^    LINK_DEV_CRADLE_HEAD,			\/\/ 云台$/;"	e	enum:__anon44
+LINK_DEV_DOOR_CLT	net_server.h	/^    LINK_DEV_DOOR_CLT,				\/\/ 门禁控制器$/;"	e	enum:__anon44
+LINK_DEV_MATRIX	net_server.h	/^    LINK_DEV_MATRIX, 					\/\/ 矩阵$/;"	e	enum:__anon44
+LINK_DEV_TYPE_NUM	net_server.h	/^    LINK_DEV_TYPE_NUM, $/;"	e	enum:__anon44
+LINK_DEV_UNDEFAULT	net_server.h	/^    LINK_DEV_UNDEFAULT = 0,$/;"	e	enum:__anon44
+LISTEN_ACQUIRED_PARA	net_server.h	/^}LISTEN_ACQUIRED_PARA;$/;"	t	typeref:struct:ck_fd
+LOWPRI	net_server.h	18;"	d
+LPINTER_ALARMOUTCFG	net_server.h	/^}INTER_ALARMOUTCFG,*LPINTER_ALARMOUTCFG;$/;"	t	typeref:struct:__anon39
+LPINTER_MMS_ALARMINCFG	net_server.h	/^}INTER_MMS_ALARMINCFG,*LPINTER_MMS_ALARMINCFG;$/;"	t	typeref:struct:__anon38
+LPINTER_NETCFG	net_server.h	/^}INTER_NETCFG,*LPINTER_NETCFG;$/;"	t	typeref:struct:__anon41
+LPINTER_NETCFG_FILE	net_server.h	/^}INTER_NETCFG_FILE,*LPINTER_NETCFG_FILE;$/;"	t	typeref:struct:__anon42
+LPINTER_NETCFG_SEND	net_server.h	/^}INTER_NETCFG_SEND,*LPINTER_NETCFG_SEND;$/;"	t	typeref:struct:__anon43
+LPINTER_SCHEDTIME	net_server.h	/^}INTER_SCHEDTIME,*LPINTER_SCHEDTIME;$/;"	t	typeref:struct:__anon37
+LPINTER_SXD_HEAD	net_server.h	/^}INTER_SXD_HEAD,*LPINTER_SXD_HEAD;$/;"	t	typeref:struct:__anon9
+LPINTER_TIME	net_server.h	/^}INTER_TIME,*LPINTER_TIME;$/;"	t	typeref:struct:__anon69
+LPSX_INTER_ALARMINCFG	net_server.h	/^} SX_INTER_ALARMINCFG,*LPSX_INTER_ALARMINCFG;$/;"	t	typeref:struct:__anon66
+LPSX_INTER_MATRIX_REQ	net_server.h	/^}SX_INTER_MATRIX_REQ, *LPSX_INTER_MATRIX_REQ;$/;"	t	typeref:struct:__anon18
+LPSX_INTER_PTZ_REQ	net_server.h	/^}SX_INTER_PTZ_REQ, *LPSX_INTER_PTZ_REQ;$/;"	t	typeref:struct:__anon17
+LPSX_INTER_SCHEDTIME	net_server.h	/^} SX_INTER_SCHEDTIME,*LPSX_INTER_SCHEDTIME;$/;"	t	typeref:struct:__anon65
+LPSX_INTER_SXC_LOGIN	net_server.h	/^}SX_INTER_SXC_LOGIN,*LPSX_INTER_SXC_LOGIN;$/;"	t	typeref:struct:__anon10
+LPSX_INTER_SXC_LOGIN_SEND_V1	net_server.h	/^}SX_INTER_SXD_LOGIN_SEND_V1,*LPSX_INTER_SXC_LOGIN_SEND_V1;$/;"	t	typeref:struct:__anon13
+LPSX_INTER_SXD_LOGIN	net_server.h	/^}SX_INTER_SXD_LOGIN,*LPSX_INTER_SXD_LOGIN; $/;"	t	typeref:struct:__anon11
+LPSX_INTER_SXD_LOGIN_RET	net_server.h	/^}SX_INTER_SXD_LOGIN_RET, *LPSX_INTER_SXD_LOGIN_RET;$/;"	t	typeref:struct:__anon15
+LPSX_INTER_SXD_LOGIN_V1	net_server.h	/^}SX_INTER_SXD_LOGIN_V1,*LPSX_INTER_SXD_LOGIN_V1; $/;"	t	typeref:struct:__anon12
+LP_INTER_DOOR_ALMOUT	net_server.h	/^}INTER_DOOR_ALMOUT, *LP_INTER_DOOR_ALMOUT;$/;"	t	typeref:struct:__anon57
+LP_INTER_DOOR_PARA_REQ	net_server.h	/^}SX_INTER_DOOR_PARA_REQ, *LP_INTER_DOOR_PARA_REQ;$/;"	t	typeref:struct:__anon22
+LP_INTER_DOOR_STATUS	net_server.h	/^}INTER_DOOR_STATUS,*LP_INTER_DOOR_STATUS;$/;"	t	typeref:struct:__anon23
+LP_INTER_SXD_LOGIN_RET	net_server.h	/^}INTER_SXD_LOGIN_RET,*LP_INTER_SXD_LOGIN_RET;$/;"	t	typeref:struct:__anon16
+LP_SXC_INTER_ALARMCTL_DEV_GET_STATE	net_server.h	/^} SXC_INTER_ALARMCTL_DEV_GET_STATE, *LP_SXC_INTER_ALARMCTL_DEV_GET_STATE;$/;"	t	typeref:struct:__anon30
+LP_SX_DEVICE_WORKING_STATUS	net_server.h	/^} SX_DEVICE_WORKING_STATUS, LP_SX_DEVICE_WORKING_STATUS;$/;"	t	typeref:struct:__anon67
+LP_SX_DEVICE_WORKING_STATUS_SEND	net_server.h	/^} SX_DEVICE_WORKING_STATUS_SEND, LP_SX_DEVICE_WORKING_STATUS_SEND;$/;"	t	typeref:struct:__anon68
+MACMISMATCH	net_server.h	94;"	d
+MATCH_HANDSHAKE_TIMEOUT	entrance_guard.h	31;"	d
+MATRIX_CANCEL_ALL_SWITCHOVER_COMMAND	matrix_control.h	9;"	d
+MATRIX_CANCEL_SWITCHOVER_COMMAND	matrix_control.h	8;"	d
+MATRIX_CANCEL_SWITCHOVER_IN_CHANNEL	matrix_control.c	19;"	d	file:
+MATRIX_CONTROL_NO_VALID_COMMAND	matrix_control.h	6;"	d
+MATRIX_MAX_CHANNEL_IN	net_server.h	61;"	d
+MATRIX_MAX_CHANNEL_OUT	net_server.h	62;"	d
+MATRIX_PROTOCOL_AD	net_server.h	/^    MATRIX_PROTOCOL_AD,$/;"	e	enum:__anon46
+MATRIX_PROTOCOL_NUM	net_server.h	/^    MATRIX_PROTOCOL_NUM, $/;"	e	enum:__anon46
+MATRIX_PROTOCOL_PELCO	net_server.h	/^    MATRIX_PROTOCOL_PELCO,        $/;"	e	enum:__anon46
+MATRIX_PROTOCOL_SX	net_server.h	/^    MATRIX_PROTOCOL_SX,$/;"	e	enum:__anon46
+MATRIX_PROTOCOL_TYPE	net_server.h	/^}MATRIX_PROTOCOL_TYPE;$/;"	t	typeref:enum:__anon46
+MATRIX_PROTOCOL_UNKNOW	net_server.h	/^    MATRIX_PROTOCOL_UNKNOW=0, $/;"	e	enum:__anon46
+MATRIX_SERIAL_PORT	matrix_control.h	11;"	d
+MATRIX_SWITCHOVER_COMMAND	matrix_control.h	7;"	d
+MATRIX_UART_BOARD	matrix_control.h	12;"	d
+MATRIX_UART_CHECK_BIT	matrix_control.h	14;"	d
+MATRIX_UART_DATA_BIT	matrix_control.h	13;"	d
+MATRIX_UART_DEVICE	global.h	9;"	d
+MATRIX_UART_MAX_SEND_SIZE	matrix_control.c	18;"	d	file:
+MATRIX_UART_STOP_BIT	matrix_control.h	15;"	d
+MATRIX_ctrl_cancel_all	net_server.c	/^int MATRIX_ctrl_cancel_all(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+MATRIX_ctrl_cancel_singal	net_server.c	/^int MATRIX_ctrl_cancel_singal(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+MATRIX_ctrl_change	net_server.c	/^int MATRIX_ctrl_change(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+MAX_ALARM_DURATION	alarm_input_output.h	22;"	d
+MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT	alarm_input_output.h	24;"	d
+MAX_ALARM_IO_NUM	alarm_input_output.c	35;"	d	file:
+MAX_ALARM_LINKAGE_INPUT_OBJECT	alarm_input_output.h	23;"	d
+MAX_ALARM_MESSAGE_NUM	entrance_guard.h	62;"	d
+MAX_CHECK_COMMAND_COUNT	ck2316_alarm.c	34;"	d	file:
+MAX_COMMAND_NUM	alarm_input_output.c	55;"	d	file:
+MAX_DAYS	net_server.h	6;"	d
+MAX_NORMAL_MESSAGE_NUM	entrance_guard.h	63;"	d
+MAX_RECV_SIZE	entrance_guard.h	27;"	d
+MAX_TIMESEGMENT	net_server.h	7;"	d
+MAX_TIME_INTERNAL_FOR_CTL	net_server.h	12;"	d
+MAX_TIME_OUT_MS	net_server.h	26;"	d
+MAX_UART_DEV_NUM	global.h	14;"	d
+MD5Final	md5.c	/^void MD5Final (unsigned char digest[16], MD5_CTX *context)$/;"	f
+MD5Init	md5.c	/^void MD5Init (MD5_CTX *context)$/;"	f
+MD5String	md5.c	/^unsigned char*  MD5String (char *string,unsigned int length)$/;"	f
+MD5String2	md5.c	/^void  MD5String2 (char *string,char* md5_string,unsigned int length)$/;"	f
+MD5String22	md5.c	/^void  MD5String22 (char *string,char* md5_string,unsigned int length)$/;"	f
+MD5Transform	md5.c	/^void MD5Transform (unsigned int state[4],unsigned char block[64])$/;"	f
+MD5Update	md5.c	/^void MD5Update (MD5_CTX *context, unsigned char *input,unsigned int inputLen)$/;"	f
+MD5_CTX	md5.h	/^}MD5_CTX;$/;"	t	typeref:struct:__anon7
+MD5_memcpy	md5.c	/^void MD5_memcpy (POINTER output,POINTER input,unsigned int len)$/;"	f
+MD5_memset	md5.c	/^void MD5_memset (POINTER output,int value,unsigned int len)$/;"	f
+MG_CS160	cradle_head_control.h	48;"	d
+MSG_NOSIGNAL	net_server.h	127;"	d
+Minute	global.h	/^	char Minute;			\/\/ 分。范围： 0~59$/;"	m	struct:__anon5
+Minute	net_server.h	/^    char  Minute;	\/\/ 分。范围： 0~59$/;"	m	struct:__anon69
+Minute	net_server.h	/^    char Minute;						\/\/ 分。范围： 0~59$/;"	m	struct:__anon57
+Month	global.h	/^	char Month;			\/\/ 月。范围：一年12个月份$/;"	m	struct:__anon5
+Month	net_server.h	/^    char  Month;	\/\/ 月。范围：一年12个月份$/;"	m	struct:__anon69
+Month	net_server.h	/^    char Month;							\/\/ 月。范围：一年12个月份$/;"	m	struct:__anon57
+MultiCastAddr	net_server.h	/^    int  MultiCastAddr;$/;"	m	struct:__anon41
+NEOCOM	cradle_head_control.h	50;"	d
+NET_HANDSHAKE_DELAY_TIME	net.h	22;"	d
+NET_RECV_BUFFER_SIZE	net.h	24;"	d
+NO	global.h	5;"	d
+NORMAL_ALARM	ck2316_alarm.c	/^    NORMAL_ALARM = 1,$/;"	e	enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	file:
+NORMAL_AND_EMERGENCY_ALARM	ck2316_alarm.c	/^    NORMAL_AND_EMERGENCY_ALARM = 3,$/;"	e	enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	file:
+NORMAL_CLOSE	entrance_guard.h	12;"	d
+NORMAL_OPEN	entrance_guard.h	11;"	d
+NOSPECCHANNEL	net_server.h	20;"	d
+NOSUPPORT	net_server.h	25;"	d
+NO_ALARM	ck2316_alarm.c	/^    NO_ALARM = 0,$/;"	e	enum:CK2316_DEFENCN_AREA_ALARM_STATUS_ARG	file:
+N_NET_LISTNING_PORT	net_server.h	11;"	d
+OPEN_DOOR	entrance_guard.h	9;"	d
+OPEN_DOOR_SEND_SIZE	entrance_guard.h	18;"	d
+OTHER_CHOICE	serial_common.h	/^	OTHER_CHOICE$/;"	e	enum:__anon70
+OUTPUT	alarm_input_output.c	49;"	d	file:
+OpenDev	serial_common.c	/^int OpenDev(char *Dev)$/;"	f
+PADDING	md5.c	/^static unsigned char PADDING[64] = {$/;"	v	file:
+PATH_HOME	main.c	35;"	d	file:
+PELCO_D_Table	cradle_head_control.c	/^unsigned char PELCO_D_Table[20][7]={$/;"	v
+PELCO_D_UART_MAX_SNED_SIZE	cradle_head_control.c	19;"	d	file:
+PELCO_P_Table	cradle_head_control.c	/^unsigned char PELCO_P_Table[20][8]={$/;"	v
+PELCO_P_UART_MAX_SNED_SIZE	cradle_head_control.c	18;"	d	file:
+PIH	cradle_head_control.h	47;"	d
+POINTER	md5.h	/^typedef unsigned char *POINTER;$/;"	t
+PPPOEIP	net_server.h	/^    int    PPPOEIP;						\/\/ 不可设，获取参数				$/;"	m	struct:__anon41
+PPPOEPassWord	net_server.h	/^    char PPPOEPassWord[16];			\/\/ PPPOE密码$/;"	m	struct:__anon41
+PPPOEUSEDTYPE	net_server.h	/^    char PPPOEUSEDTYPE;				\/\/ 0-不使用 1-保持在线 2-按需上线$/;"	m	struct:__anon41
+PPPOEUserName	net_server.h	/^    char PPPOEUserName[16];			\/\/ PPPOE用户名$/;"	m	struct:__anon41
+PTZ_APERTURE_BIG	net_server.h	36;"	d
+PTZ_APERTURE_SMALL	net_server.h	37;"	d
+PTZ_AUTO_APERTURE	net_server.h	44;"	d
+PTZ_AUTO_FOCUS	net_server.h	43;"	d
+PTZ_AUTO_ZOOM	net_server.h	42;"	d
+PTZ_CLE_PTZBIT	net_server.h	46;"	d
+PTZ_DOWN	net_server.h	33;"	d
+PTZ_EX_LEFT_DOWN	net_server.h	53;"	d
+PTZ_EX_LEFT_UP	net_server.h	52;"	d
+PTZ_EX_RIGHT_DOWN	net_server.h	55;"	d
+PTZ_EX_RIGHT_UP	net_server.h	54;"	d
+PTZ_FOCUS_IN	net_server.h	38;"	d
+PTZ_FOCUS_OUT	net_server.h	39;"	d
+PTZ_LEFT	net_server.h	34;"	d
+PTZ_RIGHT	net_server.h	35;"	d
+PTZ_SET_PTZBIT	net_server.h	45;"	d
+PTZ_STOP_ALL	net_server.h	47;"	d
+PTZ_UP	net_server.h	32;"	d
+PTZ_ZOOM_IN	net_server.h	40;"	d
+PTZ_ZOOM_OUT	net_server.h	41;"	d
+Palco_D	cradle_head_control.h	30;"	d
+Palco_P	cradle_head_control.h	31;"	d
+Philips	cradle_head_control.h	33;"	d
+QULIFIED	net_server.h	15;"	d
+READ_PORT	serial_common.h	/^	READ_PORT,$/;"	e	enum:__anon70
+RECV_TIMEOUT	uart.h	13;"	d
+ROTATE_LEFT	md5.h	44;"	d
+RS232_ATTR	net_server.h	/^}RS232_ATTR;$/;"	t	typeref:struct:__anon45
+RV800	cradle_head_control.h	35;"	d
+ReadComPort	serial_common.c	/^int ReadComPort(int fd, void *data, int datalength)$/;"	f
+RecvDataFromCom	uart.c	/^int RecvDataFromCom(int DeviceNo, unsigned char *DataBuf, unsigned int *Len, unsigned int OverTime, unsigned int recv_over_time)$/;"	f
+S11	md5.h	8;"	d
+S12	md5.h	9;"	d
+S13	md5.h	10;"	d
+S14	md5.h	11;"	d
+S1601	cradle_head_control.h	36;"	d
+S21	md5.h	12;"	d
+S22	md5.h	13;"	d
+S23	md5.h	14;"	d
+S24	md5.h	15;"	d
+S31	md5.h	16;"	d
+S33	md5.h	18;"	d
+S34	md5.h	19;"	d
+S41	md5.h	20;"	d
+S42	md5.h	21;"	d
+S43	md5.h	22;"	d
+S44	md5.h	23;"	d
+SAMSUNG	cradle_head_control.h	46;"	d
+SDK_VERSION	net_server.h	24;"	d
+SEARCH_ENTRANCE_GUARD_RECV_SIZE	entrance_guard.h	28;"	d
+SELECT_PORT_ERR	serial_common.h	/^   SELECT_PORT_ERR = -2,$/;"	e	enum:__anon71
+SELECT_PORT_SUCCESS	serial_common.h	/^   SELECT_PORT_SUCCESS=0,$/;"	e	enum:__anon71
+SELECT_PORT_TIMEOUT	serial_common.h	/^   SELECT_PORT_TIMEOUT = -1,$/;"	e	enum:__anon71
+SERIALNO_LEN	net_server.h	13;"	d
+SERIAL_LINK	net_server.h	/^}SERIAL_LINK;$/;"	t	typeref:struct:__anon49
+SERIAL_LINK_DEV_TYPE	net_server.h	/^}SERIAL_LINK_DEV_TYPE;$/;"	t	typeref:enum:__anon44
+SERIAL_PAMATER	net_server.h	/^}SERIAL_PAMATER;$/;"	t	typeref:struct:__anon50
+SERIAL_PAMATER_SEND	net_server.h	/^}SERIAL_PAMATER_SEND;$/;"	t	typeref:struct:__anon51
+SERVER_ACCEPT_TIMEOUT_MICROSECOND	net.h	17;"	d
+SERVER_ACCEPT_TIMEOUT_SECOND	net.h	16;"	d
+SERVER_PORT_TCP	net_server.h	8;"	d
+SERVER_RECV_TIMEOUT_MICROSECOND	net.h	20;"	d
+SERVER_RECV_TIMEOUT_SECOND	net.h	19;"	d
+SET_IO_DATA_AS_HIGH	alarm_input_output.c	52;"	d	file:
+SET_IO_DATA_AS_LOW	alarm_input_output.c	51;"	d	file:
+SOCKET_BUSY_TRY_TIMES	net_server.h	14;"	d
+SOCK_ATTR	net_server.h	/^}SOCK_ATTR;$/;"	t	typeref:struct:tag_SOCK_ATTR
+SS32	md5.h	17;"	d
+SWITCH_ALARM_UPLOAD	net_server.h	/^    SWITCH_ALARM_UPLOAD,$/;"	e	enum:__anon52
+SXC_ALARMCTL_ADDR_PARA	net_server.h	/^}SXC_ALARMCTL_ADDR_PARA;$/;"	t	typeref:struct:__anon64
+SXC_ALARMCTL_DEV_CTL_CMD_V2	net_server.h	70;"	d
+SXC_ALARMCTL_DEV_GET_STATE_V2	net_server.h	69;"	d
+SXC_ALARMCTL_DEV_SET_ADDR_PARAM	net_server.h	79;"	d
+SXC_ALARMCTL_DEV_SET_PARAM	net_server.h	71;"	d
+SXC_ALARMCTL_DEV_SET_PWD_PARAM	net_server.h	80;"	d
+SXC_ALARMCTL_PWD_PARA	net_server.h	/^}SXC_ALARMCTL_PWD_PARA;$/;"	t	typeref:struct:__anon63
+SXC_ALARM_HOST_INFO	net_server.h	/^}SXC_ALARM_HOST_INFO;$/;"	t	typeref:struct:__anon55
+SXC_ALARM_UPLOAD_AUTO	net_server.h	76;"	d
+SXC_ALARM_UPLOAD_MANU	net_server.h	75;"	d
+SXC_ALRAM_SWITCH_IN	net_server.h	/^}SXC_ALRAM_SWITCH_IN;$/;"	t	typeref:struct:__anon56
+SXC_CANCEL_MATRIX_ALL_INOUT	net_server.h	59;"	d
+SXC_CANCEL_MATRIX_SINGLE_INOUT	net_server.h	58;"	d
+SXC_DEV_NOALIVE	net_server.h	107;"	d
+SXC_DOOR_ALMIN_V2	net_server.h	105;"	d
+SXC_DOOR_CONTACT_CHECK_MODE	net_server.h	/^}SXC_DOOR_CONTACT_CHECK_MODE;$/;"	t	typeref:enum:__anon21
+SXC_DOOR_CTL_CMD	net_server.h	64;"	d
+SXC_DOOR_SYS_ALARM_TYPE	net_server.h	/^}SXC_DOOR_SYS_ALARM_TYPE;$/;"	t	typeref:enum:__anon53
+SXC_DOOR_SYS_ALM_INFO	net_server.h	/^}SXC_DOOR_SYS_ALM_INFO;$/;"	t	typeref:struct:__anon54
+SXC_EXCHAGE_MATRIX_INOUT	net_server.h	57;"	d
+SXC_GETALAOUT_STATE	net_server.h	72;"	d
+SXC_GET_ALARMINCFG	net_server.h	99;"	d
+SXC_GET_ALARMOUTCFG	net_server.h	96;"	d
+SXC_GET_ALARM_LINKAGE_CFG_V2	net_server.h	82;"	d
+SXC_GET_ALARM_OUTPUT_DURATION_TIME	net_server.h	85;"	d
+SXC_GET_CONNECT_PAMA	net_server.h	103;"	d
+SXC_GET_DOORCFG	net_server.h	66;"	d
+SXC_GET_DOOR_STATUS	net_server.h	67;"	d
+SXC_GET_ICC_DEV_PARAM	net_server.h	109;"	d
+SXC_GET_NETCFG	net_server.h	91;"	d
+SXC_INTER_ALARMCTL_DEV_CTL_CMD	net_server.h	/^} SXC_INTER_ALARMCTL_DEV_CTL_CMD;$/;"	t	typeref:struct:__anon33
+SXC_INTER_ALARMCTL_DEV_GET_STATE	net_server.h	/^} SXC_INTER_ALARMCTL_DEV_GET_STATE, *LP_SXC_INTER_ALARMCTL_DEV_GET_STATE;$/;"	t	typeref:struct:__anon30
+SXC_INTER_ALARMCTL_SET_PARAM_REQ	net_server.h	/^}SXC_INTER_ALARMCTL_SET_PARAM_REQ;$/;"	t	typeref:struct:__anon34
+SXC_INTER_ALARM_OUT_CTRL	net_server.h	/^}SXC_INTER_ALARM_OUT_CTRL;$/;"	t	typeref:struct:__anon36
+SXC_INTER_ALARM_OUT_STATE	net_server.h	/^}SXC_INTER_ALARM_OUT_STATE;$/;"	t	typeref:struct:__anon35
+SXC_INTER_DOOR_CTL_CMD	net_server.h	/^}SXC_INTER_DOOR_CTL_CMD;$/;"	t	typeref:struct:__anon20
+SXC_KEEPLIVE_B	net_server.h	27;"	d
+SXC_LOG_IN	net_server.h	21;"	d
+SXC_LOG_OUT	net_server.h	23;"	d
+SXC_PARA_RESTORE	net_server.h	123;"	d
+SXC_PTZ	net_server.h	30;"	d
+SXC_REBOOT	net_server.h	119;"	d
+SXC_RESET_ALARM_LINKAGE_AND_TIMEPARA	net_server.h	88;"	d
+SXC_SETALAOUT	net_server.h	73;"	d
+SXC_SET_ALARMINCFG	net_server.h	100;"	d
+SXC_SET_ALARMOUTCFG	net_server.h	97;"	d
+SXC_SET_ALARM_LINKAGE_CFG_V2	net_server.h	83;"	d
+SXC_SET_ALARM_OUTPUT_DURATION_TIME	net_server.h	86;"	d
+SXC_SET_CONNECT_PAMA	net_server.h	104;"	d
+SXC_SET_DOORCFG	net_server.h	65;"	d
+SXC_SET_NETCFG	net_server.h	92;"	d
+SXC_SET_TIMECFG	net_server.h	121;"	d
+SXC_SYS_ALARM_TYPE	net_server.h	/^}SXC_SYS_ALARM_TYPE;$/;"	t	typeref:enum:__anon52
+SXD_LOG_IN	net_server.h	28;"	d
+SXD_LOG_OUT	net_server.h	29;"	d
+SX_DEVICE_WORKING_STATUS	net_server.h	/^} SX_DEVICE_WORKING_STATUS, LP_SX_DEVICE_WORKING_STATUS;$/;"	t	typeref:struct:__anon67
+SX_DEVICE_WORKING_STATUS_SEND	net_server.h	/^} SX_DEVICE_WORKING_STATUS_SEND, LP_SX_DEVICE_WORKING_STATUS_SEND;$/;"	t	typeref:struct:__anon68
+SX_INTER_ALARMINCFG	net_server.h	/^} SX_INTER_ALARMINCFG,*LPSX_INTER_ALARMINCFG;$/;"	t	typeref:struct:__anon66
+SX_INTER_DOOR_PARA_REQ	net_server.h	/^}SX_INTER_DOOR_PARA_REQ, *LP_INTER_DOOR_PARA_REQ;$/;"	t	typeref:struct:__anon22
+SX_INTER_MATRIX_REQ	net_server.h	/^}SX_INTER_MATRIX_REQ, *LPSX_INTER_MATRIX_REQ;$/;"	t	typeref:struct:__anon18
+SX_INTER_MMSINFO	net_server.h	/^}SX_INTER_MMSINFO;$/;"	t	typeref:struct:__anon14
+SX_INTER_PTZ_REQ	net_server.h	/^}SX_INTER_PTZ_REQ, *LPSX_INTER_PTZ_REQ;$/;"	t	typeref:struct:__anon17
+SX_INTER_SCHEDTIME	net_server.h	/^} SX_INTER_SCHEDTIME,*LPSX_INTER_SCHEDTIME;$/;"	t	typeref:struct:__anon65
+SX_INTER_SXC_LOGIN	net_server.h	/^}SX_INTER_SXC_LOGIN,*LPSX_INTER_SXC_LOGIN;$/;"	t	typeref:struct:__anon10
+SX_INTER_SXD_LOGIN	net_server.h	/^}SX_INTER_SXD_LOGIN,*LPSX_INTER_SXD_LOGIN; $/;"	t	typeref:struct:__anon11
+SX_INTER_SXD_LOGIN_RET	net_server.h	/^}SX_INTER_SXD_LOGIN_RET, *LPSX_INTER_SXD_LOGIN_RET;$/;"	t	typeref:struct:__anon15
+SX_INTER_SXD_LOGIN_SEND_V1	net_server.h	/^}SX_INTER_SXD_LOGIN_SEND_V1,*LPSX_INTER_SXC_LOGIN_SEND_V1;$/;"	t	typeref:struct:__anon13
+SX_INTER_SXD_LOGIN_V1	net_server.h	/^}SX_INTER_SXD_LOGIN_V1,*LPSX_INTER_SXD_LOGIN_V1; $/;"	t	typeref:struct:__anon12
+Second	global.h	/^	char Second;			\/\/ 秒。范围： 0~59$/;"	m	struct:__anon5
+Second	net_server.h	/^    char  Second;	\/\/ 秒。范围： 0~59$/;"	m	struct:__anon69
+Second	net_server.h	/^    char Second;						\/\/ 秒。范围： 0~59$/;"	m	struct:__anon57
+SendDataToCom	uart.c	/^int SendDataToCom(int Device ,unsigned char * DataBuf ,int DataLen)$/;"	f
+TCP_SOCK	net_server.h	/^    TCP_SOCK,$/;"	e	enum:tag_sock_type
+TD_500	cradle_head_control.h	38;"	d
+TOTA120	cradle_head_control.h	34;"	d
+T_ACTIVE_CONTEXT	net_server.h	/^} T_ACTIVE_CONTEXT;$/;"	t	typeref:struct:__anon40
+U32	serial_common.c	/^typedef unsigned int U32;$/;"	t	file:
+UART_DEVICE_ttyS0	uart.h	5;"	d
+UART_DEVICE_ttyS1	uart.h	6;"	d
+UART_DEVICE_ttyS2	uart.h	7;"	d
+UART_DEVICE_ttyS3	uart.h	8;"	d
+UART_DEVICE_ttyS4	uart.h	9;"	d
+UART_DEVICE_ttyS5	uart.h	10;"	d
+UART_DEVICE_ttyS6	uart.h	11;"	d
+UART_DEVICE_ttyUSB0	uart.h	4;"	d
+UART_DEV_CONFIG_FILE	global.h	12;"	d
+UDP_SOCK	net_server.h	/^    UDP_SOCK,$/;"	e	enum:tag_sock_type
+UINT2	md5.h	/^typedef unsigned short  UINT2;$/;"	t
+UINT4	md5.h	/^typedef unsigned int   UINT4;$/;"	t
+USER_NAME_LEN	net_server.h	10;"	d
+USER_PWD_LEN	net_server.h	9;"	d
+UserId	net_server.h	/^    int 		UserId;   						\/\/ 用户ID,分配给客户端的用户ID$/;"	m	struct:__anon12
+V1200	cradle_head_control.h	39;"	d
+VALID_CLOSE_DOOR_CONTACT	entrance_guard.h	58;"	d
+VALID_CLOSE_DOOR_LOCK	entrance_guard.h	55;"	d
+VALID_OPEN_DOOR_CONTACT_1	entrance_guard.h	56;"	d
+VALID_OPEN_DOOR_CONTACT_2	entrance_guard.h	57;"	d
+VALID_OPEN_DOOR_LOCK	entrance_guard.h	54;"	d
+VERSIONNOMATCH	net_server.h	19;"	d
+WISDOM	cradle_head_control.h	49;"	d
+WRITE_PORT	serial_common.h	/^	WRITE_PORT,$/;"	e	enum:__anon70
+WriteComPort	serial_common.c	/^int WriteComPort(int fd, void *data, int datalength)$/;"	f
+YAAN	cradle_head_control.h	32;"	d
+YAAN_Table	cradle_head_control.c	/^unsigned char YAAN_Table[20][12]={$/;"	v
+YAAN_UART_MAX_SNED_SIZE	cradle_head_control.c	20;"	d	file:
+YES	global.h	4;"	d
+Year	global.h	/^	char Year;				\/\/ 年。与2000年的差值，范围00~99。$/;"	m	struct:__anon5
+Year	net_server.h	/^    char  Year;	\/\/ 年。与2000年的差值，范围00~99。$/;"	m	struct:__anon69
+Year	net_server.h	/^    char Year;							\/\/ 年。与2000年的差值，范围00~99。$/;"	m	struct:__anon57
+ZION	cradle_head_control.h	40;"	d
+_ALARM_INPUT_OUTPUT_H	alarm_input_output.h	2;"	d
+_CK2316_ALARM_H	ck2316_alarm.h	2;"	d
+_CRADLE_HEAD_CONTROL_H	cradle_head_control.h	2;"	d
+_ENTRANCE_GUARD_H	entrance_guard.h	2;"	d
+_GLOABL_H	global.h	2;"	d
+_MAIN_H	main.h	2;"	d
+_MATRIX_CONTROL_H	matrix_control.h	2;"	d
+_MD5_HEADER	md5.h	2;"	d
+_NET_H	net.h	2;"	d
+_NET_SERVER_H_	net_server.h	2;"	d
+_SERIAL_COMMON_	serial_common.h	2;"	d
+__UART_H__	uart.h	2;"	d
+acquiescent_para_recovery	net_server.c	/^int acquiescent_para_recovery(int fd)$/;"	f
+active_mode_name	net_server.h	/^    char active_mode_name[16];		\/\/ 主动模式-认证用户名 $/;"	m	struct:__anon41
+active_mode_pwd	net_server.h	/^    char active_mode_pwd[16];			\/\/ 主动模式-认证用户密码 $/;"	m	struct:__anon41
+alarmCtl	net_server.h	/^    alarmCtl_S alarmCtl ;$/;"	m	struct:__anon57
+alarmCtl_S	net_server.h	/^}alarmCtl_S;$/;"	t	typeref:union:tag_alarm_ctl
+alarmInNum	net_server.h	/^    int alarmInNum;							\/\/ 报警输入个数。$/;"	m	struct:__anon14
+alarmInNum	net_server.h	/^    int alarmInNum;$/;"	m	struct:__anon11
+alarmOutNum	net_server.h	/^    int alarmOutNum;						\/\/ 报警输出个数。$/;"	m	struct:__anon14
+alarmOutNum	net_server.h	/^    int alarmOutNum;$/;"	m	struct:__anon11
+alarm_ctrl	net_server.c	/^int alarm_ctrl(char *recv_buf,int fd)$/;"	f
+alarm_duration	alarm_input_output.h	/^    unsigned int alarm_duration;  \/\/报警持续时间$/;"	m	struct:__anon1
+alarm_host_reset_code	ck2316_alarm.c	/^unsigned char alarm_host_reset_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0A},{0xFE,0x06,0x06},{0xFE,0x06,0x08},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};$/;"	v
+alarm_input_linkage_output_object	alarm_input_output.h	/^    unsigned int alarm_input_linkage_output_object[32]; \/\/每个报警联动输入对象，对应最多32个报警联动输出对象。与报警联动输入对象一一对应，每个int的每一位对应一个报警联动输入对象，一个报警联动输入对象可以对应多个报警联动输出对象。$/;"	m	struct:__anon1
+alarm_input_output_arg	alarm_input_output.h	/^}alarm_input_output_arg;$/;"	t	typeref:struct:__anon1
+alarm_input_output_channel_last	alarm_input_output.c	/^int alarm_input_output_channel_last = 0;\/\/当前开关量报警通道号$/;"	v
+alarm_input_output_data	alarm_input_output.c	/^alarm_input_output_arg alarm_input_output_data = {0, NO, ALARM_INPUT_OUTPUT_NORMAL_OPERATION, MAX_ALARM_LINKAGE_INPUT_OBJECT,  0, MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT, 0, {ALARM_LINKAGE_OUTPUT_OBJECT_1, ALARM_LINKAGE_OUTPUT_OBJECT_2, ALARM_LINKAGE_OUTPUT_OBJECT_3, ALARM_LINKAGE_OUTPUT_OBJECT_4, ALARM_LINKAGE_OUTPUT_OBJECT_5, ALARM_LINKAGE_OUTPUT_OBJECT_6, ALARM_LINKAGE_OUTPUT_OBJECT_7, ALARM_LINKAGE_OUTPUT_OBJECT_8, ALARM_LINKAGE_OUTPUT_OBJECT_1}, 0 , 0, DEFAULT_ALARM_DURATION,{0,0,0,0,0,0}};$/;"	v
+alarm_input_output_data	alarm_input_output.h	/^alarm_input_output_arg alarm_input_output_data;$/;"	v
+alarm_input_output_default_setup	alarm_input_output.c	/^void alarm_input_output_default_setup(int *temp_timed_alarm_count_array)$/;"	f
+alarm_input_output_fd	alarm_input_output.c	/^int alarm_input_output_fd;$/;"	v
+alarm_input_output_io_table	alarm_input_output.c	/^unsigned int const alarm_input_output_io_table[MAX_ALARM_IO_NUM] = {$/;"	v
+alarm_input_output_setup	alarm_input_output.c	/^int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, FILE *fp_timed_alarm_file, int *timed_alarm_count_array)$/;"	f
+alarm_linkage_input_object	alarm_input_output.h	/^    unsigned int alarm_linkage_input_object;\/\/1-9, 报警联动输入对象$/;"	m	struct:__anon1
+alarm_linkage_output_object	alarm_input_output.h	/^    unsigned int alarm_linkage_output_object;\/\/1-8, 报警联动输出对象$/;"	m	struct:__anon1
+alarm_linkage_para	net_server.h	/^    ALARM_LINKAGE_PARA alarm_linkage_para;$/;"	m	struct:__anon60
+alarm_out_ctrl	net_server.c	/^int alarm_out_ctrl(char *recv_buf,int fd)$/;"	f
+alarm_out_state	net_server.c	/^int alarm_out_state(char *recv_buf,int fd)$/;"	f
+alarm_output_mutex	alarm_input_output.c	/^pthread_mutex_t alarm_output_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v
+alarm_para	net_server.h	/^    INTER_DOOR_ALMOUT alarm_para;	$/;"	m	struct:__anon58
+alarm_para_set	net_server.c	/^int alarm_para_set(char *recv_buf,int fd)$/;"	f
+alarm_state	net_server.h	/^    int  alarm_state;	$/;"	m	struct:__anon35
+alarm_status_get	net_server.c	/^int alarm_status_get(char *recv_buf,int fd)$/;"	f
+alarm_upload	ck2316_alarm.c	/^int alarm_upload(struct tm *t,int alarm_type,int flag)$/;"	f
+alarm_upload_get	net_server.c	/^int alarm_upload_get(char *recv_buf,int fd)$/;"	f
+alarm_user_addr_setup	net_server.c	/^int alarm_user_addr_setup(char *recv_buf,int fd)$/;"	f
+alarm_user_pwd_setup	net_server.c	/^int alarm_user_pwd_setup(char *recv_buf,int fd)$/;"	f
+alarmlinkage_output_time_cancle	net_server.c	/^int alarmlinkage_output_time_cancle(char *recv_buf,int fd)$/;"	f
+alarmlinkage_output_time_get	net_server.c	/^int alarmlinkage_output_time_get(char *recv_buf,int fd)$/;"	f
+alarmlinkage_output_time_set	net_server.c	/^int alarmlinkage_output_time_set(char *recv_buf,int fd)$/;"	f
+api_connect_remote_client	net_server.c	/^int api_connect_remote_client(int ip, short port, short time_out)$/;"	f
+buffer	md5.h	/^	unsigned char buffer[64];$/;"	m	struct:__anon7
+button_set_door_hold_time	entrance_guard.h	/^    unsigned int button_set_door_hold_time;\/\/开门按钮设置门保持时间$/;"	m	struct:__anon4
+byAddress	net_server.h	/^    char byAddress; 						  \/\/报警主机的模拟键盘的地址（0-15）$/;"	m	struct:__anon64
+byAlarmCtlID	net_server.h	/^    char byAlarmCtlID;					\/\/ 报警控制主机ID$/;"	m	struct:__anon55
+byAlarmDelay	net_server.h	/^    char byAlarmDelay;						\/\/ 警告延时时间2分钟，5分钟，10分钟，15分钟，							\/\/  30分钟$/;"	m	struct:__anon34
+byAlarmHostID	net_server.h	/^    char byAlarmHostID;						\/\/ 报警主机ID$/;"	m	struct:__anon34
+byAlarmInDelay	net_server.h	/^    char byAlarmInDelay;						\/\/ 输入延时。范围： 0-60S$/;"	m	struct:__anon38
+byAlarmInDelay	net_server.h	/^    char byAlarmInDelay;					\/\/ 输入延时。范围： 0-60S$/;"	m	struct:__anon66
+byAlarmInHandle	net_server.h	/^    char byAlarmInHandle; 					\/\/ 是否处理。 $/;"	m	struct:__anon38
+byAlarmInHandle	net_server.h	/^    char byAlarmInHandle; 				\/\/ 是否处理。 $/;"	m	struct:__anon66
+byAlarmInPortNum	net_server.h	/^    char 		byAlarmInPortNum; 			\/\/ 设备报警输入个数 $/;"	m	struct:__anon12
+byAlarmInType	net_server.h	/^    char   byAlarmInType;				\/\/ 报警输入的报警类型。取值1-9$/;"	m	struct:__anon59
+byAlarmLinkOutChan	net_server.h	/^    int      byAlarmLinkOutChan;   			  \/\/ 报警联动输出的通道号。低8位，某一位为1表示联动该通道号$/;"	m	struct:__anon59
+byAlarmOutChan	net_server.h	/^    char  byAlarmOutChan;     \/\/ 报警输出的通道号。取值0-8，0表示设置所有通道的报警输出持续时间；1-8表示对应通道的报警输出持续时间；如果为获取时，通道号不能为0。如果时间为0时0分，则表示该通道的报警输出永久持续。$/;"	m	struct:__anon61
+byAlarmOutPortNum	net_server.h	/^    char 		byAlarmOutPortNum; 			\/\/ 设备报警输出个数$/;"	m	struct:__anon12
+byAlarmState	net_server.h	/^    ALARMCTL_DEV_ALARM_STATE  byAlarmState;$/;"	m	struct:__anon30
+byAlarmState	net_server.h	/^    int byAlarmState;						\/\/防区报警状态（哪个防区报警了）$/;"	m	struct:__anon29
+byAlarmType	net_server.h	/^    char byAlarmType; 						\/\/ 报警器类型。0：常开,1：常闭  $/;"	m	struct:__anon38
+byAlarmType	net_server.h	/^    char byAlarmType; 					\/\/ 报警器类型。0：常开,1：常闭$/;"	m	struct:__anon66
+byAlarminNo	net_server.h	/^    char byAlarminNo;						\/\/ 报警输入的通道号。$/;"	m	struct:__anon38
+byAlarminNo	net_server.h	/^    char byAlarminNo;					\/\/ 报警输入的通道号。$/;"	m	struct:__anon66
+byAlarmoutNo	net_server.h	/^    char byAlarmoutNo;					\/\/ 报警输出的通道号。$/;"	m	struct:__anon39
+byAlmType	net_server.h	/^    char byAlmType;						\/\/ 门禁；报警控制器；开关量$/;"	m	struct:__anon57
+byAreaNo	net_server.h	/^    char byAreaNo;							\/\/ 报警控制器区域id$/;"	m	struct:__anon33
+byBypassState	net_server.h	/^    int byBypassState;						\/\/防区旁路状态（哪个防区被旁路了）$/;"	m	struct:__anon29
+byChannelID	net_server.h	/^    int byChannelID;						\/\/ 开关量通道号 $/;"	m	struct:__anon56
+byCmdType	net_server.h	/^    char byCmdType;						\/\/ 控制命令类型:打开+关闭+ 布防+ 撤防+ 消警+旁路$/;"	m	struct:__anon33
+byCmdType	net_server.h	/^    char byCmdType;					    \/\/ 控制命令类型。$/;"	m	struct:__anon20
+byCmdType	net_server.h	/^    char byCmdType;	          				  \/\/ 查询功能类型:巡检$/;"	m	struct:__anon30
+byCommProVer	net_server.h	/^    char byCommProVer;				\/\/ 通信协议版本$/;"	m	struct:__anon67
+byDataBit	net_server.h	/^    char byDataBit; 						\/\/ 数据位。 0-5位，1-6位，2-7位，3-8位 $/;"	m	struct:__anon45
+byDefenceAlarmType	net_server.h	/^    int byDefenceAlarmType;					\/\/哪种类型的报警(普通报警，紧急报警)$/;"	m	struct:__anon29
+byDelayCloseDoor1	net_server.h	/^    char byDelayCloseDoor1;	                             \/\/ 门禁主机操控延时关门时间$/;"	m	struct:__anon22
+byDelayCloseDoor2	net_server.h	/^    char byDelayCloseDoor2;                               \/\/ 外部操控延时关门时间$/;"	m	struct:__anon22
+byDevDefenceState	net_server.h	/^    char byDevDefenceState;       				 \/\/取值见ALARMCTL_DEV_DEFENCE_STATE$/;"	m	struct:__anon30
+byDevID	net_server.h	/^    char byDevID;						\/\/ 设备ID$/;"	m	struct:__anon57
+byDevID	net_server.h	/^    char byDevID;					\/\/ 设备ID$/;"	m	struct:__anon67
+byDevNo	net_server.h	/^    char byDevNo;							\/\/ 报警控制器主机id$/;"	m	struct:__anon33
+byDevNo	net_server.h	/^    char byDevNo;							\/\/ 门禁控制器主机id。范围：1,2,3…255$/;"	m	struct:__anon23
+byDevNo	net_server.h	/^    char byDevNo;						     \/\/ 门禁控制器主机id。范围：1,2,3…255$/;"	m	struct:__anon22
+byDevNo	net_server.h	/^    char byDevNo;						    \/\/ 门禁控制器主机id。范围：1,2,3…255$/;"	m	struct:__anon20
+byDevNo	net_server.h	/^    char byDevNo;						\/\/ 门禁控制器主机id。范围：1,2,3…255$/;"	m	struct:__anon54
+byDevNo	net_server.h	/^    char byDevNo;		            				\/\/ 报警控制主机id$/;"	m	struct:__anon30
+byDevNo	net_server.h	/^    char byDevNo;\/\/ 设备号 $/;"	m	struct:__anon49
+byDevProtocol	net_server.h	/^    char byDevProtocol;	\/\/ 设备协议，详见以上枚举类型$/;"	m	struct:__anon49
+byDevSerialNum	net_server.h	/^    char byDevSerialNum[128];		\/\/ 设备序列号$/;"	m	struct:__anon67
+byDevState	net_server.h	/^    char byDevState;                        			  \/\/取值见ALARMCTL_DEV_STATE$/;"	m	struct:__anon30
+byDevType	net_server.h	/^    char byDevType;		$/;"	m	struct:__anon49
+byDoorAlmType	net_server.h	/^    char byDoorAlmType;					\/\/ SXC_DOOR_SYS_ALARM_TYPE门禁$/;"	m	struct:__anon54
+byDoorContMode	net_server.h	/^    char byDoorContMode;	                             \/\/ SXC_DOOR_CONTACT_CHECK_MODE$/;"	m	struct:__anon22
+byDoorContactDetectionMode	net_server.h	/^    char byDoorContactDetectionMode;			\/\/门磁检测方式设置(短路)(默认)$/;"	m	struct:__anon23
+byDoorLock	net_server.h	/^    char byDoorLock;			                     \/\/ 门锁。0-常开，1-常闭。$/;"	m	struct:__anon22
+byDoorLockRelayStatus	net_server.h	/^    char byDoorLockRelayStatus;				\/\/ 门锁继电器状态设置(常开) $/;"	m	struct:__anon23
+byDoorNo	net_server.h	/^    char byDoorNo;							\/\/ 门ID。范围：1,2,3…255$/;"	m	struct:__anon23
+byDoorNo	net_server.h	/^    char byDoorNo;						\/\/ 门ID。范围：1,2,3…255$/;"	m	struct:__anon54
+byDoorNo	net_server.h	/^    char byDoorNo;				 		    \/\/ 门ID。范围：1,2,3…255$/;"	m	struct:__anon20
+byDoorNo	net_server.h	/^    char byDoorNo;			                             \/\/ 门ID。范围：1,2,3…255$/;"	m	struct:__anon22
+byDoorStatus	net_server.h	/^    char byDoorStatus;						\/\/ 门当前状态。e.g.: 打开；关闭$/;"	m	struct:__anon23
+byEnterDelay	net_server.h	/^    char byEnterDelay;						\/\/ 进入延时时间10-150s$/;"	m	struct:__anon34
+byFlowcontrol	net_server.h	/^    char byFlowcontrol;					\/\/ 0-无，1-软流控，2-硬流控 $/;"	m	struct:__anon45
+byHardVer	net_server.h	/^    char byHardVer;  				\/\/ 硬件版本号$/;"	m	struct:__anon67
+byHostAlmType	net_server.h	/^    char byHostAlmType;					\/\/ 报警类型，0-普通防区，1-紧急防区 02  无报警，$/;"	m	struct:__anon55
+byHour	net_server.h	/^    char  byHour;           		  \/\/ 报警输出持续时间（小时）最大为24小时$/;"	m	struct:__anon61
+byMACAddr	net_server.h	/^    char byMACAddr[6]; 				\/\/ 物理地址，只用于显示 6字节, 不可设$/;"	m	struct:__anon41
+byMinute	net_server.h	/^    char  byMinute;	         	 \/\/ 报警输出持续时间（分钟）$/;"	m	struct:__anon61
+byNetMode	net_server.h	/^    char byNetMode;					\/\/ 网络类型0：局域网 1：PPPOE  2：CDMA$/;"	m	struct:__anon41
+byOutDelay	net_server.h	/^    char byOutDelay;						\/\/ 外出延时时间10-300s$/;"	m	struct:__anon34
+byParity	net_server.h	/^    char byParity; 						\/\/ 校验。0-无校验，1-奇校验，2-偶校验 $/;"	m	struct:__anon45
+byPassword	net_server.h	/^    char byPassword[4];  					 \/\/报警主机的模拟键盘的用户密码，4位密码都为0-9之间的数字$/;"	m	struct:__anon63
+byPathNo	net_server.h	/^    char byPathNo;					\/\/ 串口号$/;"	m	struct:__anon50
+byPresetNo	net_server.h	/^    char byPresetNo; 						\/\/ 调用的云台预置号，1-128有效，$/;"	m	struct:__anon38
+byPresetNo	net_server.h	/^    char byPresetNo; 					\/\/ 调用的云台预置号，1-128有效，$/;"	m	struct:__anon66
+byPtzPathNo	net_server.h	/^    int  byPtzPathNo;					\/\/ 报警触发的图像通道号，0~31，$/;"	m	struct:__anon66
+byReserved	net_server.h	/^    char  byReserved;$/;"	m	struct:__anon61
+byReserved	net_server.h	/^    char byReserved[2];		                             \/\/ 保留$/;"	m	struct:__anon22
+byReserved	net_server.h	/^    char byReserved[4];					\/\/ 保留$/;"	m	struct:__anon57
+byRservered	net_server.h	/^    char byRservered[4];					\/\/ 保留$/;"	m	struct:__anon56
+byRsv	net_server.h	/^    char byRsv [9];						\/\/保留$/;"	m	struct:__anon54
+byRsv	net_server.h	/^    char byRsv[16];							\/\/ 保留$/;"	m	struct:__anon38
+byRsv	net_server.h	/^    char byRsv[1];$/;"	m	struct:__anon20
+byRsv	net_server.h	/^    char byRsv[2];						\/\/ 保留$/;"	m	struct:__anon55
+byRsv	net_server.h	/^    char byRsv[3];					\/\/ 保留$/;"	m	struct:__anon50
+byRsv	net_server.h	/^    char byRsv[3];					\/\/ 保留$/;"	m	struct:__anon67
+byRsv	net_server.h	/^    char byRsv[3];	$/;"	m	struct:__anon33
+byRsv	net_server.h	/^    char byRsv[4];			    				 \/\/ 保留$/;"	m	struct:__anon30
+bySerialNum	net_server.h	/^    char bySerialNum;				\/\/ 串口个数$/;"	m	struct:__anon67
+bySoftVer	net_server.h	/^    char bySoftVer;  					\/\/ 软件版本号$/;"	m	struct:__anon67
+byStartChan	net_server.h	/^    char 		byStartChan; 			   		\/\/ 起始通道号 $/;"	m	struct:__anon12
+byStartHour	net_server.h	/^    char byStartHour;						\/\/ 时$/;"	m	struct:__anon37
+byStartHour	net_server.h	/^    char byStartHour;					\/\/ 时$/;"	m	struct:__anon65
+byStartMin	net_server.h	/^    char byStartMin; 						\/\/ 分钟$/;"	m	struct:__anon37
+byStartMin	net_server.h	/^    char byStartMin; 					\/\/ 分钟$/;"	m	struct:__anon65
+byStatus	net_server.h	/^    int byStatus;						\/\/ 开关量的状态 0-变化，1-未变化$/;"	m	struct:__anon56
+byStopBit	net_server.h	/^    char byStopBit;						\/\/ 停止位。0-1位，1-2位$/;"	m	struct:__anon45
+byStopHour	net_server.h	/^    char byStopHour; 						\/\/ 时$/;"	m	struct:__anon37
+byStopHour	net_server.h	/^    char byStopHour; 					\/\/ 时$/;"	m	struct:__anon65
+byStopMin	net_server.h	/^    char byStopMin; 							\/\/ 分钟$/;"	m	struct:__anon37
+byStopMin	net_server.h	/^    char byStopMin; 						\/\/ 分钟$/;"	m	struct:__anon65
+bypass_defence_area_code	ck2316_alarm.c	/^unsigned char bypass_defence_area_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0C},{0xFE,0x06,0x00},{0xFE,0x06,0x00},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};$/;"	v
+change_alarm_input_output_status	alarm_input_output.c	/^int change_alarm_input_output_status(int alarm_input_output_fd, int input_output_command)$/;"	f
+channe_num_active	net_server.c	/^int channel_num_passive = 0,channe_num_active = 0;$/;"	v
+channel	net_server.h	/^    int channel;   \/\/报警输出端口，从0开始，表示单个报警输出报警端口，0xFF表示控制全部输出，$/;"	m	struct:__anon36
+channelNums	net_server.h	/^    char			channelNums; $/;"	m	struct:__anon12
+channel_num_passive	net_server.c	/^int channel_num_passive = 0,channe_num_active = 0;$/;"	v
+channel_num_track	net_server.c	/^int channel_num_track(void)$/;"	f
+checkSum	net_server.h	/^    int checkSum;							\/\/ 校验和$/;"	m	struct:__anon8
+checkSum	net_server.h	/^    int checkSum;$/;"	m	struct:__anon9
+ck2316_actual_keyboard_address_code	ck2316_alarm.c	/^unsigned char ck2316_actual_keyboard_address_code[] = {CK2316_ACTUAL_KEYBOARD_ADDRESS, CK2316_KEYBOARD_ADDRESS_MASK};$/;"	v
+ck2316_alarm_arg	ck2316_alarm.h	/^}ck2316_alarm_arg;$/;"	t	typeref:struct:__anon2
+ck2316_alarm_data	ck2316_alarm.c	/^ck2316_alarm_arg ck2316_alarm_data = {0, NO, IS_ABANDONED, NO_ALARM, {0x00, 0x00}, {0x00, 0x00}, {0x00, 0x00}, 0, CK2316_KEYBOARD_ADDRESS, {CK2316_USER_PASSWORD_1, CK2316_USER_PASSWORD_2, CK2316_USER_PASSWORD_3,CK2316_USER_PASSWORD_4},{CK2316_SERIAL_PORT,{0,0,0},{LINK_DEV_ALARM_CTL,1,ALARM_CTL_PROTOCOL_CK2316},{CK2316_UART_BOARD,CK2316_UART_DATA_BIT,CK2316_UART_STOP_BIT,CK2316_UART_CHECK_BIT, 0,{0,0}},{0}},{0,0,0,0,0,0},0,0};$/;"	v
+ck2316_alarm_data	ck2316_alarm.h	/^ck2316_alarm_arg ck2316_alarm_data;$/;"	v
+ck2316_alarm_handshake_and_setup	ck2316_alarm.c	/^int ck2316_alarm_handshake_and_setup(int *com_fd)$/;"	f
+ck2316_alarm_init	ck2316_alarm.c	/^int ck2316_alarm_init(void)$/;"	f
+ck2316_alarm_serial_pamater	ck2316_alarm.h	/^    SERIAL_PAMATER ck2316_alarm_serial_pamater;$/;"	m	struct:__anon2
+ck2316_defence_area_alarm_memory_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_alarm_memory_value[2]; \/\/CK2316防区报警记忆$/;"	m	struct:__anon2
+ck2316_defence_area_alarm_status	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_alarm_status; \/\/CK2316防区报警状态(0:无报警 1:普通防区报警 2:紧急防区报警 3:普通和紧急防区都有报警)$/;"	m	struct:__anon2
+ck2316_defence_area_bypass_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_bypass_value[2]; \/\/低16位分别表示16个旁路防区号$/;"	m	struct:__anon2
+ck2316_defence_area_real_time_alarm_value	ck2316_alarm.h	/^    unsigned char ck2316_defence_area_real_time_alarm_value[2];\/\/CK2316实时报警的防区$/;"	m	struct:__anon2
+ck2316_defence_status	ck2316_alarm.h	/^    char ck2316_defence_status;             \/\/CK2316报警主机布撤防的状态(布防，撤防)$/;"	m	struct:__anon2
+ck2316_handshake_code	ck2316_alarm.c	/^unsigned char ck2316_handshake_code[] = {CK2316_HANDSHAKE_CODE_1, CK2316_HANDSHAKE_CODE_2, CK2316_HANDSHAKE_CODE_3};$/;"	v
+ck2316_keyboard_address_code	ck2316_alarm.c	/^unsigned char ck2316_keyboard_address_code[] = {CK2316_KEYBOARD_ADDRESS, CK2316_KEYBOARD_ADDRESS_MASK};$/;"	v
+ck2316_keyboard_code	ck2316_alarm.c	/^unsigned char ck2316_keyboard_code[][3] = {{0xFE,0x06,0x00},{0xFE,0x06,0x01},{0xFE,0x06,0x02},{0xFE,0x06,0x03},$/;"	v
+ck2316_simulate_keyboard_address	ck2316_alarm.h	/^    unsigned int ck2316_simulate_keyboard_address; \/\/模拟控制CK2316报警主机的键盘地址$/;"	m	struct:__anon2
+ck2316_simulate_keyboard_address_setup	ck2316_alarm.c	/^int ck2316_simulate_keyboard_address_setup(unsigned int address)$/;"	f
+ck2316_user_password	ck2316_alarm.h	/^    unsigned int ck2316_user_password[4];$/;"	m	struct:__anon2
+ck2316_user_password_setup	ck2316_alarm.c	/^int ck2316_user_password_setup(unsigned int user_password[4])$/;"	f
+ck_fd	net_server.h	/^typedef struct ck_fd{$/;"	s
+clientMAC	net_server.h	/^    char  clientMAC[6];						\/\/ 客户端MAC地址$/;"	m	struct:__anon8
+clientMAC	net_server.h	/^    char  clientMAC[6];$/;"	m	struct:__anon9
+client_control_door_hold_time_code	entrance_guard.c	/^unsigned char client_control_door_hold_time_code[CLIENT_CONTROL_DOOR_HOLD_TIME_COUNT][27] = {{0xfa,0xfa,0xfa,0x2a,0x13,0x00,0x26,0x20,0x10,0x00,0x00,0x02,0x01,0x1e,0x00,0x00,0x68,0x10,0x12,0x34,0x56,0x78,0x07,0x00,0x01,0x73,0x94},$/;"	v
+client_id	net_server.h	/^    int client_id;$/;"	m	struct:__anon40
+client_ip	net_server.h	/^    int client_ip;$/;"	m	struct:ck_fd
+client_set_door_hold_time	entrance_guard.h	/^    unsigned int client_set_door_hold_time;\/\/客户端设置门保持时间$/;"	m	struct:__anon4
+close_door_code	entrance_guard.c	/^unsigned char close_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc3,0x7e,0x3a};$/;"	v
+cmdWord	net_server.h	/^    int cmdWord;							\/\/ 客户端命令$/;"	m	struct:__anon8
+cmd_data_deal	net_server.c	/^int   cmd_data_deal(INTER_SXC_HEAD *data_head,int client_fd,int para_len,int client_ip)$/;"	f
+com_baudrate_set	net_server.c	/^int com_baudrate_set(int rate)$/;"	f
+com_dwBaudRate_get	net_server.c	/^int com_dwBaudRate_get(int rate)$/;"	f
+com_para	net_server.h	/^    SERIAL_PAMATER com_para;$/;"	m	struct:__anon51
+com_para_send	net_server.c	/^int com_para_send(char *recv_buf,int fd)$/;"	f
+com_para_set	net_server.c	/^int com_para_set(char *recv_buf,int fd)$/;"	f
+connect_fd	net_server.h	/^    int connect_fd;$/;"	m	struct:ck_fd
+count	md5.h	/^	unsigned int  count[2];			\/\/bits of plaintext$/;"	m	struct:__anon7
+cradle_ctrl_reply	net_server.c	/^int cradle_ctrl_reply(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+cradle_head_address	cradle_head_control.h	/^    unsigned char cradle_head_address;      \/\/云台地址(1-255)$/;"	m	struct:__anon3
+cradle_head_control_arg	cradle_head_control.h	/^}cradle_head_control_arg;$/;"	t	typeref:struct:__anon3
+cradle_head_control_data	cradle_head_control.c	/^cradle_head_control_arg cradle_head_control_data = {0, $/;"	v
+cradle_head_control_data	cradle_head_control.h	/^cradle_head_control_arg cradle_head_control_data;$/;"	v
+cradle_head_control_serial_pamater	cradle_head_control.h	/^    SERIAL_PAMATER cradle_head_control_serial_pamater;$/;"	m	struct:__anon3
+cradle_head_handshake_and_contorl	cradle_head_control.c	/^int cradle_head_handshake_and_contorl(int *com_fd)$/;"	f
+cradle_head_move_speed	cradle_head_control.h	/^    unsigned char cradle_head_move_speed;   \/\/云台移动速度(1-255)$/;"	m	struct:__anon3
+cradle_head_preset_point	cradle_head_control.h	/^    unsigned char cradle_head_preset_point; \/\/云台预置点(1-32, 33-64)$/;"	m	struct:__anon3
+cradle_head_protocol_type	cradle_head_control.h	/^    unsigned char cradle_head_protocol_type;     \/\/云台协议类型$/;"	m	struct:__anon3
+current_alarm_message_num	entrance_guard.h	/^    unsigned int current_alarm_message_num;  \/\/当前文件中存储的报警消息总数$/;"	m	struct:__anon4
+current_fd	alarm_input_output.h	/^    int current_fd;$/;"	m	struct:__anon1
+current_fd	ck2316_alarm.h	/^    int current_fd;$/;"	m	struct:__anon2
+current_fd	cradle_head_control.h	/^    int current_fd;$/;"	m	struct:__anon3
+current_fd	entrance_guard.h	/^    int current_fd;$/;"	m	struct:__anon4
+current_fd	matrix_control.h	/^    int current_fd;$/;"	m	struct:__anon6
+current_handshake_num	entrance_guard.h	/^    unsigned char current_handshake_num;    \/\/当前握手码的基值$/;"	m	struct:__anon4
+current_normal_message_num	entrance_guard.h	/^    unsigned int current_normal_message_num; \/\/当前文件中存储的普通消息总数$/;"	m	struct:__anon4
+cycle_close_socket	net_server.c	/^int cycle_close_socket(int fd)$/;"	f
+databyte_net_to_host	net_server.c	/^INTER_SXC_HEAD *databyte_net_to_host(char *recv_buffer)$/;"	f
+dev_para	net_server.c	/^SX_DEVICE_WORKING_STATUS dev_para = {DEV_ID_VERSION,{0},"1234567",DEV_SOFT_VERSION,DEV_HARD_VERSION,DEV_COMM_VERSION,DEV_COM_NUM,{0}};$/;"	v
+dev_para_get	net_server.c	/^int dev_para_get(char *recv_buf,int fd)$/;"	f
+dev_restart	net_server.c	/^int dev_restart(int fd)$/;"	f
+deviceMAC	net_server.h	/^    char  deviceMAC[6];$/;"	m	struct:__anon11
+deviceType	net_server.h	/^    int deviceType;							\/\/ 设备类型。1:dvs;2:dvr 2:mms.$/;"	m	struct:__anon14
+deviceType	net_server.h	/^    int deviceType;$/;"	m	struct:__anon11
+device_send_data	net_server.h	/^    SX_INTER_SXD_LOGIN_V1 device_send_data;$/;"	m	struct:__anon13
+device_send_head	net_server.h	/^    INTER_SXD_HEAD device_send_head;$/;"	m	struct:__anon13
+door_button_control_door_hold_time_code	entrance_guard.c	/^unsigned char door_button_control_door_hold_time_code[BUTTON_CONTROL_DOOR_HOLD_TIME_COUNT][19] = {{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x7f,0x3b},{0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0xa7,0xb9},$/;"	v
+door_button_default_setup_code_1	entrance_guard.c	/^unsigned char door_button_default_setup_code_1[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x01,0x08,0x80,0x00,0x42,0x00,0xb0,0x00,0x00,0x00,0xbd,0x74};$/;"	v
+door_button_default_setup_code_2	entrance_guard.c	/^unsigned char door_button_default_setup_code_2[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x01,0x08,0x88,0x00,0x42,0x00,0xb0,0x00,0x00,0x00,0xa3,0xae};$/;"	v
+door_contact_default_close_setup_code	entrance_guard.c	/^unsigned char door_contact_default_close_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x00,0x08,0xc9,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x6d,0x69};$/;"	v
+door_contact_default_open_setup_code	entrance_guard.c	/^unsigned char door_contact_default_open_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x00,0x08,0x89,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x9b,0xb9};$/;"	v
+door_contact_detection_mode_setup	entrance_guard.h	/^    unsigned int door_contact_detection_mode_setup;      \/\/门磁检测方式设置(短路(默认), 开路)$/;"	m	struct:__anon4
+door_lock_default_close_setup_code	entrance_guard.c	/^unsigned char door_lock_default_close_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0xca,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x48,0x2d};$/;"	v
+door_lock_default_open_setup_code	entrance_guard.c	/^unsigned char door_lock_default_open_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x10,0x08,0x8a,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0xbe,0xfd};$/;"	v
+door_lock_relay_status_setup	entrance_guard.h	/^    unsigned int door_lock_relay_status_setup;   \/\/门锁继电器状态设置(常开(默认)，常闭)$/;"	m	struct:__anon4
+door_status	entrance_guard.h	/^    unsigned int door_status;              \/\/门的状态(开门，关门)$/;"	m	struct:__anon4
+dvsInfo	net_server.h	/^    SX_INTER_MMSINFO dvsInfo;$/;"	m	struct:__anon16
+dwAlarmID	net_server.h	/^    int dwAlarmID;						\/\/ 防区号$/;"	m	struct:__anon55
+dwAlarmOutDelay	net_server.h	/^    int dwAlarmOutDelay;				\/\/ 输出延时(-1（0xf…）为无限， $/;"	m	struct:__anon39
+dwBaudRate	net_server.h	/^    int dwBaudRate;						\/\/ 波特率$/;"	m	struct:__anon45
+dwCataSvrIP1	net_server.h	/^    int dwCataSvrIP1;					\/\/ 目录服务器ip1端口固定为1008，$/;"	m	struct:__anon41
+dwCataSvrIP2	net_server.h	/^    int dwCataSvrIP2;					\/\/ 目录服务器ip2 端口固定为1008，$/;"	m	struct:__anon41
+dwDeviceIP	net_server.h	/^    int dwDeviceIP;					\/\/设备 IP地址, 默认值：192.168.10.64$/;"	m	struct:__anon41
+dwDeviceIPMask	net_server.h	/^    int dwDeviceIPMask;				\/\/设备 IP地址掩码, 默认值：255.255.255.0$/;"	m	struct:__anon41
+dwGatewayIP	net_server.h	/^    int dwGatewayIP; 					\/\/网关地址默认值：192.168.10.100$/;"	m	struct:__anon41
+dwManageHostIP	net_server.h	/^    int dwManageHostIP;				\/\/ 远程管理主机地址，主动模式主动连接$/;"	m	struct:__anon41
+dwNetInterface	net_server.h	/^    int dwNetInterface;				\/\/网络接口不可设$/;"	m	struct:__anon41
+dwPtzPathNo	net_server.h	/^    int dwPtzPathNo;						\/\/ 报警触发的图像通道号，0~31，$/;"	m	struct:__anon38
+dwRecordChan	net_server.h	/^    int dwRecordChan; 						\/\/ 报警触发的录象通道按位，$/;"	m	struct:__anon38
+dwRecordChan	net_server.h	/^    int dwRecordChan; 					\/\/ 报警触发的录象通道按位，$/;"	m	struct:__anon66
+dwRsv	net_server.h	/^    int dwRsv[1];$/;"	m	struct:__anon50
+dwRsv	net_server.h	/^    int dwRsv[2];$/;"	m	struct:__anon45
+dwSize	net_server.h	/^    int  dwSize;$/;"	m	struct:__anon41
+eliminate_alarm_memory_code	ck2316_alarm.c	/^unsigned char eliminate_alarm_memory_code[][3] = {{0xFE,0x06,0x0A},{0xFE,0x06,0x01},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};$/;"	v
+enable_and_disable_alarm_out	alarm_input_output.c	/^int enable_and_disable_alarm_out(int alarm_out_fd, int alarm_output_io_pin, int enable_disable_command)$/;"	f
+enable_net_listen	net_server.c	/^int enable_net_listen()$/;"	f
+entrance_alarm_upload_flag	entrance_guard.c	/^int entrance_alarm_upload_flag = 0;$/;"	v
+entrance_guard_arg	entrance_guard.h	/^}entrance_guard_arg;$/;"	t	typeref:struct:__anon4
+entrance_guard_data	entrance_guard.c	/^entrance_guard_arg entrance_guard_data = {0, NO, NORMAL_OPEN, NORMAL_CLOSE, IS_OPENED, 0, 5, 5, 0, NO, NO, NO, 0, 0, $/;"	v
+entrance_guard_handshake_and_setup	entrance_guard.c	/^int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file, FILE *fp_alarm_message_file, FILE *fp_message_count_file, FILE *fp_config_file)$/;"	f
+entrance_guard_mutex	entrance_guard.c	/^pthread_mutex_t entrance_guard_mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v
+entrance_guard_serial_pamater	entrance_guard.h	/^    SERIAL_PAMATER entrance_guard_serial_pamater;$/;"	m	struct:__anon4
+entrance_open_close_ctrl	net_server.c	/^int entrance_open_close_ctrl(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+entrance_para_get	net_server.c	/^int entrance_para_get(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+entrance_para_set	net_server.c	/^int entrance_para_set(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+entrance_status_send	net_server.c	/^int entrance_status_send(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+err_print	net_server.c	43;"	d	file:
+err_print	net_server.c	45;"	d	file:
+file_path	net_server.c	/^char *file_path = ".\/net_para_file";                          \/\/保存网络参数的文件$/;"	v
+find_dst_string_in_str	serial_common.c	/^int find_dst_string_in_str(unsigned char *p_src, int len, unsigned char *p_dst, int cmp_len)$/;"	f
+find_dword_in_str	serial_common.c	/^int find_dword_in_str(unsigned char *p_src, int len, unsigned int dst_num)$/;"	f
+flag	net_server.h	/^    int flag;$/;"	m	struct:__anon42
+fp_alarm_input_output_config_file	alarm_input_output.c	/^FILE *fp_alarm_input_output_config_file = NULL;$/;"	v
+fp_ck2316_config_file	ck2316_alarm.c	/^FILE *fp_ck2316_config_file = NULL;$/;"	v
+fp_dev_config_file	main.c	/^ FILE *fp_dev_config_file;$/;"	v
+g_listen_exit_flag	net_server.c	/^int g_listen_exit_flag;$/;"	v
+get_alarm_input_data	alarm_input_output.c	/^int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_io_status, int *timed_alarm_count_array, int *temp_timed_alarm_count_array)$/;"	f
+get_alarm_input_value	alarm_input_output.c	/^int get_alarm_input_value(int alarm_input_fd, int alarm_input_io_pin)$/;"	f
+get_alarm_linkage	net_server.c	/^int get_alarm_linkage(char *recv_buf,int fd)$/;"	f
+get_local_lan_mac	net_server.c	/^void get_local_lan_mac(unsigned char *p_mac)$/;"	f
+handshake_base_code	entrance_guard.c	/^unsigned char handshake_base_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x11,0x01,0x00,0x00,0x00};$/;"	v
+handshake_variable_code	entrance_guard.c	/^const unsigned char  handshake_variable_code[][2] = {{0x14,0xaa},{0x04,0x8b},{0x34,0xe8},{0x24,0xc9},{0x54,0x2e},{0x44,0x0f},{0x74,0x6c},{0x64,0x4d},{0x95,0xa2},{0x85,0x83},{0xb5,0xe0},{0xa5,0xc1},{0xd5,0x26},{0xc5,0x07},{0xf5,0x64},{0xe5,0x45},{0x06,0x9b},$/;"	v
+head	net_server.c	/^user_info *head ,*pf;\/\/链表的头和尾节点指针$/;"	v
+if_alarm_input_output_device_is_ready	alarm_input_output.h	/^    unsigned int if_alarm_input_output_device_is_ready; \/\/报警输入输出设备是否准备好$/;"	m	struct:__anon1
+if_ck2316_alive	ck2316_alarm.h	/^    char if_ck2316_alive;                   \/\/当前CK2316报警主机是否在线$/;"	m	struct:__anon2
+if_entrance_guard_alive	entrance_guard.h	/^    char if_entrance_guard_alive;                 \/\/当前门禁是否在线$/;"	m	struct:__anon4
+if_has_delete_offline_alarm	entrance_guard.h	/^    unsigned char if_has_delete_offline_alarm;\/\/判断是否删除门禁离线后发生的报警$/;"	m	struct:__anon4
+if_has_entrance_guard_alarm	entrance_guard.h	/^    unsigned char if_has_entrance_guard_alarm; \/\/判断是否有门禁报警(非法开门)$/;"	m	struct:__anon4
+if_have_net_client_connect	main.c	/^int if_have_net_client_connect = NO;$/;"	v
+if_set_door_hold_time_is_valid	entrance_guard.h	/^    unsigned char if_set_door_hold_time_is_valid;\/\/设置门保持时间是否合法$/;"	m	struct:__anon4
+init_ck2316_alarm_serial_pamater	global.c	/^void init_ck2316_alarm_serial_pamater(FILE *fp_dev_config_file)$/;"	f
+init_cradle_head_control_serial_pamater	global.c	/^void init_cradle_head_control_serial_pamater(FILE *fp_dev_config_file)$/;"	f
+init_entrance_guard_serial_pamater	global.c	/^void init_entrance_guard_serial_pamater(FILE *fp_dev_config_file)$/;"	f
+init_matrix_control_serial_pamater	global.c	/^void init_matrix_control_serial_pamater(FILE *fp_dev_config_file)$/;"	f
+init_serial_dev_parameter	global.c	/^void init_serial_dev_parameter(void)$/;"	f
+init_socket	net_server.c	/^int init_socket(int addr, int port, int listen_flag, int listen_num, int sock_type)$/;"	f
+ip	net_server.h	/^    int ip;$/;"	m	struct:__anon40
+ip_judge	net_server.c	/^int ip_judge(int ip_maste,int device_ip,int client_ip)$/;"	f
+last_alarm_memory_channle	ck2316_alarm.h	/^   unsigned int last_alarm_memory_channle;$/;"	m	struct:__anon2
+last_alarm_status	ck2316_alarm.h	/^   unsigned char last_alarm_status;$/;"	m	struct:__anon2
+length	net_server.h	/^    int  length;	       							\/\/ 整合数据包的长度$/;"	m	struct:__anon8
+length	net_server.h	/^    int length;$/;"	m	struct:__anon9
+link_delete	net_server.c	/^user_info *link_delete(int fd)$/;"	f
+link_insert	net_server.c	/^user_info *link_insert(int fd)$/;"	f
+link_print	net_server.c	/^void link_print(user_info *head)$/;"	f
+linkage_time	net_server.h	/^    ALARM_OUTPUT_DURATION_CFG_V1 linkage_time;$/;"	m	struct:__anon62
+log_in_reply	net_server.c	/^int log_in_reply(char *recv_para,INTER_SXC_HEAD *data_head,int client_fd)$/;"	f
+login_apply	net_server.c	/^int login_apply(void)$/;"	f
+macAddr	net_server.h	/^    char  		macAddr[6]; $/;"	m	struct:__anon12
+main	main.c	/^int main(int argc, char *argv[])$/;"	f
+main_service_ctl	net_server.c	/^int main_service_ctl(void)$/;"	f
+matrixID	net_server.h	/^    long  matrixID;							\/\/ 设备ID，4个字节$/;"	m	struct:__anon18
+matrix_control_arg	matrix_control.h	/^}matrix_control_arg;$/;"	t	typeref:struct:__anon6
+matrix_control_data	matrix_control.c	/^matrix_control_arg matrix_control_data = {0, MATRIX_CONTROL_NO_VALID_COMMAND, 0, 0, {MATRIX_SERIAL_PORT,{0,0,0},{LINK_DEV_MATRIX,1,MATRIX_PROTOCOL_PELCO},{MATRIX_UART_BOARD,MATRIX_UART_DATA_BIT,MATRIX_UART_STOP_BIT,MATRIX_UART_CHECK_BIT,0,{0,0}},{0}}};$/;"	v
+matrix_control_data	matrix_control.h	/^matrix_control_arg matrix_control_data;$/;"	v
+matrix_control_serial_pamater	matrix_control.h	/^    SERIAL_PAMATER matrix_control_serial_pamater;$/;"	m	struct:__anon6
+matrix_current_switchover_in_value	matrix_control.h	/^    unsigned char matrix_current_switchover_in_value;  \/\/存储矩阵视频输入通道号$/;"	m	struct:__anon6
+matrix_current_switchover_out_value	matrix_control.h	/^    unsigned char matrix_current_switchover_out_value; \/\/存储矩阵视频输出通道号$/;"	m	struct:__anon6
+matrix_handshake_and_setup	matrix_control.c	/^int matrix_handshake_and_setup(int *com_fd)$/;"	f
+matrix_switchover_handshake_code	matrix_control.c	/^unsigned char matrix_switchover_handshake_code[] = {0xBB, 0x00};$/;"	v
+max_alarm_input_linkage_output_object	alarm_input_output.h	/^    unsigned int max_alarm_input_linkage_output_object; \/\/default is 8$/;"	m	struct:__anon1
+max_alarm_linkage_input_object	alarm_input_output.h	/^    unsigned int max_alarm_linkage_input_object;  \/\/default is 9$/;"	m	struct:__anon1
+md5_code	md5.c	/^unsigned char md5_code[33];$/;"	v
+md5_digest	md5.c	/^unsigned char md5_digest[32];$/;"	v
+mmsInfo	net_server.h	/^    SX_INTER_MMSINFO mmsInfo;$/;"	m	struct:__anon15
+mmsMAC	net_server.h	/^    char  mmsMAC[6];						\/\/ 设备端MAC地址$/;"	m	struct:__anon14
+mode	net_server.h	/^    char mode;$/;"	m	struct:__anon40
+mutex_channel	net_server.c	/^pthread_mutex_t mutex_channel,mutex_link,user_outline;	\/\/用于统计通道和用户链表操作数的锁$/;"	v
+mutex_link	net_server.c	/^pthread_mutex_t mutex_channel,mutex_link,user_outline;	\/\/用于统计通道和用户链表操作数的锁$/;"	v
+nValueIn	net_server.h	/^    long  nValueIn;							\/\/ 值输入，4个字节$/;"	m	struct:__anon18
+nValueOut	net_server.h	/^    long  nValueOut;							\/\/ 值输出，4个字节$/;"	m	struct:__anon18
+name	net_server.h	/^    char *name;$/;"	m	struct:__anon40
+net_connect	net_server.c	/^int net_connect(int client_id ,int dst_ip,short dst_port, short time_out)$/;"	f
+net_para_file_path	main.c	/^char *net_para_file_path = ".\/net_para.init";$/;"	v
+net_para_init	net_server.c	/^int  net_para_init(char *file_path,int len)$/;"	f
+net_para_send	net_server.c	/^int net_para_send(char *recv_para,INTER_SXC_HEAD *data_head,int fd)$/;"	f
+net_para_set	net_server.c	/^int net_para_set(char *recv_para,INTER_SXC_HEAD *data_head,int fd,int client_ip)$/;"	f
+next	net_server.h	/^    struct userlist *next;$/;"	m	struct:userlist	typeref:struct:userlist::userlist
+noblocked	net_server.h	/^    int noblocked;\/\/1：表示非阻塞， 0：表示默认$/;"	m	struct:tag_SOCK_ATTR
+open_alarm_input_output_device	alarm_input_output.c	/^int open_alarm_input_output_device(int *alarm_input_output_fd)$/;"	f
+open_door_code	entrance_guard.c	/^unsigned char open_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc2,0x6e,0x1b};$/;"	v
+para	net_server.h	/^    INTER_NETCFG para;$/;"	m	struct:__anon42
+para	net_server.h	/^    SX_DEVICE_WORKING_STATUS para;$/;"	m	struct:__anon68
+para_net	net_server.h	/^INTER_NETCFG para_net;\/\/网络参数设置$/;"	v
+para_net_send	net_server.h	/^    INTER_NETCFG  para_net_send;$/;"	m	struct:__anon43
+pathNO	net_server.h	/^    int pathNO;								\/\/ 起始通道号。$/;"	m	struct:__anon14
+pathNO	net_server.h	/^    int pathNO;$/;"	m	struct:__anon11
+pathSum	net_server.h	/^    int pathSum;							\/\/ 通道总数。128.$/;"	m	struct:__anon14
+pathSum	net_server.h	/^    int pathSum;$/;"	m	struct:__anon11
+pf	net_server.c	/^user_info *head ,*pf;\/\/链表的头和尾节点指针$/;"	v
+poll_wtime	net_server.c	/^int poll_wtime(int client_fd, int timeout)$/;"	f
+print_string	entrance_guard.c	/^void print_string(char *string, unsigned char *buffer, unsigned int len)$/;"	f
+printf_debug	alarm_input_output.c	20;"	d	file:
+printf_debug	alarm_input_output.c	22;"	d	file:
+printf_debug	ck2316_alarm.c	16;"	d	file:
+printf_debug	ck2316_alarm.c	18;"	d	file:
+printf_debug	cradle_head_control.c	13;"	d	file:
+printf_debug	cradle_head_control.c	15;"	d	file:
+printf_debug	entrance_guard.c	16;"	d	file:
+printf_debug	entrance_guard.c	18;"	d	file:
+printf_debug	global.c	11;"	d	file:
+printf_debug	global.c	13;"	d	file:
+printf_debug	main.c	30;"	d	file:
+printf_debug	main.c	32;"	d	file:
+printf_debug	matrix_control.c	13;"	d	file:
+printf_debug	matrix_control.c	15;"	d	file:
+printf_debug	net_server.c	37;"	d	file:
+printf_debug	net_server.c	39;"	d	file:
+pthread_alarm_input_output	alarm_input_output.c	/^void *pthread_alarm_input_output(void *arg)$/;"	f
+pthread_ck2316_alarm	ck2316_alarm.c	/^void *pthread_ck2316_alarm(void *arg)$/;"	f
+pthread_cradle_head_control	cradle_head_control.c	/^void *pthread_cradle_head_control(void *arg)$/;"	f
+pthread_entrance_guard	entrance_guard.c	/^void *pthread_entrance_guard(void *arg)$/;"	f
+pthread_handshake	net_server.c	/^void *pthread_handshake(void *arg)$/;"	f
+pthread_matrix_control	matrix_control.c	/^void *pthread_matrix_control(void *arg)$/;"	f
+pthread_server_active	net_server.c	/^void *pthread_server_active(void *arg)$/;"	f
+pthread_server_passive	net_server.c	/^void *pthread_server_passive(void *arg)$/;"	f
+pthread_timed_alarm	alarm_input_output.c	/^void *pthread_timed_alarm(void *arg)$/;"	f
+pthread_visit_handel	net_server.c	/^void *pthread_visit_handel(void *arg)$/;"	f
+ptzBit	net_server.h	/^    long ptzBit;								\/\/ 该参数表示控制速度，4个字节$/;"	m	struct:__anon17
+ptzCommand	net_server.h	/^    long ptzCommand;						\/\/ 云台控制命令，4个字节$/;"	m	struct:__anon17
+ptzID	net_server.h	/^    long ptzID;								\/\/ 云台ID，4个字节$/;"	m	struct:__anon17
+pwd	net_server.h	/^    char *pwd;$/;"	m	struct:__anon40
+raudrate	net_server.c	/^int raudrate[] = {600,1200,2400,4800,9600,14400,19200,38400,57600,115200};$/;"	v
+read_uart_data	uart.c	/^int read_uart_data(int fd, unsigned char *data_buf, int len) $/;"	f
+read_uart_data	uart.c	/^int read_uart_data(int fd, unsigned char *data_buf, int len, unsigned int recv_timeout) $/;"	f
+real_time_alarm_output_objcet	alarm_input_output.h	/^    unsigned int real_time_alarm_output_objcet;  \/\/正在报警的输出联动对象，每一位对应一路输出，1为正在报警，0无报警$/;"	m	struct:__anon1
+recv_data	net_server.c	/^int recv_data(int client_fd, char *dst, int num,int client_ip)$/;"	f
+recv_data_intime	net_server.c	/^int recv_data_intime(int client_fd, int timeout, char *recv_buf, int src_len,int client_ip)$/;"	f
+requestID	net_server.h	/^    int requestID;   \/\/$/;"	m	struct:__anon9
+res	net_server.h	/^    char 		res[30]; $/;"	m	struct:__anon12
+reserved	net_server.h	/^    char   		reserved[16];					\/\/ 保留$/;"	m	struct:__anon12
+reserved	net_server.h	/^    char reserved[16];					\/\/ 保留 $/;"	m	struct:__anon39
+reserved	net_server.h	/^    char reserved[16];					\/\/ 保留$/;"	m	struct:__anon41
+reserved	net_server.h	/^    char reserved[16];		   			 \/\/保留$/;"	m	struct:__anon66
+reserved	net_server.h	/^    int reserved;$/;"	m	struct:tag_SOCK_ATTR
+reserved1	net_server.h	/^    char   reserved1[16];$/;"	m	struct:__anon10
+reserved2	net_server.h	/^    char reserved2[16];				\/\/ 保留$/;"	m	struct:__anon41
+reserved3	net_server.h	/^    char reserved3[16];					\/\/ 保留$/;"	m	struct:__anon41
+reserved4	net_server.h	/^    char reserved4[32];					\/\/ 保留$/;"	m	struct:__anon41
+resv	net_server.h	/^    char resv[3];							\/\/ 保留$/;"	m	struct:__anon23
+return_alarm_upload_code	entrance_guard.c	/^unsigned char return_alarm_upload_code[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11};$/;"	v
+return_alarm_upload_code_1	entrance_guard.c	/^unsigned char return_alarm_upload_code_1[] = {0xfa,0xfa,0xfa,0x2a,0x7d,0x00,0x11};$/;"	v
+return_close_door_alarm_upload_code	entrance_guard.c	/^unsigned char return_close_door_alarm_upload_code[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11,0x00,0x00,0x03,0x00,0x0d,0x10,0x00,0x00,0x00,0x00,0x0c};$/;"	v
+return_door_contact_close_alarm_upload_code_1	entrance_guard.c	/^unsigned char return_door_contact_close_alarm_upload_code_1[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11,0x00,0x00,0x03,0x00,0x88,0x00,0x00,0x00,0x00,0x00,0x0c};$/;"	v
+return_door_contact_close_alarm_upload_code_2	entrance_guard.c	/^unsigned char return_door_contact_close_alarm_upload_code_2[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11,0x00,0x00,0x00,0x00,0x88,0x00,0x00,0x00,0x00,0x00,0x0c};$/;"	v
+return_door_contact_open_alarm_upload_code_1	entrance_guard.c	/^unsigned char return_door_contact_open_alarm_upload_code_1[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11,0x00,0x00,0x03,0x00,0x93,0x00,0x00,0x00,0x00,0x00,0x0c};$/;"	v
+return_door_contact_open_alarm_upload_code_2	entrance_guard.c	/^unsigned char return_door_contact_open_alarm_upload_code_2[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11,0x00,0x00,0x00,0x00,0x93,0x00,0x00,0x00,0x00,0x00,0x0c};$/;"	v
+return_handshake_code_1	entrance_guard.c	/^unsigned char return_handshake_code_1[] = {0xfa,0xfa,0xfa,0x2a,0x04,0x00,0x85,0x00,0x00,0x03,0x3b,0xc9};$/;"	v
+return_handshake_code_2	entrance_guard.c	/^unsigned char return_handshake_code_2[] = {0xfa,0xfa,0xfa,0x2a,0x04,0x00,0x85,0x00,0x00,0x00,0x0b,0xaa};$/;"	v
+return_open_door_alarm_upload_code	entrance_guard.c	/^unsigned char return_open_door_alarm_upload_code[] = {0xfa,0xfa,0xfa,0x2a,0x11,0x00,0x11,0x00,0x00,0x03,0x00,0x0c,0x10,0x00,0x00,0x00,0x00,0x0c};$/;"	v
+return_search_entrance_guard_code	entrance_guard.c	/^unsigned char return_search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x15,0x00,0x02,0x41,0x43,0x4d,0x36,0x38,0x31,0x30,0x2d,0x31,0x2d,0x30,0x31,0x31,0x37,0x30,0x37,0x30,0x38,0x32,0x39,0x6e,0xc5};$/;"	v
+return_setup_success_code	entrance_guard.c	/^unsigned char return_setup_success_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x81,0x6d,0xbc};$/;"	v
+reused	net_server.h	/^    int reused;\/\/1：表示可以重用，0：表示默认$/;"	m	struct:tag_SOCK_ATTR
+rev	net_server.h	/^    char	rev[2];	\/\/ 保留。$/;"	m	struct:__anon69
+rsv2	net_server.h	/^    char  rsv2[8];$/;"	m	struct:__anon67
+rtf	net_server.h	/^    int rtf;											\/\/>0表示设置了接收超时时间，0：表示默认$/;"	m	struct:tag_SOCK_ATTR
+sAlarmHost	net_server.h	/^    SXC_ALARM_HOST_INFO   sAlarmHost;$/;"	m	union:tag_alarm_ctl
+sAlarmInName	net_server.h	/^    char sAlarmInName[16];					\/\/ 名称。$/;"	m	struct:__anon38
+sAlarmInName	net_server.h	/^    char sAlarmInName[16];				\/\/ 名称。$/;"	m	struct:__anon66
+sAlarmOutName	net_server.h	/^    char sAlarmOutName[16];				\/\/ 名称 16字节 $/;"	m	struct:__anon39
+sDoorSysAlm	net_server.h	/^    SXC_DOOR_SYS_ALM_INFO sDoorSysAlm;$/;"	m	union:tag_alarm_ctl
+sSerialNumber	net_server.h	/^    char 		sSerialNumber[SERIALNO_LEN];	\/\/ 出厂序列号 32字节$/;"	m	struct:__anon12
+sSwitchIn	net_server.h	/^    SXC_ALRAM_SWITCH_IN   sSwitchIn;$/;"	m	union:tag_alarm_ctl
+savestate	net_server.h	/^    char  savestate;		       				\/\/ 对于参数设置操作，0：确认；1：保存。$/;"	m	struct:__anon8
+search_entrance_guard	entrance_guard.c	/^int search_entrance_guard(int *com_fd)$/;"	f
+search_entrance_guard_code	entrance_guard.c	/^unsigned char search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x02,0xcc,0x57};$/;"	v
+select_port	serial_common.c	/^int select_port(int fd, int type)$/;"	f
+send_act_cmd	net_server.c	/^int send_act_cmd(int status, int client_fd, int request_id, int usr_id)$/;"	f
+send_data_intime_over	net_server.c	/^int  send_data_intime_over(int client_fd, int timeout, char *src_buf, int src_len)$/;"	f
+send_entrance_guard_default_setup	entrance_guard.c	/^int send_entrance_guard_default_setup(int *com_fd)$/;"	f
+send_handshake_packet	ck2316_alarm.c	/^int send_handshake_packet(int *com_fd)$/;"	f
+serialAttr	net_server.h	/^    RS232_ATTR  serialAttr;			\/\/ 连接设备的串口属性$/;"	m	struct:__anon50
+serialLink	net_server.h	/^    SERIAL_LINK  serialLink;			\/\/ 选择连接设备$/;"	m	struct:__anon50
+serial_probe	serial_common.c	/^int serial_probe(int fd, int type, struct timeval time_out)$/;"	f
+server_connect_fd	main.c	/^int server_listen_fd = -1,server_connect_fd = -1;$/;"	v
+server_listen_fd	main.c	/^int server_listen_fd = -1,server_connect_fd = -1;$/;"	v
+set_alarm_linkage	net_server.c	/^int set_alarm_linkage(char *recv_buf,int fd)$/;"	f
+set_and_cancel_linkage_alarm_channel	alarm_input_output.h	/^    unsigned int set_and_cancel_linkage_alarm_channel;$/;"	m	struct:__anon1
+set_lan_ip	net_server.c	/^int set_lan_ip(unsigned int ip)$/;"	f
+set_lan_netmask	net_server.c	/^int set_lan_netmask(unsigned netmask)$/;"	f
+set_local_lan_gateway	net_server.c	/^int  set_local_lan_gateway(char *gateway_cmd)$/;"	f
+set_local_lan_mac	net_server.c	/^int set_local_lan_mac(unsigned char *p_mac)$/;"	f
+set_opt	serial_common.c	/^int set_opt(int fd,int nSpeed,int nBits,int nEvent,int nStop)$/;"	f
+set_serial_dev_parameter	global.c	/^int set_serial_dev_parameter(FILE *fp_dev_config_file)$/;"	f
+setup_command_set	alarm_input_output.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低8位，每一位表示一个命令) $/;"	m	struct:__anon1
+setup_command_set	ck2316_alarm.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon2
+setup_command_set	cradle_head_control.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon3
+setup_command_set	entrance_guard.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon4
+setup_command_set	matrix_control.h	/^    unsigned int setup_command_set;         \/\/存储设置命令(低16位，每一位表示一个命令) $/;"	m	struct:__anon6
+sockaddr_listen	net_server.c	/^struct sockaddr_in sockaddr_listen; \/\/connect client socket$/;"	v	typeref:struct:sockaddr_in
+sockfd_client	net_server.h	/^    int sockfd_client;$/;"	m	struct:userlist
+spare	net_server.h	/^    char  spare[1];							\/\/保留$/;"	m	struct:__anon8
+spare	net_server.h	/^    char  spare[6];$/;"	m	struct:__anon9
+start_alarm_output	alarm_input_output.c	/^int start_alarm_output(int *alarm_input_output_fd)$/;"	f
+state	md5.h	/^	unsigned int state[4];			\/\/encypted message$/;"	m	struct:__anon7
+status	net_server.h	/^    int status;								\/\/ 作为命令头时为0，返回头时为状态$/;"	m	struct:__anon8
+status	net_server.h	/^    int status;      							\/\/做为命令头时为0，返回头时为状态$/;"	m	struct:__anon9
+stf	net_server.h	/^    int stf;											\/\/>0表示设置了发送超时时间，0：表示默认$/;"	m	struct:tag_SOCK_ATTR
+struAlarmOutTime	net_server.h	/^    INTER_SCHEDTIME 	struAlarmOutTime[MAX_DAYS][MAX_TIMESEGMENT];$/;"	m	struct:__anon39
+struAlarmTime	net_server.h	/^    INTER_SCHEDTIME struAlarmTime[7][4];	 $/;"	m	struct:__anon38
+struAlarmTime	net_server.h	/^    SX_INTER_SCHEDTIME struAlarmTime[7][4]; \/\/ 布防时间 7天4个时间段 每天的第一个时间段00：00 ~23:59	 $/;"	m	struct:__anon66
+switch_in_para_set	net_server.c	/^int switch_in_para_set(char *recv_buf,int fd)$/;"	f
+switch_para_send	net_server.c	/^int switch_para_send(char *recv_buf,int fd)$/;"	f
+switch_para_set	net_server.c	/^int switch_para_set(char *recv_buf,int fd)$/;"	f
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;	$/;"	m	struct:__anon16
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon24
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon25
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon31
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon35
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon43
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon51
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon58
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon60
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon62
+sxdHeader	net_server.h	/^    INTER_SXD_HEAD sxdHeader;$/;"	m	struct:__anon68
+sxdalarmstate	net_server.h	/^    SXC_INTER_ALARMCTL_DEV_GET_STATE sxdalarmstate;$/;"	m	struct:__anon31
+sxddoorpara	net_server.h	/^    SX_INTER_DOOR_PARA_REQ sxddoorpara;$/;"	m	struct:__anon24
+sxddoorstate	net_server.h	/^    INTER_DOOR_STATUS sxddoorstate;$/;"	m	struct:__anon25
+system_abandon_code	ck2316_alarm.c	/^unsigned char system_abandon_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x03}};$/;"	v
+system_defence_code	ck2316_alarm.c	/^unsigned char system_defence_code[][3] = {{0xFE,0x06,CK2316_USER_PASSWORD_1}, {0xFE,0x06,CK2316_USER_PASSWORD_2},{0xFE,0x06,CK2316_USER_PASSWORD_3},{0xFE,0x06,CK2316_USER_PASSWORD_4},{0xFE,0x06,0x0B},{0xFE,0x04,0x02},{0xFE,0x04,0x06},{0xFE,0x04,0x06},{0xFE,0x04,0x03}};$/;"	v
+system_time_set	net_server.c	/^int system_time_set(char *recv_buf,int fd)$/;"	f
+tag_SOCK_ATTR	net_server.h	/^typedef struct tag_SOCK_ATTR{$/;"	s
+tag_alarm_ctl	net_server.h	/^typedef  union tag_alarm_ctl{$/;"	u
+tag_sock_type	net_server.h	/^typedef enum tag_sock_type$/;"	g
+upload_time	alarm_input_output.h	/^    LAST_ALARM_UPLOAD_TIME upload_time;$/;"	m	struct:__anon1
+upload_time	ck2316_alarm.h	/^   LAST_ALARM_UPLOAD_TIME upload_time;$/;"	m	struct:__anon2
+upload_time	entrance_guard.h	/^    LAST_ALARM_UPLOAD_TIME upload_time;$/;"	m	struct:__anon4
+user_id	net_server.h	/^    int user_id;$/;"	m	struct:__anon11
+user_id	net_server.h	/^    int user_id;$/;"	m	struct:userlist
+user_info	net_server.h	/^}user_info;$/;"	t	typeref:struct:userlist
+user_outline	net_server.c	/^pthread_mutex_t mutex_channel,mutex_link,user_outline;	\/\/用于统计通道和用户链表操作数的锁$/;"	v
+user_table_idx	net_server.h	/^    char user_table_idx;$/;"	m	struct:__anon40
+userlist	net_server.h	/^typedef struct userlist{$/;"	s
+usrID	net_server.h	/^    int usrID;								\/\/ 用户ID$/;"	m	struct:__anon8
+usrID	net_server.h	/^    int usrID;$/;"	m	struct:__anon15
+usrID	net_server.h	/^    int usrID;$/;"	m	struct:__anon16
+usrName	net_server.h	/^    char   		usrName[16];$/;"	m	struct:__anon12
+usrName	net_server.h	/^    char   usrName[16];$/;"	m	struct:__anon10
+usrPwd	net_server.h	/^    char   		usrPwd[32];					\/\/ MD5加密$/;"	m	struct:__anon12
+usrPwd	net_server.h	/^    char   usrPwd[32];$/;"	m	struct:__anon10
+verify_ck2316_data	ck2316_alarm.c	/^int verify_ck2316_data(unsigned char *recv_buffer, unsigned int len)$/;"	f
+version	net_server.h	/^    int  version;   							\/\/网络通讯协议版本，目前为0x01$/;"	m	struct:__anon8
+version	net_server.h	/^    int version;$/;"	m	struct:__anon9
+wDevicePort	net_server.h	/^    short wDevicePort;					\/\/ tcp端口号 ，默认为10000$/;"	m	struct:__anon41
+wGuardNo	net_server.h	/^    short wGuardNo;						\/\/ 报警控制器防区id，1-16$/;"	m	struct:__anon33
+wManageHostPort	net_server.h	/^    short wManageHostPort; 				\/\/ 远程管理主机端口号，默认为10000 $/;"	m	struct:__anon41
+wRev	net_server.h	/^    short wRev;$/;"	m	struct:__anon41
+word_position_find	serial_common.c	/^int word_position_find(unsigned char *p_src, int len, U32 dst_num)$/;"	f
