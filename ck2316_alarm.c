@@ -24,7 +24,7 @@ enum CK2316_DEFENCN_AREA_ALARM_STATUS_ARG
 
 #define MAX_CHECK_COMMAND_COUNT            6
 
-#define CK2316_KEYBOARD_ADDRESS            0x0E
+#define CK2316_KEYBOARD_ADDRESS            0x02
 #define CK2316_ACTUAL_KEYBOARD_ADDRESS     (CK2316_KEYBOARD_ADDRESS+1)
 #define CK2316_KEYBOARD_ADDRESS_MASK       0x03
 #define CK2316_KEYBOARD_ADDRESS_SIZE       2
@@ -167,6 +167,9 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
         switch (recv_ret)
         {
             case 0:
+                //printf_debug("recv_ret = %d",recv_ret);
+                //print_string("\n ", recv_buffer, recv_ret);
+                //printf_debug("\n");
                 if (capture_address_count++ > 4) 
                 {
                     capture_address_count = 0;
@@ -410,10 +413,10 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                         /*
                         FE 04 03 FF 02 00 00 00 00 00 0F 03 
                         FE 04 03 A5 10 00 00 00 00 00 00 0F 03 
-                        FE 04 03 A5 11 00 00 00 00 00 00 0F 03 
+                        FE 05 03 A5 11 00 00 00 00 00 00 0F 03 
                         FE 04 03 A5 12 00 00 00 00 00 00 0F 03 
                         FE 04 03 FF 09 00 00 00 00 00 08 0F 03 */
-                        if (recv_buffer[recv_ret-8] == CK2316_HIGH_DEFENCE_AREA_HEAD)    //高防区 
+                        if (recv_buffer[recv_ret-8] == CK2316_HIGH_DEFENCE_AREA_HEAD && recv_buffer[recv_ret-9] == 0xff)    //高防区 
                         {
                             //获取高防区报警记忆状态
                             ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] = recv_buffer[recv_ret-7];
@@ -423,7 +426,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                             //获取高防区旁路状态
                             ck2316_alarm_data.ck2316_defence_area_bypass_value[1] = recv_buffer[recv_ret-4];
                         }
-                        else if (recv_buffer[recv_ret-9] == CK2316_LOW_DEFENCE_AREA_HEAD) //低防区
+                        else if (recv_buffer[recv_ret-9] == CK2316_LOW_DEFENCE_AREA_HEAD && recv_buffer[recv_ret-10] == 0xff) //低防区
                         {
                             //获取布撤防状态（布防，撤防）
                             if (recv_buffer[recv_ret-4] & CK2316_IS_DEFENCED_OR_ABANDONED_MASK) 
@@ -443,6 +446,8 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                             //获取低防区旁路状态
                             ck2316_alarm_data.ck2316_defence_area_bypass_value[0] = recv_buffer[recv_ret-5];
                             //CK2316防区报警状态(0:无报警 1:普通防区报警 2:紧急防区报警 3:普通和紧急防区都有报警)
+                            printf_debug("ck2316_alarm_data.ck2316_defence_area_alarm_status = 0x%x\n",ck2316_alarm_data.ck2316_defence_area_alarm_status & CK2316_DEFENCE_AREA_ALARM_STATUS_MASK);
+                            printf_debug("ck2316_alarm_data.ck2316_defence_area_alarm_status = 0x%x\n",ck2316_alarm_data.ck2316_defence_area_alarm_status);
                             ck2316_alarm_data.ck2316_defence_area_alarm_status = recv_buffer[recv_ret-3] & CK2316_DEFENCE_AREA_ALARM_STATUS_MASK;
                             switch(ck2316_alarm_data.ck2316_defence_area_alarm_status)
                             {
@@ -476,9 +481,9 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                     }
                 }
 #ifdef DEBUG
-                printf_debug("recv_ret = %d",recv_ret);
-                print_string("\n ", recv_buffer, recv_ret);
-                printf_debug("\n");
+                //printf_debug("recv_ret = %d",recv_ret);
+                //print_string("\n ", recv_buffer, recv_ret);
+                //printf_debug("\n");
 #endif
                 break;
         }

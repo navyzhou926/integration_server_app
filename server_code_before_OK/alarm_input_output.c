@@ -13,8 +13,9 @@
 #include "net.h"
 #include "alarm_input_output.h"
 #include "entrance_guard.h"
+#include "net_server.h"
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define printf_debug(fmt, arg...) printf(fmt, ##arg)
 #else
@@ -70,12 +71,10 @@ unsigned int const alarm_input_output_io_table[MAX_ALARM_IO_NUM] = {
 #define ALARM_LINKAGE_OUTPUT_OBJECT_8           0x80
 
 
-#define DEFAULT_ALARM_DURATION                      5   //5åˆ†é’Ÿ
+#define DEFAULT_ALARM_DURATION                      5   //5·ÖÖÓ
 
-alarm_input_output_arg alarm_input_output_data = {0, NO, ALARM_INPUT_OUTPUT_NORMAL_OPERATION, MAX_ALARM_LINKAGE_INPUT_OBJECT,  0, MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT, 0, {ALARM_LINKAGE_OUTPUT_OBJECT_1, ALARM_LINKAGE_OUTPUT_OBJECT_2, ALARM_LINKAGE_OUTPUT_OBJECT_3, ALARM_LINKAGE_OUTPUT_OBJECT_4, ALARM_LINKAGE_OUTPUT_OBJECT_5, ALARM_LINKAGE_OUTPUT_OBJECT_6, ALARM_LINKAGE_OUTPUT_OBJECT_7, ALARM_LINKAGE_OUTPUT_OBJECT_8, ALARM_LINKAGE_OUTPUT_OBJECT_1}, 0, DEFAULT_ALARM_DURATION};
+alarm_input_output_arg alarm_input_output_data = {0, NO, ALARM_INPUT_OUTPUT_NORMAL_OPERATION, MAX_ALARM_LINKAGE_INPUT_OBJECT,  0, MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT, 0, {ALARM_LINKAGE_OUTPUT_OBJECT_1, ALARM_LINKAGE_OUTPUT_OBJECT_2, ALARM_LINKAGE_OUTPUT_OBJECT_3, ALARM_LINKAGE_OUTPUT_OBJECT_4, ALARM_LINKAGE_OUTPUT_OBJECT_5, ALARM_LINKAGE_OUTPUT_OBJECT_6, ALARM_LINKAGE_OUTPUT_OBJECT_7, ALARM_LINKAGE_OUTPUT_OBJECT_8, ALARM_LINKAGE_OUTPUT_OBJECT_1}, 0 , 0, DEFAULT_ALARM_DURATION,{0,0,0,0,0,0}};
 
-static char if_is_first_upload_alarm[MAX_ALARM_IO_NUM] = {0, 0, 0, 0, 0, 0, 0, 0};
-char if_start_alarm_output = NO;
 
 FILE *fp_alarm_input_output_config_file = NULL;
 int alarm_input_output_fd;
@@ -85,6 +84,7 @@ extern int server_sock_tcp, client_sock_tcp;
 extern int if_have_net_client_connect;
 
 extern void print_string(char *string, unsigned char *buffer, unsigned int len);
+extern int alarm_upload(struct tm *t,int alarm_type,int flag);
 int open_alarm_input_output_device(int *alarm_input_output_fd);
 int change_alarm_input_output_status(int alarm_input_output_fd, int input_output_command);
 int enable_and_disable_alarm_out(int alarm_out_fd, int alarm_output_io_pin, int enable_disable_command);
@@ -93,6 +93,8 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
 int get_alarm_input_value(int alarm_input_fd, int alarm_input_io_pin);
 int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_io_status, int *timed_alarm_count_array, int *temp_timed_alarm_count_array);
 int start_alarm_output(int *alarm_input_output_fd);
+int alarm_input_output_channel_last = 0;//µ±Ç°¿ª¹ØÁ¿±¨¾¯Í¨µÀºÅ
+
 void alarm_input_output_default_setup(int *temp_timed_alarm_count_array);
 
 
@@ -115,7 +117,7 @@ void *pthread_timed_alarm(void *arg)
             {
                 if (timed_alarm_count_array[i] > 1)
                     timed_alarm_count_array[i]--;
-                else if (timed_alarm_count_array[i] == 1)
+                else if (timed_alarm_count_array[i] ==  1)
                 {
                     if (alarm_input_output_data.real_time_alarm_output_objcet & (1<<i)) 
                     {
@@ -127,20 +129,19 @@ void *pthread_timed_alarm(void *arg)
                             //return ret;
                         }
                         pthread_mutex_unlock(&alarm_output_mutex);
-                        if_is_first_upload_alarm[i] = NO;
                     }               
                 }
-                else
-                {
-                    sleep(1);
-                }
+		else
+		{
+			sleep(1);
+		}
             }
             printf_debug("\nTimed alarm count: %04d %04d %04d %04d %04d %04d %04d %04d \n",timed_alarm_count_array[0], timed_alarm_count_array[1], timed_alarm_count_array[2], timed_alarm_count_array[3], timed_alarm_count_array[4], timed_alarm_count_array[5], timed_alarm_count_array[6], timed_alarm_count_array[7]);
             sleep(DELAY_N_SECOND);
         }
         else
         {
-            printf("no alarm\n");
+            //printf_debug("no alarm\n");
             sleep(1);
         }
     }
@@ -163,7 +164,7 @@ void *pthread_alarm_input_output(void *arg)
         ret = open_alarm_input_output_device(&alarm_input_output_fd);
         if (ret <= 0) 
         {
-            printf("FUNC[%s] LINE[%d]\tOpen alarm input output device failed, ret = %d\n",__FUNCTION__, __LINE__,ret);
+            printf_debug("FUNC[%s] LINE[%d]\tOpen alarm input output device failed, ret = %d\n",__FUNCTION__, __LINE__,ret);
             alarm_input_output_data.if_alarm_input_output_device_is_ready = NO;
             sleep(20);
         }
@@ -203,7 +204,7 @@ try_again:
     fprintf(fp_config_file, "%03d %03d %03d %03d %03d %03d %03d %03d %03d ",alarm_input_output_data.alarm_input_linkage_output_object[0], alarm_input_output_data.alarm_input_linkage_output_object[1], alarm_input_output_data.alarm_input_linkage_output_object[2], alarm_input_output_data.alarm_input_linkage_output_object[3], alarm_input_output_data.alarm_input_linkage_output_object[4], alarm_input_output_data.alarm_input_linkage_output_object[5], alarm_input_output_data.alarm_input_linkage_output_object[6], alarm_input_output_data.alarm_input_linkage_output_object[7], alarm_input_output_data.alarm_input_linkage_output_object[8]);
     fflush(fp_config_file);
 
-    //å­˜å‚¨å®šæ—¶æŠ¥è­¦æ—¶é—´çš„æ–‡ä»¶
+    //´æ´¢¶¨Ê±±¨¾¯Ê±¼äµÄÎÄ¼þ
     if ((fp_timed_alarm_file = fopen(ALARM_INPUT_OUTPUT_TIMED_ALARM_FILE, "a+")) == NULL)
     {
         printf("FUNC[%s] LINE[%d]\tOpen %s error!\n",__FUNCTION__, __LINE__, ALARM_INPUT_OUTPUT_TIMED_ALARM_FILE);
@@ -228,7 +229,7 @@ try_again:
     fprintf(fp_timed_alarm_file, "%04d %04d %04d %04d %04d %04d %04d %04d ",timed_alarm_count_array[0], timed_alarm_count_array[1], timed_alarm_count_array[2], timed_alarm_count_array[3], timed_alarm_count_array[4], timed_alarm_count_array[5], timed_alarm_count_array[6], timed_alarm_count_array[7]);
     fflush(fp_timed_alarm_file);
 
-    //åˆ›å»ºæŠ¥è­¦å®šæ—¶çº¿ç¨‹
+    //´´½¨±¨¾¯¶¨Ê±Ïß³Ì
     if (pthread_create(&tid_timed_alarm, NULL, pthread_timed_alarm, timed_alarm_count_array) != 0) 
     {
         printf("FUNC[%s] LINE[%d]\tCan't create timed alarm thread !\n",__FUNCTION__, __LINE__);
@@ -255,7 +256,9 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
     int ret = 0;
     unsigned int alarm_input_io_status; 
     int temp_timed_alarm_count_array[MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT];
-
+    ALARM_OUTPUT_DURATION_CFG_SEND send_buf;
+    int check_ret,len;
+	
     for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++) 
     {
         temp_timed_alarm_count_array[i] = timed_alarm_count_array[i];
@@ -268,7 +271,9 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
             case ALARM_INPUT_OUTPUT_NORMAL_OPERATION:
                 if (entrance_guard_data.if_has_entrance_guard_alarm == YES) 
                 {
-                    pthread_mutex_lock(&alarm_output_mutex);
+			printf("\n\nFUNC[%s] LINE[%d]\tentrance_guard_data.if_has_entrance_guard_alarm == YES\n",__FUNCTION__, __LINE__);
+			
+		    pthread_mutex_lock(&alarm_output_mutex);
                     alarm_input_output_data.real_time_alarm_output_objcet |= alarm_input_output_data.alarm_input_linkage_output_object[MAX_ALARM_LINKAGE_INPUT_OBJECT-1];
                     for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++) 
                     {
@@ -292,7 +297,7 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                     return ret;
                 }
 
-                if (alarm_input_io_status  && if_start_alarm_output == YES) 
+                if (alarm_input_io_status) 
                 {
                     if ((ret = start_alarm_output(alarm_input_output_fd)) < 0)
                     {
@@ -300,42 +305,44 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                         return ret;
                     }
                 }
-                //usleep(10000);
+                usleep(10000);
                 break;
-            case ALARM_INPUT_OUTPUT_SET_AND_CANCEL_LINKAGE_ALARM:
+            case ALARM_INPUT_OUTPUT_SET_AND_CANCEL_LINKAGE_ALARM:        //ÉèÖÃ±¨¾¯Êä³ö
+          
                 pthread_mutex_lock(&alarm_output_mutex);
-                for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++) 
-                {
-                    if (alarm_input_output_data.set_and_cancel_linkage_alarm_channel & (1<<i)) 
-                    {
-                        timed_alarm_count_array[i] = temp_timed_alarm_count_array[i];
-                    }
-                }
+		 for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++)
+                 {
+                     if (alarm_input_output_data.set_and_cancel_linkage_alarm_channel & (1<<i))
+                     {
+                         timed_alarm_count_array[i] = temp_timed_alarm_count_array[i];
+                     }
+                 }
                 alarm_input_output_data.real_time_alarm_output_objcet = alarm_input_output_data.set_and_cancel_linkage_alarm_channel; 
                 if ((ret = start_alarm_output(alarm_input_output_fd)) < 0)
                 {
                     printf("FUNC[%s] LINE[%d]\tstart alarm output error, ret = %d\n",__FUNCTION__, __LINE__,ret);
                     return ret;
                 }
-                else
-                {
-                    if_is_first_upload_alarm[i] = NO;
-                }
                 pthread_mutex_unlock(&alarm_output_mutex);
-                //ç½‘ç»œå‘é€ æˆåŠŸè®¾ç½®æŠ¥è­¦è¾“å‡º
+                //ÍøÂç·¢ËÍ ³É¹¦ÉèÖÃ±¨¾¯Êä³ö
                 printf_debug("FUNC[%s] LINE[%d]\tSucceed to set alarm output\n",__FUNCTION__, __LINE__);
                 alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
+		  //-----------------------------------------------------------------------------------12.9.18 Frank added
+		  send_act_cmd(QULIFIED ,alarm_input_output_data.current_fd,SXC_SETALAOUT,alarm_input_output_data.current_fd);
 
                 break;
-            case ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO:
+            case ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO:           //ÉèÖÃ±¨¾¯Áª¶¯²ÎÊý
                 fseek(fp_config_file, 0, SEEK_SET);
                 fprintf(fp_config_file, "%03d %03d %03d %03d %03d %03d %03d %03d %03d ",alarm_input_output_data.alarm_input_linkage_output_object[0], alarm_input_output_data.alarm_input_linkage_output_object[1], alarm_input_output_data.alarm_input_linkage_output_object[2], alarm_input_output_data.alarm_input_linkage_output_object[3], alarm_input_output_data.alarm_input_linkage_output_object[4], alarm_input_output_data.alarm_input_linkage_output_object[5], alarm_input_output_data.alarm_input_linkage_output_object[6], alarm_input_output_data.alarm_input_linkage_output_object[7], alarm_input_output_data.alarm_input_linkage_output_object[8]);
                 fflush(fp_config_file);
-                //ç½‘ç»œå‘é€ æˆåŠŸè®¾ç½®æŠ¥è­¦è”åŠ¨å¯¹åº”å…³ç³»
+                //ÍøÂç·¢ËÍ ³É¹¦ÉèÖÃ±¨¾¯Áª¶¯¶ÔÓ¦¹ØÏµ
                 printf_debug("FUNC[%s] LINE[%d]\tSucceed to set alarm outlarm_input_output_data.alarm_linkage_output_objectput linkage\n",__FUNCTION__, __LINE__);
                 alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
+		  //-----------------------------------------------------------------------------------12.9.18 Frank added
+		  send_act_cmd(QULIFIED,alarm_input_output_data.current_fd,SXC_SET_ALARM_LINKAGE_CFG_V2,alarm_input_output_data.current_fd);
+
                 break;
-            case ALARM_INPUT_OUTPUT_RESTORE_TO_DEFAULT:
+            case ALARM_INPUT_OUTPUT_RESTORE_TO_DEFAULT:   //»Ö¸´Ä¬ÈÏ
                 alarm_input_output_default_setup(temp_timed_alarm_count_array);
                 fseek(fp_config_file, 0, SEEK_SET);
                 fprintf(fp_config_file, "%03d %03d %03d %03d %03d %03d %03d %03d %03d ",alarm_input_output_data.alarm_input_linkage_output_object[0], alarm_input_output_data.alarm_input_linkage_output_object[1], alarm_input_output_data.alarm_input_linkage_output_object[2], alarm_input_output_data.alarm_input_linkage_output_object[3], alarm_input_output_data.alarm_input_linkage_output_object[4], alarm_input_output_data.alarm_input_linkage_output_object[5], alarm_input_output_data.alarm_input_linkage_output_object[6], alarm_input_output_data.alarm_input_linkage_output_object[7], alarm_input_output_data.alarm_input_linkage_output_object[8]);
@@ -346,23 +353,27 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                 fprintf(fp_timed_alarm_file, "%04d %04d %04d %04d %04d %04d %04d %04d ",temp_timed_alarm_count_array[0], temp_timed_alarm_count_array[1], temp_timed_alarm_count_array[2], temp_timed_alarm_count_array[3], temp_timed_alarm_count_array[4], temp_timed_alarm_count_array[5], temp_timed_alarm_count_array[6], temp_timed_alarm_count_array[7]);
                 fflush(fp_timed_alarm_file);
                 printf_debug("\nTimed alarm count: %04d %04d %04d %04d %04d %04d %04d %04d \n",temp_timed_alarm_count_array[0], temp_timed_alarm_count_array[1], temp_timed_alarm_count_array[2], temp_timed_alarm_count_array[3], temp_timed_alarm_count_array[4], temp_timed_alarm_count_array[5], temp_timed_alarm_count_array[6], temp_timed_alarm_count_array[7]);
-                //ç½‘ç»œå‘é€ æˆåŠŸæ¢å¤é»˜è®¤è®¾ç½®
+                //ÍøÂç·¢ËÍ ³É¹¦»Ö¸´Ä¬ÈÏÉèÖÃ
                 printf_debug("FUNC[%s] LINE[%d]\tAlarm input and output arg restore to default successfully\n",__FUNCTION__, __LINE__);
                 alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
+
+   		 //-----------------------------------------------------------------------------------12.9.18 Frank added
+		  send_act_cmd(QULIFIED,alarm_input_output_data.current_fd,SXC_RESET_ALARM_LINKAGE_AND_TIMEPARA,alarm_input_output_data.current_fd);
+
                 break;
                 //case ALARM_INPUT_OUTPUT_SET_LINKAGE_INFO:
                 //break;
                 //case ALARM_INPUT_OUTPUT_GET_LINKAGE_INFO:
                 //break;
-            case ALARM_INPUT_OUTPUT_SET_ALARM_DURATION:  //è®¾ç½®æŠ¥è­¦è¾“å‡ºæŒç»­æ—¶é—´
-                if (alarm_input_output_data.alarm_linkage_output_object == 0) //set all  
+            case ALARM_INPUT_OUTPUT_SET_ALARM_DURATION:  //ÉèÖÃ±¨¾¯Êä³ö³ÖÐøÊ±¼ä
+                if (alarm_input_output_data.alarm_linkage_output_object == 0) 
                 {
                     for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++) 
                     {
                         temp_timed_alarm_count_array[i] = CHANGE_MINUTE_TO_COUNT(alarm_input_output_data.alarm_duration);
                     }
                 }
-                else  //set single
+                else
                 {
                     temp_timed_alarm_count_array[alarm_input_output_data.alarm_linkage_output_object-1] = CHANGE_MINUTE_TO_COUNT(alarm_input_output_data.alarm_duration);
                 }
@@ -370,15 +381,33 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                 fprintf(fp_timed_alarm_file, "%04d %04d %04d %04d %04d %04d %04d %04d ",temp_timed_alarm_count_array[0], temp_timed_alarm_count_array[1], temp_timed_alarm_count_array[2], temp_timed_alarm_count_array[3], temp_timed_alarm_count_array[4], temp_timed_alarm_count_array[5], temp_timed_alarm_count_array[6], temp_timed_alarm_count_array[7]);
                 fflush(fp_timed_alarm_file);
                 printf_debug("\nTimed alarm count: %04d %04d %04d %04d %04d %04d %04d %04d \n",temp_timed_alarm_count_array[0], temp_timed_alarm_count_array[1], temp_timed_alarm_count_array[2], temp_timed_alarm_count_array[3], temp_timed_alarm_count_array[4], temp_timed_alarm_count_array[5], temp_timed_alarm_count_array[6], temp_timed_alarm_count_array[7]);
-                //ç½‘ç»œå‘é€ æˆåŠŸè®¾ç½®æŠ¥è­¦è¾“å‡ºæŒç»­æ—¶é—´
+                //ÍøÂç·¢ËÍ ³É¹¦ÉèÖÃ±¨¾¯Êä³ö³ÖÐøÊ±¼ä
                 printf_debug("FUNC[%s] LINE[%d]\tSet alarm duration successfully\n",__FUNCTION__, __LINE__);
                 alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
-                break;
-            case ALARM_INPUT_OUTPUT_GET_ALARM_DURATION:  //getæŠ¥è­¦è¾“å‡ºæŒç»­æ—¶é—´
+		  //-----------------------------------------------------------------------------------12.9.18 Frank added
+		  send_act_cmd(QULIFIED,alarm_input_output_data.current_fd,SXC_SET_ALARM_OUTPUT_DURATION_TIME,alarm_input_output_data.current_fd);
+
+		break;
+            case ALARM_INPUT_OUTPUT_GET_ALARM_DURATION:  //get±¨¾¯Êä³ö³ÖÐøÊ±¼ä
+          	  alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
                 alarm_input_output_data.alarm_duration = CHANGE_COUNT_TO_MINUTE(temp_timed_alarm_count_array[alarm_input_output_data.alarm_linkage_output_object-1]);
-                //ç½‘ç»œå‘é€ æˆåŠŸgetæŠ¥è­¦è¾“å‡ºæŒç»­æ—¶é—´,then send data
+                //ÍøÂç·¢ËÍ ³É¹¦get±¨¾¯Êä³ö³ÖÐøÊ±¼ä,then send data
+               //-----------------------------------------------------------------------------------12.9.18 Frank added
+		memset(&send_buf,0,sizeof(send_buf));
+		send_buf.linkage_time.byAlarmOutChan =  (char)alarm_input_output_data.alarm_linkage_output_object;
+		send_buf.linkage_time.byHour =  (char)(alarm_input_output_data.alarm_duration/60);
+		send_buf.linkage_time.byMinute =  (char)(alarm_input_output_data.alarm_duration%60);
+	       check_ret=1; //checksum_send(&ret_cmd.sxdHeader,0);
+ 	  	send_buf.sxdHeader.checkSum=htonl(check_ret);
+   		send_buf.sxdHeader.requestID = htonl(SXC_GET_ALARM_OUTPUT_DURATION_TIME);
+   		send_buf.sxdHeader.status = htonl(QULIFIED); 						 //**************´Ë´¦ÊÇ·ñÎªÈ·ÈÏÃüÁî?
+   		send_buf.sxdHeader.length = htonl(sizeof(ALARM_OUTPUT_DURATION_CFG_SEND));
+   		len = sizeof(ALARM_OUTPUT_DURATION_CFG_SEND);
+			
+     		send_buf.sxdHeader.version = htonl(SDK_VERSION);
                 printf_debug("FUNC[%s] LINE[%d]\t alarm output channel %d duration is %02d:%02d:00\n",__FUNCTION__, __LINE__, alarm_input_output_data.alarm_linkage_output_object, alarm_input_output_data.alarm_duration/60, alarm_input_output_data.alarm_duration%60);
-                alarm_input_output_data.setup_command_set = ALARM_INPUT_OUTPUT_NORMAL_OPERATION;
+
+	        send_data_intime_over(alarm_input_output_data.current_fd, MAX_TIME_OUT_MS, (char *)&send_buf, len);
                 break;
             default:
                 break;
@@ -394,6 +423,7 @@ int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_i
     int i = 0, j = 0;
     time_t tm;
     struct tm *t;
+    static char if_is_first_upload_alarm[MAX_ALARM_IO_NUM] = {0};
 
     *alarm_input_io_status = 0;
     for (i = 0; i < MAX_ALARM_IO_NUM; i++) 
@@ -406,7 +436,7 @@ int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_i
         }
         else if(ret == 0)
         {
-            //usleep(5000);
+            usleep(5000);
             if (get_alarm_input_value(*alarm_input_output_fd, alarm_input_output_io_table[i]) == 0) 
             {
                 *alarm_input_io_status |= (1 << i);
@@ -423,13 +453,31 @@ int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_i
                 pthread_mutex_unlock(&alarm_output_mutex);
                 if (if_have_net_client_connect == YES) 
                 {
-                    if_start_alarm_output = YES;
-                    //navy ç½‘ç»œå‘é€ æŠ¥è­¦ä¸Šä¼ 
-                    tm = time(NULL);
-                    t = localtime(&tm);
-                    printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d ,Input channel %d happen alarm\n",__FUNCTION__, __LINE__, t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, i+1);
-                }
+			if(if_is_first_upload_alarm[i] != YES)
+			{
+				if_is_first_upload_alarm[i] = YES;
+
+                  		//navy ÍøÂç·¢ËÍ ±¨¾¯ÉÏ´«
+              		       tm = time(NULL);
+             		       t = localtime(&tm);
+				
+     			       alarm_input_output_data.upload_time.Year = t->tm_year + 1900 - 2000;
+	  		       alarm_input_output_data.upload_time.Month = t->tm_mon + 1;
+			       alarm_input_output_data.upload_time.Day =  t->tm_mday;
+			       alarm_input_output_data.upload_time.Hour = t->tm_hour;
+			       alarm_input_output_data.upload_time.Minute = t->tm_min;
+			       alarm_input_output_data.upload_time.Second =  t->tm_sec; 
+			       alarm_upload(t,SWITCH_ALARM_UPLOAD,YES);
+             	 	       printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d ,Input channel %d happen alarm\n",__FUNCTION__, __LINE__, t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, i+1);
+			       alarm_input_output_channel_last = i+1;
+			       
+			}
+		}
             }
+	    else
+	    {
+		if_is_first_upload_alarm[i] = NO;
+	    }
         }
     }
     return 0;

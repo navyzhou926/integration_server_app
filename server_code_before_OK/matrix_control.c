@@ -8,7 +8,7 @@
 #include "net_server.h"
 
 
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define printf_debug(fmt, arg...) printf(fmt, ##arg)
 #else

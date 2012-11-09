@@ -28,9 +28,8 @@ entrance_guard_arg entrance_guard_data = {0, NO, NORMAL_OPEN, NORMAL_CLOSE, IS_O
 unsigned char search_entrance_guard_code[] = {0xfa,0xfa,0xfa,0x2a,0x01,0x00,0x02,0xcc,0x57};
 unsigned char open_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc2,0x6e,0x1b};
 unsigned char close_door_code[] = {0xfa,0xfa,0xfa,0x2a,0x03,0x00,0x63,0x20,0xc3,0x7e,0x3a};
-//门禁控制器不在线上传通知
-int entrance_guard_offline_flag = -1;
-extern int if_have_net_client_connect;
+
+
 /* init setup */
 //门磁  常开+短路检测模式+扫描间隔为0秒
 unsigned char door_contact_default_open_setup_code[] = {0xfa,0xfa,0xfa,0x2a,0x0b,0x00,0x24,0x00,0x08,0x89,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x9b,0xb9};
@@ -422,8 +421,6 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
         switch (recv_ret)
         {
             case 0:
-                  //frank added(2012.10.23)                  
-                  dev_offline_upload(LINK_DEV_DOOR_TYPE);
             #if 0
 #ifdef DEBUG 
                 printf_debug("FUNC[%s] LINE[%d]\trecv_size = %d\n",__FUNCTION__, __LINE__,recv_size);
@@ -437,7 +434,6 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                 {
                     if (entrance_guard_data.setup_command_set) 
                     {
-                        printf("entrance_guard_offline_flag = %d----%d\n",entrance_guard_offline_flag,entrance_guard_data.if_entrance_guard_alive);
                         printf("FUNC[%s] LINE[%d]\tTimeout, setup_command_set = 0x%x!\n",__FUNCTION__, __LINE__, entrance_guard_data.setup_command_set);
                     }
                     else
@@ -447,13 +443,6 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                     entrance_guard_data.setup_command_set = ENTRANCE_GUARD_NO_VALID_COMMAND;
                     entrance_guard_data.if_entrance_guard_alive = NO;
                     entrance_guard_data.if_has_delete_offline_alarm = NO;
-                    //frank added(2012.10.23)                  
-                    if(((entrance_guard_offline_flag == -1)&&(entrance_guard_data.if_entrance_guard_alive == NO))||((entrance_guard_offline_flag == 1)&&(entrance_guard_data.if_entrance_guard_alive == NO)))
-                    {
-                        dev_offline_upload(LINK_DEV_DOOR_TYPE);
-                    }
-                    if(if_have_net_client_connect != 0)
-                        entrance_guard_offline_flag = entrance_guard_data.if_entrance_guard_alive;
                 #if 1
                     usleep(100000);
                 #else
@@ -679,12 +668,9 @@ int entrance_guard_handshake_and_setup(int *com_fd, FILE *fp_normal_message_file
                         }
                     }
                     entrance_guard_data.if_entrance_guard_alive = YES;
-                    entrance_guard_offline_flag = entrance_guard_data.if_entrance_guard_alive;
                 }
                 break;
             case -2:
-                //frank added(2012.10.23)   
-                dev_offline_upload(LINK_DEV_DOOR_TYPE);
                 printf("FUNC[%s] LINE[%d]\tRecv data error!\n",__FUNCTION__, __LINE__);
                 //navy send uart recv data error info to client
                 //exit(1);
@@ -765,7 +751,6 @@ int search_entrance_guard(int *com_fd)
                 {
                     printf("FUNC[%s] LINE[%d]\tEntrance guard is alive !\n",__FUNCTION__, __LINE__);
                     entrance_guard_data.if_entrance_guard_alive = YES;
-                    entrance_guard_offline_flag = entrance_guard_data.if_entrance_guard_alive;
                 #if 1
                     return 1;
                 #else
@@ -782,7 +767,6 @@ int search_entrance_guard(int *com_fd)
                 {
                     printf_debug("FUNC[%s] LINE[%d]\tTimeout, entrance guard is not alive !\n",__FUNCTION__, __LINE__);
                     entrance_guard_data.if_entrance_guard_alive = NO;
-                    entrance_guard_offline_flag = entrance_guard_data.if_entrance_guard_alive;
                 }
                 else
                 {

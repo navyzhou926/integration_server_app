@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
     }
     #endif
 
-    #if 0
+    #if 1
     //创建与报警输入输出通信的线程
     if (pthread_create(&tid_alarm_input_output, NULL, pthread_alarm_input_output, NULL) != 0) 
     {

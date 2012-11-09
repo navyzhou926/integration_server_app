@@ -15,7 +15,7 @@
 #include "entrance_guard.h"
 #include "net_server.h"
 
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define printf_debug(fmt, arg...) printf(fmt, ##arg)
 #else
@@ -48,11 +48,7 @@ unsigned int const alarm_input_output_io_table[MAX_ALARM_IO_NUM] = {
 #define INPUT                       0
 #define OUTPUT                      1
 
-#define SET_IO_DATA_AS_LOW          0
-#define SET_IO_DATA_AS_HIGH         1
-#define GET_IO_DATA                 3
-#define CHANGE_INPUT_OUTPUT_STATUS  4
-#define MAX_COMMAND_NUM             4
+
 
 #define ALARM_OUTPUT_NORMALLY_OPEN      SET_IO_DATA_AS_LOW
 #define ALARM_OUTPUT_NORMALLY_CLOSE     SET_IO_DATA_AS_HIGH
@@ -75,6 +71,8 @@ unsigned int const alarm_input_output_io_table[MAX_ALARM_IO_NUM] = {
 
 alarm_input_output_arg alarm_input_output_data = {0, NO, ALARM_INPUT_OUTPUT_NORMAL_OPERATION, MAX_ALARM_LINKAGE_INPUT_OBJECT,  0, MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT, 0, {ALARM_LINKAGE_OUTPUT_OBJECT_1, ALARM_LINKAGE_OUTPUT_OBJECT_2, ALARM_LINKAGE_OUTPUT_OBJECT_3, ALARM_LINKAGE_OUTPUT_OBJECT_4, ALARM_LINKAGE_OUTPUT_OBJECT_5, ALARM_LINKAGE_OUTPUT_OBJECT_6, ALARM_LINKAGE_OUTPUT_OBJECT_7, ALARM_LINKAGE_OUTPUT_OBJECT_8, ALARM_LINKAGE_OUTPUT_OBJECT_1}, 0 , 0, DEFAULT_ALARM_DURATION,{0,0,0,0,0,0}};
 
+static char if_is_first_upload_alarm[MAX_ALARM_IO_NUM] = {0, 0, 0, 0, 0, 0, 0, 0};
+char if_start_alarm_output = NO;
 
 FILE *fp_alarm_input_output_config_file = NULL;
 int alarm_input_output_fd;
@@ -129,6 +127,7 @@ void *pthread_timed_alarm(void *arg)
                             //return ret;
                         }
                         pthread_mutex_unlock(&alarm_output_mutex);
+                        if_is_first_upload_alarm[i] = NO;
                     }               
                 }
 		else
@@ -296,8 +295,8 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                     printf("FUNC[%s] LINE[%d]\tget alarm input data error, ret = %d\n",__FUNCTION__, __LINE__,ret);
                     return ret;
                 }
-
-                if (alarm_input_io_status) 
+                #if 1
+                if (alarm_input_io_status && if_start_alarm_output == YES) 
                 {
                     if ((ret = start_alarm_output(alarm_input_output_fd)) < 0)
                     {
@@ -305,16 +304,22 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                         return ret;
                     }
                 }
-                usleep(10000);
+                if_start_alarm_output = NO;
+                #endif
+                //usleep(10000);
                 break;
             case ALARM_INPUT_OUTPUT_SET_AND_CANCEL_LINKAGE_ALARM:        //设置报警输出
           
                 pthread_mutex_lock(&alarm_output_mutex);
-		 for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++)
+		        for (i = 0; i < MAX_ALARM_INPUT_LINKAGE_OUTPUT_OBJECT; i++)
                  {
                      if (alarm_input_output_data.set_and_cancel_linkage_alarm_channel & (1<<i))
                      {
                          timed_alarm_count_array[i] = temp_timed_alarm_count_array[i];
+                     }
+                     else
+                     {
+                        if_is_first_upload_alarm[i] = NO;
                      }
                  }
                 alarm_input_output_data.real_time_alarm_output_objcet = alarm_input_output_data.set_and_cancel_linkage_alarm_channel; 
@@ -394,9 +399,9 @@ int alarm_input_output_setup(int *alarm_input_output_fd, FILE *fp_config_file, F
                 //网络发送 成功get报警输出持续时间,then send data
                //-----------------------------------------------------------------------------------12.9.18 Frank added
 		memset(&send_buf,0,sizeof(send_buf));
-		send_buf.linkage_time.byAlarmOutChan =  (char)alarm_input_output_data.alarm_linkage_output_object;
-		send_buf.linkage_time.byHour =  (char)(alarm_input_output_data.alarm_duration/60);
-		send_buf.linkage_time.byMinute =  (char)(alarm_input_output_data.alarm_duration%60);
+		send_buf.linkage_time.byAlarmOutChan =  alarm_input_output_data.alarm_linkage_output_object;
+		send_buf.linkage_time.byHour =  (alarm_input_output_data.alarm_duration/60);
+		send_buf.linkage_time.byMinute =  (alarm_input_output_data.alarm_duration%60);
 	       check_ret=1; //checksum_send(&ret_cmd.sxdHeader,0);
  	  	send_buf.sxdHeader.checkSum=htonl(check_ret);
    		send_buf.sxdHeader.requestID = htonl(SXC_GET_ALARM_OUTPUT_DURATION_TIME);
@@ -423,7 +428,6 @@ int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_i
     int i = 0, j = 0;
     time_t tm;
     struct tm *t;
-    static char if_is_first_upload_alarm[MAX_ALARM_IO_NUM] = {0};
 
     *alarm_input_io_status = 0;
     for (i = 0; i < MAX_ALARM_IO_NUM; i++) 
@@ -436,7 +440,7 @@ int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_i
         }
         else if(ret == 0)
         {
-            usleep(5000);
+            //usleep(5000);
             if (get_alarm_input_value(*alarm_input_output_fd, alarm_input_output_io_table[i]) == 0) 
             {
                 *alarm_input_io_status |= (1 << i);
@@ -457,7 +461,8 @@ int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_i
 			{
 				if_is_first_upload_alarm[i] = YES;
 
-                  		//navy 网络发送 报警上传
+                    if_start_alarm_output = YES;
+                        //navy 网络发送 报警上传
               		       tm = time(NULL);
              		       t = localtime(&tm);
 				
@@ -468,7 +473,7 @@ int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_i
 			       alarm_input_output_data.upload_time.Minute = t->tm_min;
 			       alarm_input_output_data.upload_time.Second =  t->tm_sec; 
 			       alarm_upload(t,SWITCH_ALARM_UPLOAD,YES);
-             	 	       printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d ,Input channel %d happen alarm\n",__FUNCTION__, __LINE__, t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, i+1);
+             	   printf_debug("FUNC[%s] LINE[%d]\t%04d-%02d-%02d %02d:%02d:%02d ,Input channel %d happen alarm\n",__FUNCTION__, __LINE__, t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, i+1);
 			       alarm_input_output_channel_last = i+1;
 			       
 			}
@@ -476,7 +481,7 @@ int get_alarm_input_data(int *alarm_input_output_fd, unsigned int *alarm_input_i
             }
 	    else
 	    {
-		if_is_first_upload_alarm[i] = NO;
+		//if_is_first_upload_alarm[i] = NO;
 	    }
         }
     }

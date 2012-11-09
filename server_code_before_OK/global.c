@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include<sys/ioctl.h> 
 #include "global.h"
 #include "entrance_guard.h"
 #include "ck2316_alarm.h"
@@ -180,37 +179,4 @@ void init_serial_dev_parameter(void)
         exit(1);
     }
     set_serial_dev_parameter(fp_dev_config_file);
-}
-int open_LED_light(int led_fd, int led_num)
-{    
-    int ret = 0;
-
-    if (led_num < 0 || led_num > MAX_LED_NUM-1)
-    {
-        return -1;
-    }    
-    ret = ioctl(led_fd, OPEN_LED, led_num);
-    if (ret < 0)
-    {        
-        printf("FUNC[%s] LINE[%d]\t\n",__FUNCTION__, __LINE__);
-        perror(GPIO_DEVICE_NAME);
-        return -1;
-    }    
-    return ret;
- }
-int close_LED_light(int led_fd, int led_num)
-{
-    int ret = 0;
-    if (led_num < 0 || led_num > MAX_LED_NUM-1)
-    {
-            return -1;
-    }
-    ret = ioctl(led_fd, CLOSE_LED, led_num);
-    if (ret < 0)
-    {
-        printf("FUNC[%s] LINE[%d]\t\n",__FUNCTION__, __LINE__);
-        perror(GPIO_DEVICE_NAME);
-        return -1;
-    }
-    return ret;
 }

@@ -8,12 +8,6 @@
 #define CK2316_MAX_RECV_SIZE                        64
 #define CK2316_HANDSHAKE_SIZE                        3
 
-#define GPIO_DEVICE_NAME     "/dev/gpio_at91"
-#define AT91_LED1           0
-#define AT91_LED2           1
-#define AT91_LED3           2
-#define AT91_LED4           3
-
 #define CK2316_RECV_TIMEOUT                         2
 #define CK2316_RECV_FINISH_TIMEOUT                  15000
 
@@ -92,7 +86,5 @@ int ck2316_simulate_keyboard_address_setup(unsigned int address);
 extern unsigned char bypass_defence_area_code[][3];
 int ck2316_user_password_setup(unsigned int user_password[4]);
 extern int alarm_upload(struct tm *t,int alarm_type,int flag);
-extern int dev_offline_upload(int dev_type);
-extern void *led_closed_delay(void*);//实现led灯延时关闭
- 
+
 #endif

@@ -29,12 +29,9 @@
 #include "alarm_input_output.h"
 #include "md5.h"
 
-#define DEBUG_DATA//测试
-#define DEBUG//测试
+//#define DEBUG_DATA
+//#define DEBUG
 #define DEBUG_ERROR
-//最后正式版本
-//#define FINAL_VERSION
-#define WDT "/dev/watchdog"
 
 #ifdef DEBUG
 #define printf_debug(fmt, arg...)  printf(fmt, ##arg)
@@ -49,41 +46,27 @@
 #endif 
 //-----------------全局变量区----------------------------
 
-//被动模式套接字侦听标识位
 int g_listen_exit_flag;
-
 struct sockaddr_in sockaddr_listen; //connect client socket
-
-//被动模式和主动模式的控制通道数
 int channel_num_passive = 0,channe_num_active = 0;
+pthread_mutex_t mutex_channel,mutex_link,user_outline;	//用于统计通道和用户链表操作数的锁
+char *file_path = "./net_para_file";                          //保存网络参数的文件
+user_info *head ,*pf;//链表的头和尾节点指针
 
-//用于控制统计通道和用户链表操作数的锁
-pthread_mutex_t mutex_channel,mutex_link,user_outline;
 
-//保存网络参数的文件
-char *file_path = "./net_para_file";    
-
-//链表的头和尾节点指针
-user_info *head ,*pf;
 extern unsigned char bypass_defence_area_code[][3];
 SX_DEVICE_WORKING_STATUS dev_para = {DEV_ID_VERSION,{0},"1234567",DEV_SOFT_VERSION,DEV_HARD_VERSION,DEV_COMM_VERSION,DEV_COM_NUM,{0}};
+
 int raudrate[] = {600,1200,2400,4800,9600,14400,19200,38400,57600,115200};
-//默认的用户名和密码
-char acquiescence_usrname[] = "admin";
-char acquiescence_usrpwd[]  = "admin";
-//远程升级中的标志位
-int device_update_now;
-//升级中已传输数据包的个数
-int package_num;
+
 //----------------函数实现区-------------------------------------
 
 /*********************************************************************
   fun name    :网络参数的初始化
-func        :    开机启动程序后配置网络，如果配置文件不存在或者起始标志位为0，
-		    则使用默认网络参数，否则使用上册的配置参数
-para        :   
-ret           : 
-date        : 2012-08USERLOGOUT8
+func        :    
+para:   
+ret         : 
+date        : 2012-08-28
 auto        : 
  *********************************************************************/
 int  net_para_init(char *file_path,int len)
@@ -103,48 +86,26 @@ int  net_para_init(char *file_path,int len)
     }
     //初始化为默认值
     memset(&para_net,0,sizeof(INTER_NETCFG));
-//测试版的默认参数
-#ifdef DEBUG_DATA
-    inet_pton(AF_INET,"192.168.11.222",&para_net.dwDeviceIP);    
-    inet_pton(AF_INET,"255.255.255.0",&para_net.dwDeviceIPMask);
-    inet_pton(AF_INET, "192.168.11.1",&para_net.dwGatewayIP);
-    inet_pton(AF_INET,"192.168.11.53",&para_net.dwManageHostIP);
-    
-    printf_debug("dwDeviceIP::::;%d\n",para_net.dwDeviceIP);
-    printf_debug("dwDeviceIPMask::::;%d\n",para_net.dwDeviceIPMask);
-    printf_debug("dwGatewayIP::::;%d\n",para_net.dwGatewayIP);
-    printf_debug("dwManageHostIP::::;%d\n",para_net.dwManageHostIP);
-#endif
-
-//正式版的默认参数    
-#ifdef FINAL_VERSION
-    para_net.dwDeviceIP = DEVICEIP;
-    para_net.dwDeviceIPMask = NETMASKIP;
-    para_net.dwGatewayIP = GETWAYIP;
-    para_net.dwManageHostIP = CLIENTIP;
-    
-#endif
-    
+    inet_pton(AF_INET,"192.168.11.250",&para_net.dwDeviceIP);//需修改
     para_net.dwDeviceIP = ntohl(para_net.dwDeviceIP);            //注意此处字节序的转换
     //printf_debug("deviceip:%d\n",para_net.dwDeviceIP);
 
-    
-    
+    inet_pton(AF_INET,"255.255.255.0",&para_net.dwDeviceIPMask);
     para_net.dwDeviceIPMask = ntohl(para_net.dwDeviceIPMask);
-    
+
     para_net.wDevicePort = SERVER_PORT_TCP;
 
-
+    inet_pton(AF_INET, "192.168.11.1",&para_net.dwGatewayIP);
     para_net.dwGatewayIP = ntohl(para_net.dwGatewayIP);
 
-
+    inet_pton(AF_INET,"192.168.11.53",&para_net.dwManageHostIP);//需修改
     para_net.dwManageHostIP = ntohl(para_net.dwManageHostIP);
 
     para_net.wManageHostPort = SERVER_PORT_TCP;
 
-    memcpy(para_net.active_mode_name,acquiescence_usrname,16);
+    memcpy(para_net.active_mode_name,"admin" ,16);
 
-    memcpy(para_net.active_mode_pwd,acquiescence_usrpwd, 16);
+    memcpy(para_net.active_mode_pwd,"admin", 16);
 
     //获取本机的MAC地址
     get_local_lan_mac(para_net.byMACAddr);
@@ -173,7 +134,7 @@ int  net_para_init(char *file_path,int len)
         para_net.wDevicePort = atoi(port[0]); 
         para_net.wManageHostPort = atoi(port[1]);
 
-#ifdef DEBUG
+#ifdef DEBUG_DATA
 	printf("recv_buf----:%s\n",read_buf);
         printf("ip:%x\n",para_net.dwDeviceIP);
         printf("ip:%x\n",para_net.dwDeviceIPMask);
@@ -206,7 +167,7 @@ int  net_para_init(char *file_path,int len)
     {
         err_print("set the netmask fail\n");
     }
-     printf_debug("initialization the last net_setup  ok!!!!!!\n");
+     printf("initialization the last net_setup  ok!!!!!!\n");
     return 1;
 }
 
@@ -215,12 +176,19 @@ int  net_para_init(char *file_path,int len)
 func        :    主动模式下设备端与用户端之间的信息交互
 para:   
 ret         : 
-date        : 2012-08NETTRANSFERFAIL3
+date        : 2012-08-13
 auto        : 
  *********************************************************************/
 void *pthread_server_active(void *arg)
 {
     int ret = 0;
+    // p_active->mode = NET_ACTIVE_MODE;
+
+    //struct timeval tstart = {0,0};   
+    //struct timeval tend = {0,0};   
+    //int diff;
+
+    //err_print("  Net Connect PID is :%d...\n", getpid());
 
 CYCLE_CONNECT:	  
     while (1)
@@ -231,9 +199,9 @@ CYCLE_CONNECT:
             continue;
         }
         server_connect_fd = api_connect_remote_client(para_net.dwManageHostIP, para_net.wManageHostPort, MAX_TIME_INTERNAL_FOR_CTL);
-        if (NETTRANSFERFAIL == server_connect_fd)
+        if (-1 == server_connect_fd)
         {
-            printf_debug("no active sockfd\n");
+            printf("no active sockfd\n");
             goto STEP0;    
         }
         //发送tcp登录申请包        应加入判断		 
@@ -244,18 +212,19 @@ CYCLE_CONNECT:
         {
             printf_debug("login ok\n");
             channe_num_active++;
-           
+            link_insert(server_connect_fd);
             goto INTERACTIVE;
         }
         else 
         {
+            printf_debug("fail\n");
             printf_debug("active_sockfd is :%d\n",server_connect_fd);
-            
+            link_delete(server_connect_fd);
             goto STEP0;
         }  	     
     }
 INTERACTIVE:
-    link_insert(server_connect_fd);
+
     while(1)
     {	
         if(1 != main_service_ctl())//如果失败则退出  直接进入STEP0
@@ -266,13 +235,13 @@ INTERACTIVE:
     }
 STEP0:
     errno = 0;
-//链表删除 暂不做处理
-    if (server_connect_fd==NETTRANSFERFAIL)
+
+    if (server_connect_fd==-1)
     {
         sleep(10);
         goto CYCLE_CONNECT;
     }
-    while ( (NETTRANSFERFAIL == close(server_connect_fd)) && (errno == EINTR) );
+    while ( (-1 == close(server_connect_fd)) && (errno == EINTR) );
 
     sleep(10);
     goto CYCLE_CONNECT; 
@@ -281,10 +250,10 @@ STEP0:
 
 /*********************************************************************
   fun name    :被动模式下通信
-func        :    被动模式下设备端与用户端之间的信息交互,每来一个新连接就开辟一个新线程进行任务
+func        :    被动模式下设备端与用户端之间的信息交互
 para:   
 ret         : 
-date        : 2012-08NETTRANSFERFAIL3
+date        : 2012-08-13
 auto        : 
  *********************************************************************/
 void *pthread_server_passive(void *arg)
@@ -324,7 +293,7 @@ void *pthread_server_passive(void *arg)
                 {
                     continue;
                 }
-            case NETTRANSFERFAIL://err
+            case -1://err
                 {
                     break; //do-nothing
                 }
@@ -335,7 +304,7 @@ void *pthread_server_passive(void *arg)
                     if (FD_ISSET(server_listen_fd, &fd_read))//has client connect
                     {
                         printf_debug("have clients connect........\n");
-                        if (NETTRANSFERFAIL == (client_fd = accept(server_listen_fd, (struct sockaddr *) &sockaddr_listen, (int*)&sin_size)))
+                        if (-1 == (client_fd = accept(server_listen_fd, (struct sockaddr *) &sockaddr_listen, (int*)&sin_size)))
                         {
                             continue; 
                         }
@@ -361,7 +330,7 @@ void *pthread_server_passive(void *arg)
                             //err_print("Net-Module--pthread_create-%s\n", strerror(errno));
 
                             errno = 0;
-                            while ( (NETTRANSFERFAIL == close((client_fd))) && (errno == EINTR) );
+                            while ( (-1 == close((client_fd))) && (errno == EINTR) );
                             if (client_tmp) 
                             {
                                 printf_debug("close the connect:%d\n",client_tmp->connect_fd);
@@ -376,7 +345,9 @@ void *pthread_server_passive(void *arg)
     }
 DEAL_OVER:    
     errno = 0;
-    while ( (NETTRANSFERFAIL == close((server_listen_fd))) && (errno == EINTR) );
+    err_print("Closeing\n");
+
+    while ( (-1 == close((server_listen_fd))) && (errno == EINTR) );
     g_listen_exit_flag=1;
     err_print("Closeed socket\n");
     pthread_exit(NULL);      
@@ -386,20 +357,20 @@ DEAL_OVER:
 /*********************************************************************
   fun name    : 初始话套接字
 func        : 
-para:   addr:绑定的IP地址，当=NETTRANSFERFAIL时，表示ANY
+para:   addr:绑定的IP地址，当=-1时，表示ANY
 port:绑定的端口
 
 ret         : 
-date        : 2012-8NETTRANSFERFAIL3
+date        : 2010-01-05
 auto        : 
  *********************************************************************/
 int enable_net_listen()
 {    
-    int fd = NETTRANSFERFAIL;
+    int fd = -1;
 
     while(!g_listen_exit_flag)
     {
-        if (NETTRANSFERFAIL == (fd = init_socket(INADDR_ANY,SERVER_PORT_TCP, 1,N_NET_LISTNING_PORT, TCP_SOCK)))
+        if (-1 == (fd = init_socket(INADDR_ANY,SERVER_PORT_TCP, 1,N_NET_LISTNING_PORT, TCP_SOCK)))
         {
             err_print("Err:init_socket,Try Again-errno:%d--%s...\n", errno, strerror(errno));
             sleep(3);
@@ -415,11 +386,11 @@ int enable_net_listen()
 /*********************************************************************
   fun name    : 初始话套接字
 func        : 
-para:   addr:绑定的IP地址，当=NETTRANSFERFAIL时，表示ANY
+para:   addr:绑定的IP地址，当=-1时，表示ANY
 port:绑定的端口
 
 ret         : 
-date        :2012-8NETTRANSFERFAIL3
+date        : 2010-01-05
 auto        : 
  *********************************************************************/
 int init_socket(int addr, int port, int listen_flag, int listen_num, int sock_type)
@@ -434,48 +405,48 @@ int init_socket(int addr, int port, int listen_flag, int listen_num, int sock_ty
 
     if (sock_type==TCP_SOCK)
     {
-        if (NETTRANSFERFAIL == (sock_id = socket(AF_INET, SOCK_STREAM, 0)))
+        if (-1 == (sock_id = socket(AF_INET, SOCK_STREAM, 0)))
         {
-            return NETTRANSFERFAIL;
+            return -1;
         }   
     }
     else if (sock_type==UDP_SOCK)
     {
-        if (NETTRANSFERFAIL == (sock_id = socket(AF_INET, SOCK_DGRAM, 0)))
+        if (-1 == (sock_id = socket(AF_INET, SOCK_DGRAM, 0)))
         {
-            return NETTRANSFERFAIL;
+            return -1;
         }  
     }
     else
     {
-        return NETTRANSFERFAIL;
+        return -1;
     }
 
     if (1)     
     {    		
         struct linger sopt = { 1, 0 }; 
         int reused = 1; //indicate that this opt is open    
-        if (NETTRANSFERFAIL == setsockopt(sock_id, SOL_SOCKET, SO_REUSEADDR, &reused, sizeof(int)))
+        if (-1 == setsockopt(sock_id, SOL_SOCKET, SO_REUSEADDR, &reused, sizeof(int)))
         {
-            return NETTRANSFERFAIL;
+            return -1;
         }
         setsockopt(sock_id, SOL_SOCKET, SO_LINGER, (void *)&sopt, sizeof(sopt));
     }
 
 
-    if (NETTRANSFERFAIL == (bind(sock_id, (struct sockaddr *) &sockaddr_listen, sizeof (sockaddr_listen))))
+    if (-1 == (bind(sock_id, (struct sockaddr *) &sockaddr_listen, sizeof (sockaddr_listen))))
     {
-        while ( (NETTRANSFERFAIL == close((sock_id))) && (errno == EINTR) );
+        while ( (-1 == close((sock_id))) && (errno == EINTR) );
 
-        return NETTRANSFERFAIL;
+        return -1;
     }
 
     if (1==listen_flag)
     {
-        if (NETTRANSFERFAIL == listen (sock_id, listen_num))
+        if (-1 == listen (sock_id, listen_num))
         {
-            while ( (NETTRANSFERFAIL == close((sock_id))) && (errno == EINTR) );
-            return NETTRANSFERFAIL;
+            while ( (-1 == close((sock_id))) && (errno == EINTR) );
+            return -1;
         }
     }
 
@@ -484,30 +455,30 @@ int init_socket(int addr, int port, int listen_flag, int listen_num, int sock_ty
 
 /********************************************************************
   fun name    : 主动接受线程
-func        : 在60秒的时限内接收数据
+func        : 
 para:   addr
 port:
 
 ret         : 
-date        : 2012-8USERLOGOUT3
+date        : 
 auto        : 
  *********************************************************************/
 
 int main_service_ctl(void)
 {
     INTER_SXC_HEAD recv_buf;
-
+    printf_debug("wait to recv\n");
     return  recv_data_intime(server_connect_fd,60*1000,  (char *)(&recv_buf), sizeof(INTER_SXC_HEAD),0);
 }
 
 /*********************************************************************
   fun name    : 并发接受线程
-func        : 被动模式下60秒内首次接受数据，若无则视为超时断开连接
+func        : 
 para:   addr
 port:
 
 ret         : 
-date        : 2012-8USERLOGOUT3
+date        : 
 auto        : 
  *********************************************************************/
 void *pthread_visit_handel(void *arg)
@@ -525,10 +496,22 @@ void *pthread_visit_handel(void *arg)
             pthread_exit(NULL);
         }
 
+#if 0
+        //set attr
+        memset(&sock_att, 0, sizeof(sock_att));
+        sock_att.noblocked = 1;
+        if (set_sock_attr(p_listen->connect_fd, &sock_att))
+        {
+            goto DEAL_OVER;
+        }
+#endif
+
+        //	printf_debug("start to recv msg\n");
+
         //60秒内接受数据
         recv_flag = recv_data_intime(p_listen->connect_fd, 60*1000,  (char *)(&p_listen->Inter_sxc_head), sizeof(INTER_SXC_HEAD),p_listen->client_ip);
         //	printf_debug("g_listen_exit_flag =%d-------recv_flag = %d\n",g_listen_exit_flag,recv_flag);
-        if ((recv_flag == NETTRANSFERFAIL)||(recv_flag == USERLOGOUT))
+        if (recv_flag == -1)
         {
             goto DEAL_OVER;
         }
@@ -545,7 +528,7 @@ DEAL_OVER:
     printf_debug("channel NO.:%d\n",channel_num_passive);
 #endif
 
-    while ( (NETTRANSFERFAIL == close((p_listen->connect_fd))) && (errno == EINTR) );
+    while ( (-1 == close((p_listen->connect_fd))) && (errno == EINTR) );
     //注意此处的必要性
     free(p_listen);
 
@@ -561,7 +544,6 @@ para:   client_fd 接收的socket
 timeout:超时时间，单位为毫秒[ms]
 recv_buf,接收缓冲区 
 src_len，接收的长度
-返回值:返回1表示命令处理成功或者无此命令，返回NETTRANSFERFAIL表示命令处理失败  USERLOGOUT表示用户注销
  *********************************************************/
 int recv_data_intime(int client_fd, int timeout, char *recv_buf, int src_len,int client_ip)
 {
@@ -576,7 +558,7 @@ int recv_data_intime(int client_fd, int timeout, char *recv_buf, int src_len,int
     {
         //  err_print("Recv data intime para invalid...\n");
         printf_debug("recv_buf = NULL || src_len = 0\n");
-        return NETTRANSFERFAIL;
+        return -1;
     } 
 
     poll_set[0].fd = client_fd;
@@ -585,42 +567,44 @@ int recv_data_intime(int client_fd, int timeout, char *recv_buf, int src_len,int
 
     errno = 0;
 
+
+    //probe
 POLL_AGAIN:
     res = poll(poll_set, 1, poll_timeout);
-    if (res == NETTRANSFERFAIL )
+    if (res == -1 )
     {
         if (errno == EINTR) goto POLL_AGAIN;
-        else return NETTRANSFERFAIL;
+        else return -1;
     }
 
     else if (res == 0)//timeout
     {
-        return NETTRANSFERFAIL;
+        return -1;
     }
-	
+
+    //recv
     return recv_data(client_fd,  recv_buf,  src_len,client_ip);
 }
 
 /******************************************************
-Fun: 循环接收数据
+Fun: 循环接收数据,测黍
 para:   
 timeout:
 recv_buf, 
 src_len，
-返回值:返回1表示命令处理成功或者无此命令，返回NETTRANSFERFAIL表示命令处理失败  USERLOGOUT表示用户注销
  *********************************************************/
 int recv_data(int client_fd, char *dst, int num,int client_ip)
 {
     int recv_len, recv_bytes;
     char *recv_buf,*host_recv_buf;
-    int try_times = 0,ret = 0;
+    int try_times = 0;
 
     // INTER_SXC_HEAD *user_info = (INTER_SXC_HEAD *)calloc(1,sizeof(LISTEN_ACQUIRED_PARA));//此处结束的时候应该人为的去释放
 
     if (NULL == dst || num < 0)
     {
         //err_print("invalide argument, client:%d, num:%d, dst:%x", client_fd, num, (U32)dst);
-        return NETTRANSFERFAIL;
+        return -1;
     }
 
     recv_len = num;
@@ -633,10 +617,10 @@ int recv_data(int client_fd, char *dst, int num,int client_ip)
         if (0 ==  recv_bytes)//对端关闭
         {   
             printf_debug("client_fd :%d------------recv_data 0.\n", client_fd);
-            return NETTRANSFERFAIL;
+            return -1;
         }
 
-        else if (NETTRANSFERFAIL ==  recv_bytes)
+        else if (-1 ==  recv_bytes)
         {
             if ((errno == EAGAIN) || (errno == EINTR))
             {
@@ -645,7 +629,7 @@ int recv_data(int client_fd, char *dst, int num,int client_ip)
                 if (try_times>SOCKET_BUSY_TRY_TIMES)
                 {
                     err_print("Clent:%d Recv Try More than %d times-Poll Passed but Recv busy\n", client_fd, SOCKET_BUSY_TRY_TIMES);     
-                    return NETTRANSFERFAIL;
+                    return -1;
                 }
 
                 errno = 0;                
@@ -656,22 +640,18 @@ int recv_data(int client_fd, char *dst, int num,int client_ip)
             {
                 err_print("recv faital err:%d:%s\n", errno, strerror(errno));      
                 errno = 0;                
-                return NETTRANSFERFAIL;
+                return -1;
             }
         }
         //正常接收到数据后recv_bytes>0
 
         str = databyte_net_to_host(recv_buf);
-       //printf_debug("version=%d, length =%d, checksum =%d,cmdword =%x, status = %d,userid =%d\n",str->version,str->length,str->checkSum,str->cmdWord,str->status,str->usrID);
+        // printf("version=%d, length =%d, checksum =%d,cmdword =%x, status = %d,userid =%d\n",str->version,str->length,str->checkSum,str->cmdWord,str->status,str->usrID);
         recv_buf += recv_bytes;
         recv_len -= recv_bytes;
 
         //根据客户的请求进行回应
-        ret = cmd_data_deal(str,client_fd,str->length - recv_bytes,client_ip);
-    	if(USERLOGOUT == ret)
-    	{
-            return USERLOGOUT;
-    	}
+        cmd_data_deal(str,client_fd,str->length - recv_bytes,client_ip);
     }
     return 1;
 }
@@ -680,7 +660,7 @@ Fun: 客户端头网络字节序转换为主机序
 para:   
 timeout:
 recv_buf, 
-fun:由网络序转换为字节序
+src_len，
  *********************************************************/
 INTER_SXC_HEAD *databyte_net_to_host(char *recv_buffer)
 {
@@ -700,7 +680,7 @@ Fun: 根据用户的命令进行处理
 para:   
 timeout:
 recv_buf, 
-return:  返回1表示命令处理成功或者无此命令，返回NETTRANSFERFAIL表示命令处理失败  USERLOGOUT表示用户注销
+src_len，
  *********************************************************/
 int   cmd_data_deal(INTER_SXC_HEAD *data_head,int client_fd,int para_len,int client_ip)
 {
@@ -721,328 +701,311 @@ int   cmd_data_deal(INTER_SXC_HEAD *data_head,int client_fd,int para_len,int cli
     {
         //---------------------------------------------------------------------------------网络参数设置
         case SXC_SET_NETCFG:
-	{
+            {
                 if( !net_para_set(recv_para,data_head,client_fd,client_ip))
                 {
                     printf_debug("send net msg fail\n");
-                    return NETTRANSFERFAIL;
+                    return -1;
                 }
                 break;
-	}
+            }
             //---------------------------------------------------------------------------------网络参数的获取
         case SXC_GET_NETCFG:
-	{
-	    if(!net_para_send(recv_para,data_head,client_fd))
-	    {
-	        printf_debug("get net_para fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    printf_debug("get the net_para successful\n");
-	    break;
-	}
+            {
+                if(!net_para_send(recv_para,data_head,client_fd))
+                {
+                    printf_debug("get net_para fail\n");
+                    return -1;
+                }
+                printf_debug("get the net_para successful\n");
+                break;
+            }
 
             //---------------------------------------------------------------------------------客户端登陆确认与登录退出
         case SXC_LOG_IN:                                     
-	{
-	    return log_in_reply(recv_para,data_head,client_fd);
-	    break;
-	}
-	case SXC_LOG_OUT:
-	{
-		return USERLOGOUT;
-	}
+            {
+                return log_in_reply(recv_para,data_head,client_fd);
+                break;
+            }
             //--------------------------------------------------------------------------------- 双向握手回复
         case SXC_KEEPLIVE_B:                             
-	{
-	    return (send_act_cmd(QULIFIED,client_fd,SXC_KEEPLIVE_B,client_fd));
-	    break;
-	}
+            {
+                return (send_act_cmd(QULIFIED,client_fd,SXC_KEEPLIVE_B,client_fd));
+                break;
+            }
             //----------------------------------------------------------------------------------设备端登录回复处理
         case SXD_LOG_IN:
-	{
-	    if( data_head->status != QULIFIED)
-	    {
-	        printf_debug("active load fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if( data_head->status != QULIFIED)
+                {
+                    printf_debug("active load fail\n");
+                    return -1;
+                }
+                break;
+            }
             //----------------------------------------------------------------------------------云台控制
         case SXC_PTZ:
-	{
-	    return cradle_ctrl_reply(recv_para,data_head,client_fd);
-	    break;
-	}
+            {
+                return cradle_ctrl_reply(recv_para,data_head,client_fd);
+                break;
+            }
             //----------------------------------------------------------------------------------矩阵单通道取消
         case SXC_CANCEL_MATRIX_SINGLE_INOUT:
-	{
-	    return MATRIX_ctrl_cancel_singal(recv_para,data_head,client_fd);
-	    break;
-	}
+            {
+                return MATRIX_ctrl_cancel_singal(recv_para,data_head,client_fd);
+                break;
+            }
             //----------------------------------------------------------------------------------矩阵全通道取消
         case SXC_CANCEL_MATRIX_ALL_INOUT:
-	{
-	    return MATRIX_ctrl_cancel_all(recv_para,data_head,client_fd);
-	    break;
-	}
+            {
+                return MATRIX_ctrl_cancel_all(recv_para,data_head,client_fd);
+                break;
+            }
             //-----------------------------------------------------------------------------------矩阵输入输出切换
         case SXC_EXCHAGE_MATRIX_INOUT:
-	{
-	    return MATRIX_ctrl_change(recv_para,data_head,client_fd);
-	    break;
-	}	     //-----------------------------------------------------------------------------------门禁开关控制
+            {
+                return MATRIX_ctrl_change(recv_para,data_head,client_fd);
+                break;
+            }	     //-----------------------------------------------------------------------------------门禁开关控制
         case SXC_DOOR_CTL_CMD:
-	{
+            {
 
-	    entrance_open_close_ctrl(recv_para,data_head,client_fd);
-	    break;
-	}
+                entrance_open_close_ctrl(recv_para,data_head,client_fd);
+                break;
+            }
             //-----------------------------------------------------------------------------------获取门禁参数命令
         case SXC_GET_DOORCFG:
-	{
-	    if(!entrance_para_get(recv_para,data_head,client_fd))
-	    {
-	        printf_debug("send entrance para msg fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;	
-	}
+            {
+                if(!entrance_para_get(recv_para,data_head,client_fd))
+                {
+                    printf_debug("send entrance para msg fail\n");
+                    return -1;
+                }
+                break;	
+            }
             //-----------------------------------------------------------------------------------设置门禁参数
         case SXC_SET_DOORCFG:
-	{
-	    entrance_para_set(recv_para,data_head,client_fd);
-	    break;
-	}
+            {
+                entrance_para_set(recv_para,data_head,client_fd);
+                break;
+            }
             //-----------------------------------------------------------------------------------获取当前门禁状态
         case SXC_GET_DOOR_STATUS:
-	{
-	    if(!entrance_status_send(recv_para,data_head,client_fd))
-	    {
-	        printf_debug("send entrance status fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!entrance_status_send(recv_para,data_head,client_fd))
+                {
+                    printf_debug("send entrance status fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-----------------------------------------------------------------------------------报警状态获取
         case  SXC_ALARMCTL_DEV_GET_STATE_V2:
-	{
-	    if(!alarm_status_get(recv_para,client_fd))
-	    {
-	        printf_debug("send alarm_para fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!alarm_status_get(recv_para,client_fd))
+                {
+                    printf_debug("send alarm_para fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-------------------------------------------------------------------------------------报警控制
         case SXC_ALARMCTL_DEV_CTL_CMD_V2:
-	{
-	    alarm_ctrl(recv_para,client_fd);
-	    break;
-	}
+            {
+                alarm_ctrl(recv_para,client_fd);
+                break;
+            }
             //-------------------------------------------------------------------------------------手动报警上传
         case SXC_ALARM_UPLOAD_MANU:
-	{
-	    alarm_upload_get(recv_para,client_fd);
-	    break;
-	}
+            {
+                alarm_upload_get(recv_para,client_fd);
+                break;
+            }
             //-------------------------------------------------------------------------------------设置报警参数
         case SXC_ALARMCTL_DEV_SET_PARAM:
-	{
-	    if(!alarm_para_set(recv_para,client_fd))
-	    {
-	        printf_debug("set alarm_para fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!alarm_para_set(recv_para,client_fd))
+                {
+                    printf_debug("set alarm_para fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-------------------------------------------------------------------------------------设置报警主机密码
         case SXC_ALARMCTL_DEV_SET_PWD_PARAM:
-	{
-	    if(!alarm_user_pwd_setup(recv_para,client_fd))
-	    {
-	        printf_debug("set the password fail\n");
-	        return NETTRANSFERFAIL;
-	    }			
-	    break;
-	}
+            {
+                if(!alarm_user_pwd_setup(recv_para,client_fd))
+                {
+                    printf_debug("set the password fail\n");
+                    return -1;
+                }			
+                break;
+            }
             //-------------------------------------------------------------------------------------设置报警主机地址
         case SXC_ALARMCTL_DEV_SET_ADDR_PARAM:
-	{
-	    if(!alarm_user_addr_setup(recv_para,client_fd))
-	    {
-	        printf_debug("set the addr fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!alarm_user_addr_setup(recv_para,client_fd))
+                {
+                    printf_debug("set the addr fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-------------------------------------------------------------------------------------获取报警联动
         case SXC_GET_ALARM_LINKAGE_CFG_V2:
-	{
-	    if(!get_alarm_linkage(recv_para,client_fd))
-	    {
-	        printf_debug("set the addr fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!get_alarm_linkage(recv_para,client_fd))
+                {
+                    printf_debug("set the addr fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-------------------------------------------------------------------------------------设置报警联动
         case SXC_SET_ALARM_LINKAGE_CFG_V2:
-	{
-	    if(!set_alarm_linkage(recv_para,client_fd))
-	    {
-	        printf_debug("set the addr fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!set_alarm_linkage(recv_para,client_fd))
+                {
+                    printf_debug("set the addr fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-------------------------------------------------------------------------------------获取报警输出持续时间
         case SXC_GET_ALARM_OUTPUT_DURATION_TIME:
-	{
-	    if(!alarmlinkage_output_time_get(recv_para,client_fd))
-	    {
-	        printf_debug("get the alarmlinkage_time fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;			
-	}
+            {
+                if(!alarmlinkage_output_time_get(recv_para,client_fd))
+                {
+                    printf_debug("get the alarmlinkage_time fail\n");
+                    return -1;
+                }
+                break;			
+            }
             //-------------------------------------------------------------------------------------设置报警输出持续时间
         case SXC_SET_ALARM_OUTPUT_DURATION_TIME:
-	{
-	    alarmlinkage_output_time_set(recv_para,client_fd);
-	    break;
-	}
+            {
+                alarmlinkage_output_time_set(recv_para,client_fd);
+                break;
+            }
             //-------------------------------------------------------------------------------------取消所有时间默认参数设置
         case SXC_RESET_ALARM_LINKAGE_AND_TIMEPARA:
-	{
-	    alarmlinkage_output_time_cancle(recv_para,client_fd);
-	    break;
-	}
+            {
+                alarmlinkage_output_time_cancle(recv_para,client_fd);
+                break;
+            }
             //-------------------------------------------------------------------------------------获取报警输出状态
         case SXC_GETALAOUT_STATE:
-	{
-	    if(!alarm_out_state(recv_para,client_fd))
-	    {
-	        printf_debug("set out_state fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!alarm_out_state(recv_para,client_fd))
+                {
+                    printf_debug("set out_state fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-------------------------------------------------------------------------------------报警器输出设置
         case SXC_SETALAOUT:
-	{
-	    if(!alarm_out_ctrl(recv_para,client_fd))
-	    {
-	        printf_debug("set out_ctrl fail\n");
-	        return NETTRANSFERFAIL;
-	    }	
-	    break;
-	}
+            {
+                if(!alarm_out_ctrl(recv_para,client_fd))
+                {
+                    printf_debug("set out_ctrl fail\n");
+                    return -1;
+                }	
+                break;
+            }
             //------------------------------------------------------------------------------------开关量输出参数获取
         case SXC_GET_ALARMOUTCFG:
-	{
-	    if(!switch_para_send(recv_para,client_fd))
-	    {
-	        printf_debug("set switch_para send fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!switch_para_send(recv_para,client_fd))
+                {
+                    printf_debug("set switch_para send fail\n");
+                    return -1;
+                }
+                break;
+            }
             //------------------------------------------------------------------------------------开关量输出参数设置
         case SXC_SET_ALARMOUTCFG:
-	{
-	    if(!switch_para_set(recv_para,client_fd))
-	    {
-	        printf_debug("set switch_para send fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!switch_para_set(recv_para,client_fd))
+                {
+                    printf_debug("set switch_para send fail\n");
+                    return -1;
+                }
+                break;
+            }
             //------------------------------------------------------------------------------------开关量输入参数设置
         case SXC_SET_ALARMINCFG:
-	{
-	    if(!switch_in_para_set(recv_para,client_fd))
-	    {
-	        printf_debug("set switch_in_para set fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!switch_in_para_set(recv_para,client_fd))
+                {
+                    printf_debug("set switch_in_para set fail\n");
+                    return -1;
+                }
+                break;
+            }
             //------------------------------------------------------------------------------------开关量输入参数获取
         case SXC_GET_ALARMINCFG:
-	{
+            {
 
-	    break;
-	}
+                break;
+            }
             //------------------------------------------------------------------------------------获取串口连接设备参数
         case SXC_GET_CONNECT_PAMA:
-	{
-	    if(!com_para_send(recv_para,client_fd))
-	    {
-	        printf_debug("set com_para send fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!com_para_send(recv_para,client_fd))
+                {
+                    printf_debug("set com_para send fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-----------------------------------------------------------------------------------设置串口连接设备参数
         case SXC_SET_CONNECT_PAMA:
-	{
-	    if(!com_para_set(recv_para,client_fd))
-	    {
-	        printf_debug("set com_para set fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;			
-	}
+            {
+                if(!com_para_set(recv_para,client_fd))
+                {
+                    printf_debug("set com_para set fail\n");
+                    return -1;
+                }
+                break;			
+            }
             //------------------------------------------------------------------------------------获取设备参数
         case SXC_GET_ICC_DEV_PARAM:
-	{			
-	    if(!dev_para_get(recv_para,client_fd))
-	    {
-	        printf_debug("get dev_para set fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {			
+                if(!dev_para_get(recv_para,client_fd))
+                {
+                    printf_debug("get dev_para set fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-------------------------------------------------------------------------------------重启设备
         case SXC_REBOOT:
-	{
-	    if(!dev_restart(client_fd))
-	    {
-	        printf_debug("restart system fail\n");
-	        return NETTRANSFERFAIL;
-	    }
-	    break;
-	}
+            {
+                if(!dev_restart(client_fd))
+                {
+                    printf_debug("restart system fail\n");
+                    return -1;
+                }
+                break;
+            }
             //-------------------------------------------------------------------------------------系统校时
         case SXC_SET_TIMECFG:
-	{
-	        if(!system_time_set(recv_para,client_fd))
-	        {
-	            printf_debug("system time set fail\n");
-	            return NETTRANSFERFAIL;
-	        }
-	        break;
-	}
+            {
+                if(!system_time_set(recv_para,client_fd))
+                {
+                    printf_debug("system time set fail\n");
+                    return -1;
+                }
+                break;
+            }
             //------------------------------------------------------------------------------------恢复默认参数
         case SXC_PARA_RESTORE:
-	{
-	        acquiescent_para_recovery(client_fd);
-	        break;
-	 }
-	//---------------------------------------------------------------------------------------升级
-	case SXC_START_UPGRDE:
-	{
-		program_update(recv_para,client_fd);
-		break;
-	}
-	//升级数据传输
-	case SXC_PROGRAM_UPDATE_START:
-	{
-		//if(data_head->status == SXC_ST_UPGRADING)
-			program_update_deal(recv_para,client_fd,para_length,data_head->status);
-		break;     
-	}
-    default:
+            {
+                acquiescent_para_recovery(client_fd);
+                break;
+            }
+        default:
             {
                 printf_debug("nothing cmd\n");
                 return send_act_cmd(ERRORDATA,client_fd,data_head->cmdWord,client_fd);//发送数据错误状态给客户端
@@ -1071,7 +1034,7 @@ int set_lan_ip(unsigned int ip)
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
         err_print("%s-%d--Creat socket Fail:%d:%s....\n", __FILE__, __LINE__, errno, strerror(errno));
-        return NETTRANSFERFAIL;
+        return -1;
 
     }
 
@@ -1112,7 +1075,7 @@ int log_in_reply(char *recv_para,INTER_SXC_HEAD *data_head,int client_fd)
     {
         printf("channel::%d，over 127\n",channel_num_passive);
         // channel_num_passive--;
-        return NETTRANSFERFAIL;
+        return -1;
     }
     else
     {
@@ -1124,7 +1087,6 @@ int log_in_reply(char *recv_para,INTER_SXC_HEAD *data_head,int client_fd)
             {
                 printf_debug("username is right\n");
                 link_insert(client_fd);
-	        	link_print(head);
                 return send_act_cmd(QULIFIED,client_fd,SXC_LOG_IN,client_fd);
             }
             else
@@ -1228,6 +1190,94 @@ int cradle_ctrl_reply(char *recv_para,INTER_SXC_HEAD *data_head,int fd)
 
     cradle_head_control_data.setup_command_set = set_para->ptzCommand;
     //printf("FUNC[%s] LINE[%d]\tcradle_head_control_data.setup_command_set____ = %d\n",__FUNCTION__, __LINE__, cradle_head_control_data.setup_command_set);
+
+#if 0     
+    switch(set_para->ptzCommand)
+    {
+        case 0:     
+            cradle_head_control_data.setup_command_set = PTZ_UP; 
+            cradle_head_control_data.cradle_head_move_speed = (char)(set_para->ptzBit);
+            break;
+        case 1:     
+            cradle_head_control_data.setup_command_set = PTZ_DOWN;
+            cradle_head_control_data.cradle_head_move_speed = (char)(set_para->ptzBit);
+            break;
+        case 2:     
+            cradle_head_control_data.setup_command_set = PTZ_LEFT; 
+            cradle_head_control_data.cradle_head_move_speed = (char)(set_para->ptzBit);
+            break;
+        case 3:    
+            cradle_head_control_data.setup_command_set = PTZ_RIGHT;
+            cradle_head_control_data.cradle_head_move_speed = (char)(set_para->ptzBit);
+            break;
+        case 4 :     
+            cradle_head_control_data.setup_command_set = PTZ_APERTURE_BIG; 
+            break;
+        case 5:
+            cradle_head_control_data.setup_command_set = PTZ_APERTURE_SMALL;
+            break;
+        case 6:
+            cradle_head_control_data.setup_command_set = PTZ_FOCUS_IN;
+            break;
+        case 7:
+            cradle_head_control_data.setup_command_set = PTZ_FOCUS_OUT; 
+            break;
+        case 8:
+            cradle_head_control_data.setup_command_set = PTZ_ZOOM_IN;
+            break;
+        case 9:
+            cradle_head_control_data.setup_command_set = PTZ_ZOOM_OUT;
+            break;
+        case 10:
+            cradle_head_control_data.setup_command_set = PTZ_AUTO_ZOOM;
+            break;
+        case 11:
+            cradle_head_control_data.setup_command_set = PTZ_AUTO_FOCUS;
+            break;
+        case 12:
+            cradle_head_control_data.setup_command_set = PTZ_AUTO_APERTURE;
+            break;
+        case 13:    
+            cradle_head_control_data.setup_command_set = PTZ_SET_PTZBIT; 
+            cradle_head_control_data.cradle_head_preset_point = (char)(set_para->ptzBit);
+            break;
+        case 14:    
+            cradle_head_control_data.setup_command_set = PTZ_CLE_PTZBIT;
+            cradle_head_control_data.cradle_head_preset_point = (char)(set_para->ptzBit);
+            break;
+        case 15:
+            cradle_head_control_data.setup_command_set = PTZ_STOP_ALL;
+            break;
+        case 16:
+            cradle_head_control_data.setup_command_set = AUX_PWRON1;
+            break;
+        case 17:
+            cradle_head_control_data.setup_command_set = AUX_PWROFF1;
+            break;
+        case 18:
+            cradle_head_control_data.setup_command_set = AUX_PWRON2; 
+            break;
+        case 19:
+            cradle_head_control_data.setup_command_set = AUX_PWROFF2; 
+            break;
+        case 20:
+            cradle_head_control_data.setup_command_set = PTZ_EX_LEFT_UP;
+            break;
+        case 21:
+            cradle_head_control_data.setup_command_set = PTZ_EX_LEFT_DOWN;
+            break;
+        case 22:
+            cradle_head_control_data.setup_command_set = PTZ_EX_RIGHT_UP; 
+            break;
+        case 23:
+            cradle_head_control_data.setup_command_set = PTZ_EX_RIGHT_DOWN;
+            break;
+        default:
+            return send_act_cmd(ERRORDATA,fd,SXC_PTZ,fd);//发送数据错误状态给客户端
+            break;
+    }
+#endif	 
+
 
     return send_act_cmd(QULIFIED,fd,SXC_PTZ,fd);//发送数据错误状态给客户端
 }
@@ -1559,7 +1609,8 @@ int entrance_para_set(char *recv_para,INTER_SXC_HEAD *data_head,int fd)
             //navy 网络发送 门磁取消报警成功
             entrance_guard_data.setup_command_set = ENTRANCE_GUARD_CANCEL_ALARM_STATUS;
             break;
-	*/
+
+*/
         case 0x03: //门磁状态设置
             if(entrance_para->byDoorContMode == 0)
                 entrance_guard_data.setup_command_set = ENTRANCE_GUARD_DOOR_CONTACT_NORMALLY_OPEN;
@@ -1970,10 +2021,10 @@ int alarm_para_set(char *recv_buf,int fd)
     SXC_INTER_ALARMCTL_SET_PARAM_REQ *alarm_para = (SXC_INTER_ALARMCTL_SET_PARAM_REQ *)recv_buf;
 
 
-    printf_debug("byAlarmDelay:%d\n",alarm_para->byAlarmDelay);
-    printf_debug("byAlarmHostID:%d\n",alarm_para->byAlarmHostID);
-    printf_debug("byEnterDelay:%d\n",alarm_para->byEnterDelay);
-    printf_debug("byOutDelay:%d\n",alarm_para->byOutDelay);
+    printf("byAlarmDelay:%d\n",alarm_para->byAlarmDelay);
+    printf("byAlarmHostID:%d\n",alarm_para->byAlarmHostID);
+    printf("byEnterDelay:%d\n",alarm_para->byEnterDelay);
+    printf("byOutDelay:%d\n",alarm_para->byOutDelay);
 #endif
 
     //return 1;
@@ -2121,7 +2172,7 @@ int com_para_send(char *recv_buf,int fd)
     {
         case 0:
             {
-                send_buf.com_para.serialAttr.byDataBit = entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byDataBit;
+                send_buf.com_para.serialAttr.byDataBit = entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byDataBit - 5;
                 send_buf.com_para.serialAttr.byFlowcontrol =entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byFlowcontrol ;
                 send_buf.com_para.serialAttr.byParity = entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byParity;
                 send_buf.com_para.serialAttr.byStopBit = entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byStopBit - 1;
@@ -2138,7 +2189,7 @@ int com_para_send(char *recv_buf,int fd)
             }
         case 1:
             {
-                send_buf.com_para.serialAttr.byDataBit =  matrix_control_data.matrix_control_serial_pamater.serialAttr.byDataBit;
+                send_buf.com_para.serialAttr.byDataBit =  matrix_control_data.matrix_control_serial_pamater.serialAttr.byDataBit - 5;
                 send_buf.com_para.serialAttr.byFlowcontrol = matrix_control_data.matrix_control_serial_pamater.serialAttr.byFlowcontrol;
                 send_buf.com_para.serialAttr.byParity = matrix_control_data.matrix_control_serial_pamater.serialAttr.byParity;
                 send_buf.com_para.serialAttr.byStopBit = matrix_control_data.matrix_control_serial_pamater.serialAttr.byStopBit - 1;
@@ -2152,7 +2203,7 @@ int com_para_send(char *recv_buf,int fd)
             }
         case 2:
             {
-                send_buf.com_para.serialAttr.byDataBit =  cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byDataBit;
+                send_buf.com_para.serialAttr.byDataBit =  cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byDataBit - 5;
                 send_buf.com_para.serialAttr.byFlowcontrol = cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byFlowcontrol;
                 send_buf.com_para.serialAttr.byParity = cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byParity;
                 send_buf.com_para.serialAttr.byStopBit = cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byStopBit - 1;
@@ -2166,7 +2217,7 @@ int com_para_send(char *recv_buf,int fd)
             }
         case 5:
             {
-                send_buf.com_para.serialAttr.byDataBit =  ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byDataBit;
+                send_buf.com_para.serialAttr.byDataBit =  ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byDataBit - 5;
                 send_buf.com_para.serialAttr.byFlowcontrol = ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byFlowcontrol;
                 send_buf.com_para.serialAttr.byParity = ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byParity;
                 send_buf.com_para.serialAttr.byStopBit = ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byStopBit - 1;
@@ -2241,7 +2292,7 @@ int com_para_set(char *recv_buf,int fd)
                     entrance_guard_data.entrance_guard_serial_pamater.serialLink.byDevNo = recv_para->serialLink.byDevNo;
                     entrance_guard_data.entrance_guard_serial_pamater.serialLink.byDevProtocol = recv_para->serialLink.byDevProtocol;
                     entrance_guard_data.entrance_guard_serial_pamater.serialLink.byDevType = recv_para->serialLink.byDevType;
-                    entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byDataBit = recv_para->serialAttr.byDataBit;
+                    entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byDataBit = recv_para->serialAttr.byDataBit +5;
                     entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byFlowcontrol = recv_para->serialAttr.byFlowcontrol;
                     entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byParity = recv_para->serialAttr.byParity;
                     entrance_guard_data.entrance_guard_serial_pamater.serialAttr.byStopBit = recv_para->serialAttr.byStopBit +1;
@@ -2267,13 +2318,13 @@ int com_para_set(char *recv_buf,int fd)
                     matrix_control_data.matrix_control_serial_pamater.serialLink.byDevProtocol = recv_para->serialLink.byDevProtocol;
                     matrix_control_data.matrix_control_serial_pamater.serialLink.byDevType = recv_para->serialLink.byDevType;
 
-                    matrix_control_data.matrix_control_serial_pamater.serialAttr.byDataBit = recv_para->serialAttr.byDataBit;
+                    matrix_control_data.matrix_control_serial_pamater.serialAttr.byDataBit = recv_para->serialAttr.byDataBit+5;
                     matrix_control_data.matrix_control_serial_pamater.serialAttr.byFlowcontrol = recv_para->serialAttr.byFlowcontrol;
                     matrix_control_data.matrix_control_serial_pamater.serialAttr.byParity = recv_para->serialAttr.byParity;
                     matrix_control_data.matrix_control_serial_pamater.serialAttr.byStopBit = recv_para->serialAttr.byStopBit+1;
 
-                    printf_debug("byDataBit::::%x\n",cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byDataBit);
-                    printf_debug("byDataBit::::%x\n",recv_para->serialAttr.byDataBit);
+                    printf("byDataBit::::%x\n",cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byDataBit);
+                    printf("byDataBit::::%x\n",recv_para->serialAttr.byDataBit);
 
                     matrix_control_data.matrix_control_serial_pamater.serialAttr.dwBaudRate = com_baudrate_set(ntohl(recv_para->serialAttr.dwBaudRate));
 
@@ -2295,7 +2346,7 @@ int com_para_set(char *recv_buf,int fd)
                     cradle_head_control_data.cradle_head_control_serial_pamater.serialLink.byDevProtocol = recv_para->serialLink.byDevProtocol;
                     cradle_head_control_data.cradle_head_control_serial_pamater.serialLink.byDevType = recv_para->serialLink.byDevType;
 
-                    cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byDataBit = recv_para->serialAttr.byDataBit;
+                    cradle_head_control_data.cradle_head_control_serial_pamater.serialAttr.byDataBit = recv_para->serialAttr.byDataBit+5;
 
 
 
@@ -2314,7 +2365,7 @@ int com_para_set(char *recv_buf,int fd)
                 }
                 break;
             }
-        case 5:
+        case 4:
             {
                 if(LINK_DEV_ALARM_CTL == recv_para->serialLink.byDevType)
                 {
@@ -2323,7 +2374,7 @@ int com_para_set(char *recv_buf,int fd)
                     ck2316_alarm_data.ck2316_alarm_serial_pamater.serialLink.byDevProtocol = recv_para->serialLink.byDevProtocol;
                     ck2316_alarm_data.ck2316_alarm_serial_pamater.serialLink.byDevType = recv_para->serialLink.byDevType;
 
-                    ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byDataBit = recv_para->serialAttr.byDataBit;
+                    ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byDataBit = recv_para->serialAttr.byDataBit+5;
                     ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byFlowcontrol = recv_para->serialAttr.byFlowcontrol;
                     ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byParity = recv_para->serialAttr.byParity;
                     ck2316_alarm_data.ck2316_alarm_serial_pamater.serialAttr.byStopBit = recv_para->serialAttr.byStopBit+1;
@@ -2454,7 +2505,7 @@ int  send_data_intime_over(int client_fd, int timeout, char *src_buf, int src_le
     if (src_buf == NULL || src_len <= 0 )
     {
         err_print("send_buf:%p, src_len:%d...\n", send_buf, src_len);
-        return NETTRANSFERFAIL;
+        return -1;
     } 
 
     poll_set[0].fd = client_fd;
@@ -2467,21 +2518,21 @@ int  send_data_intime_over(int client_fd, int timeout, char *src_buf, int src_le
 
     //probe
 POLL_ANAIN:
-    while ( (NETTRANSFERFAIL == (res = poll(poll_set, 1, poll_timeout))) && (errno == EAGAIN || errno == EINTR ) );
-    if (res == NETTRANSFERFAIL)
+    while ( (-1 == (res = poll(poll_set, 1, poll_timeout))) && (errno == EAGAIN || errno == EINTR ) );
+    if (res == -1)
     {
 
-        return NETTRANSFERFAIL;
+        return -1;
     }
     else if (res == 0)//timeout
     {
         printf_debug("time out\n");
-        return NETTRANSFERFAIL;
+        return -1;
     }
     while(send_len>0)
     {
         send_bytes = send(client_fd, send_buf, send_len, MSG_NOSIGNAL);
-        if (send_bytes == NETTRANSFERFAIL)
+        if (send_bytes == -1)
         {
             if (errno == EAGAIN || errno == EINTR || errno == EWOULDBLOCK)//busy or bolocked or be interruped
             {
@@ -2490,7 +2541,7 @@ POLL_ANAIN:
                 if (try_times>SOCKET_BUSY_TRY_TIMES)
                 {
                     err_print("Clent:%d Send Try More than %d times-Poll Passed but send busy\n", client_fd, SOCKET_BUSY_TRY_TIMES);     
-                    return NETTRANSFERFAIL;
+                    return -1;
                 }
                 errno = 0;                
                 goto POLL_ANAIN;
@@ -2498,7 +2549,7 @@ POLL_ANAIN:
             else
             {
                 //err_print("client_fd:%d send err:%d:%s\n", client_fd, errno, strerror(errno));      
-                return NETTRANSFERFAIL;
+                return -1;
             }
 
         }
@@ -2506,7 +2557,7 @@ POLL_ANAIN:
         send_len -= send_bytes;        
 
     }
-    // printf("send msg successful!!\n");
+    // printf_debug("send msg successful!!\n");
 
     return 1;
 }
@@ -2516,7 +2567,7 @@ POLL_ANAIN:
 func        :    没添加一个用户节点的时候都是用互斥锁保证数据的完整性
 para:   
 ret         : 
-date        : 2012-08NETTRANSFERFAIL5
+date        : 2012-08-15
 auto        : 
  *********************************************************************/
 
@@ -2567,7 +2618,7 @@ void link_print(user_info *head)
     }
     while(pb!=NULL)
     {
-        printf_debug("on-lining userid=%d---clientfd=%d\n",pb->user_id,pb->sockfd_client);  // 遍历输出
+        printf_debug("userid=%d---clientfd=%d\n",pb->user_id,pb->sockfd_client);  // 遍历输出
         pb=pb->next;
     }
 }
@@ -2585,7 +2636,7 @@ user_info *link_delete(int fd)
     p1 = p2 =head;
     if(head == NULL)
     {
-        printf_debug("link NULL\n");
+        printf("link NULL");
         return head;
     }
     while ((p1->sockfd_client != fd)&&(p1->next!=NULL))
@@ -2595,29 +2646,18 @@ user_info *link_delete(int fd)
     }
     if(p1->sockfd_client == fd)
     {
-        if (p1 == head)//队列头
+        if (p1 == head)
         {
-            if(p1->next == NULL)
-            {
-                printf_debug("link NULL\n");
-            }
-            else if(p1->next != NULL)
-            {
-                head = head->next;                   
-            }
+            head = head->next;                   
         }
-        else if (p1->next == NULL)//队列 尾
+        if (p1 == NULL)
         {
             p2->next = NULL;
-            pf = p2;
         }
-        else//中间
+        else
         {
             p2->next = p1->next;
         }
-	free(p1);
-	p1 = NULL;
-	printf_debug("free the calloc successfully\n");
     }
     if(head != NULL)
     {
@@ -2636,7 +2676,7 @@ user_info *link_delete(int fd)
 func        :    
 para:   
 ret         : 
-date        : 2012-08USERLOGOUT0
+date        : 2012-08-20
 auto        : 
  *********************************************************************/
 void *pthread_handshake(void *arg)
@@ -2669,7 +2709,7 @@ void *pthread_handshake(void *arg)
 }
 
 /*******************************************************************************
- * 功能:        主动连接远程主机, 时间容忍度30s，如果连接失败，返回NETTRANSFERFAIL，否则返回
+ * 功能:        主动连接远程主机, 时间容忍度30s，如果连接失败，返回-1，否则返回
  连接的fd
 
  * 调用者:          
@@ -2683,12 +2723,12 @@ void *pthread_handshake(void *arg)
 
 int api_connect_remote_client(int ip, short port, short time_out)
 {
-    int fd = NETTRANSFERFAIL;
+    int fd = -1;
     int socket_flags;
-    if (NETTRANSFERFAIL == (fd = socket(AF_INET, SOCK_STREAM, 0)))
+    if (-1 == (fd = socket(AF_INET, SOCK_STREAM, 0)))
     {
         //err_print("create socket failed-errno:%d:%s\n", errno, strerror(errno));
-        printf_debug("fd = NETTRANSFERFAIL\n");
+        printf_debug("fd = -1\n");
         goto DEAL_FAIL;
 
     }
@@ -2716,13 +2756,13 @@ int api_connect_remote_client(int ip, short port, short time_out)
     return fd;
 
 DEAL_FAIL:
-    if (fd!=NETTRANSFERFAIL)
+    if (fd!=-1)
     {
         printf_debug("close the active_sockfd\n");
         cycle_close_socket(fd);
     }
 
-    return NETTRANSFERFAIL;
+    return -1;
 
 }    
 
@@ -2757,7 +2797,7 @@ int net_connect(int client_id ,int dst_ip,short dst_port, short time_out)
     do
     {
         errno = 0;
-        if (NETTRANSFERFAIL ==(connect(client_id, (struct sockaddr *) &client_addr,sizeof (struct sockaddr))))
+        if (-1 ==(connect(client_id, (struct sockaddr *) &client_addr,sizeof (struct sockaddr))))
         {
             if ((errno == EINTR) || (errno == EAGAIN))//this is errnno, because progress is already in progress state
             {
@@ -2766,7 +2806,7 @@ int net_connect(int client_id ,int dst_ip,short dst_port, short time_out)
                 if (try_times>=4)
                 {
                     //err_print("try_times...\n");
-                    return NETTRANSFERFAIL;
+                    return -1;
                 }
 
                 usleep(10*1000);
@@ -2781,7 +2821,7 @@ int net_connect(int client_id ,int dst_ip,short dst_port, short time_out)
                 {
                     printf_debug("test2 \n");
                     //err_print("timeout.........\n");
-                    return NETTRANSFERFAIL;
+                    return -1;
                 }
 
                 //poll--success
@@ -2802,7 +2842,7 @@ int net_connect(int client_id ,int dst_ip,short dst_port, short time_out)
                     {
                         //err_print("connect-fail.-err:%d:%s........\n", err, strerror(err)); 
                     }
-                    return NETTRANSFERFAIL;
+                    return -1;
                 }
 
             }
@@ -2817,7 +2857,7 @@ int net_connect(int client_id ,int dst_ip,short dst_port, short time_out)
 
                 //这种情况下，connect将立即返回--强制休眠
                 sleep(time_out);
-                return NETTRANSFERFAIL;
+                return -1;
             }
 
             break;
@@ -2839,7 +2879,7 @@ int cycle_close_socket(int fd)
     int err_retry_times = 0;
     do
     {
-        if ((NETTRANSFERFAIL == close(fd)) && (errno == EINTR))
+        if ((-1 == close(fd)) && (errno == EINTR))
         {
             //err_print("close fail-errno:%d:%s....\n", errno, strerror(errno));
             sleep(1);
@@ -2871,16 +2911,16 @@ int poll_wtime(int client_fd, int timeout)
 
     errno = 0;
 
-    while ( (NETTRANSFERFAIL == (res = poll(poll_set, 1, poll_timeout))) && (errno == EINTR));
+    while ( (-1 == (res = poll(poll_set, 1, poll_timeout))) && (errno == EINTR));
 
-    if (res == NETTRANSFERFAIL)
+    if (res == -1)
     {
-        return NETTRANSFERFAIL;
+        return -1;
     }
 
     else if (res == 0)//timeout
     {
-        return NETTRANSFERFAIL;
+        return -1;
     }
 
     return 1;
@@ -2892,7 +2932,7 @@ Fun:  判断ip是否为该网段的
 para:  
 
 
-result:1 表示在同一网段   NETTRANSFERFAIL 表示不在同一网段
+result:1 表示在同一网段   -1 表示不在同一网段
  *********************************************************/
 int ip_judge(int ip_maste,int device_ip,int client_ip)
 {
@@ -2902,7 +2942,7 @@ int ip_judge(int ip_maste,int device_ip,int client_ip)
     if(device_netaddr != client_netaddr)
     {
         err_print("client & server is't int the same Segment\n ");
-        return NETTRANSFERFAIL;
+        return -1;
     }
 
     return 1;
@@ -2924,10 +2964,10 @@ int  set_local_lan_gateway(char *gateway_cmd)
 
     printf_debug("set_local_lan_gateway_cmd is :%s\n",gateway_cmd);
     ret = system(gateway_cmd);
-    if(NETTRANSFERFAIL == ret )
+    if(-1 == ret )
     {
         err_print("%s-%d--gateway_set Fail:%d:%s....\n", __FILE__, __LINE__, errno, strerror(errno));
-        return NETTRANSFERFAIL;
+        return -1;
     }
     else 
     {
@@ -2940,13 +2980,13 @@ int  set_local_lan_gateway(char *gateway_cmd)
             else
             {  
                 printf_debug("run shell script fail, script exit code: %d,ret=%d\n", WEXITSTATUS(ret),ret);
-                return NETTRANSFERFAIL;
+                return -1;
             }  
         }  
         else
         {  
             printf_debug("exit status = [%d]\n", WEXITSTATUS(ret));
-            return NETTRANSFERFAIL;
+            return -1;
         }  
     }  
 
@@ -2970,7 +3010,7 @@ void get_local_lan_mac(unsigned char *p_mac)
 
     if (NULL == p_mac)
     {
-        err_print("mac is NULL.....\n");
+        err_print("mac is null.....\n");
         return ;
     }
 
@@ -3011,7 +3051,7 @@ void get_local_lan_mac(unsigned char *p_mac)
  * 数据更新:  
  * 输入:          
  * 输出:         
- * 返回值:          0--表示成功，NETTRANSFERFAIL表示失败  
+ * 返回值:         
  *******************************************************************************/
 int set_lan_netmask(unsigned netmask)
 { 
@@ -3023,7 +3063,7 @@ int set_lan_netmask(unsigned netmask)
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
         // err_print("%s-%d--Creat socket Fail:%d:%s....\n", __FILE__, __LINE__, errno, strerror(errno));
-        return NETTRANSFERFAIL;
+        return -1;
     }
 
     memset(&ifr, 0, sizeof(ifr));
@@ -3054,13 +3094,13 @@ int set_lan_netmask(unsigned netmask)
  * 数据更新:  
  * 输入:          
  * 输出:         
- * 返回值:        0--表示成功，NETTRANSFERFAIL表示失败 
+ * 返回值:        0--表示成功，-1表示失败 
  *******************************************************************************/
 int set_local_lan_mac(unsigned char *p_mac)
 {
     register int fd; 
     struct ifreq freq_if; 
-    int ret = NETTRANSFERFAIL;
+    int ret = -1;
 
     if (NULL == p_mac)
     {
@@ -3109,7 +3149,7 @@ int set_local_lan_mac(unsigned char *p_mac)
  * 数据更新:  
  * 输入:          
  * 输出:         
- * 返回值:        1--表示成功，NETTRANSFERFAIL表示失败 
+ * 返回值:        1--表示成功，-1表示失败 
  *******************************************************************************/
 int dev_para_get(char *recv_buf,int fd)
 {
@@ -3142,17 +3182,17 @@ int dev_para_get(char *recv_buf,int fd)
  * 数据更新:  
  * 输入:          
  * 输出:         
- * 返回值:           1--表示成功，NETTRANSFERFAIL表示失败 
+ * 返回值:         
  *******************************************************************************/
 int dev_restart(int fd)
 {
     char *cmd_sys = "reboot";
     int ret = 0;
     ret = system(cmd_sys);
-    if(NETTRANSFERFAIL == ret )
+    if(-1 == ret )
     {
         err_print("%s-%d--restart Fail:%d:%s....\n", __FILE__, __LINE__, errno, strerror(errno));
-        return NETTRANSFERFAIL;
+        return -1;
     }
     else 
     {
@@ -3166,13 +3206,13 @@ int dev_restart(int fd)
             else
             {  
                 printf_debug("run shell script fail, script exit code: %d,ret=%d\n", WEXITSTATUS(ret),ret);
-                return NETTRANSFERFAIL;
+                return -1;
             }  
         }  
         else
         {  
             printf_debug("exit status = [%d]\n", WEXITSTATUS(ret));
-            return NETTRANSFERFAIL;
+            return -1;
         }  
     }  
 
@@ -3187,7 +3227,7 @@ int dev_restart(int fd)
  * 数据更新:  
  * 输入:          
  * 输出:         
- * 返回值:           1--表示成功，NETTRANSFERFAIL表示失败 
+ * 返回值:         
  *******************************************************************************/
 int system_time_set(char *recv_buf,int fd)
 {
@@ -3197,10 +3237,10 @@ int system_time_set(char *recv_buf,int fd)
 
     sprintf(cmd_buf,"%s%02d%02d%02d%02d%s%02d%c%02d","date -s ",time_para->Month,time_para->Day,time_para->Hour,time_para->Minute,"20",time_para->Year,'.',time_para->Second);
     ret = system(cmd_buf);
-    if(NETTRANSFERFAIL == ret )
+    if(-1 == ret )
     {
         err_print("%s-%d--time set:%d:%s....\n", __FILE__, __LINE__, errno, strerror(errno));
-        return NETTRANSFERFAIL;
+        return -1;
     }
     else 
     {
@@ -3214,13 +3254,13 @@ int system_time_set(char *recv_buf,int fd)
             else
             {  
                 printf_debug("run shell script fail, script exit code: %d,ret=%d\n", WEXITSTATUS(ret),ret);
-                return NETTRANSFERFAIL;
+                return -1;
             }  
         }  
         else
         {  
             printf_debug("exit status = [%d]\n", WEXITSTATUS(ret));
-            return NETTRANSFERFAIL;
+            return -1;
         }  
     }  
 
@@ -3236,39 +3276,35 @@ int system_time_set(char *recv_buf,int fd)
  * 数据更新:  
  * 输入:          
  * 输出:         
- * 返回值:          1--表示成功，NETTRANSFERFAIL表示失败 
+ * 返回值:         
  *******************************************************************************/
 int acquiescent_para_recovery(int fd)
 {
     int gatewayip;
     char gateway_buf[16] = {0};
-    char gateway[50] =  "route add default gw  ";
-    
-#ifdef DEBUG_DATA//测试版
-    inet_pton(AF_INET,"192.168.11.222",&para_net.dwDeviceIP);//需修改
-    inet_pton(AF_INET,"255.255.255.0",&para_net.dwDeviceIPMask);
-    inet_pton(AF_INET,"192.168.11.1",&para_net.dwGatewayIP);
-    inet_pton(AF_INET,"192.168.11.53",&para_net.dwManageHostIP);//需修改
-#endif   
 
-    para_net.wManageHostPort = SERVER_PORT_TCP;
+    char gateway[50] =  "route add default gw  ";
+
+    inet_pton(AF_INET,"192.168.11.222",&para_net.dwDeviceIP);//需修改
+    para_net.dwDeviceIP = ntohl(para_net.dwDeviceIP);            //注意此处字节序的转换
+    //printf_debug("deviceip:%d\n",para_net.dwDeviceIP);
+
+    inet_pton(AF_INET,"255.255.255.0",&para_net.dwDeviceIPMask);
+    para_net.dwDeviceIPMask = ntohl(para_net.dwDeviceIPMask);
+
     para_net.wDevicePort = SERVER_PORT_TCP;
 
-#ifdef FINAL_VERSION//正式版
-    para_net.dwDeviceIP = DEVICEIP;
-    para_net.dwDeviceIPMask = NETMASKIP;
-    para_net.dwGatewayIP = GETWAYIP;
-    para_net.dwManageHostIP = CLIENTIP;
-    
-#endif
-    para_net.dwDeviceIP = ntohl(para_net.dwDeviceIP);            //注意此处字节序的转换
-    para_net.dwDeviceIPMask = ntohl(para_net.dwDeviceIPMask);
+    inet_pton(AF_INET, "192.168.11.1",&para_net.dwGatewayIP);
     para_net.dwGatewayIP = ntohl(para_net.dwGatewayIP);
-    para_net.dwManageHostIP = ntohl(para_net.dwManageHostIP);
-        
-    memcpy(para_net.active_mode_name,acquiescence_usrname ,strlen(acquiescence_usrname));
 
-    memcpy(para_net.active_mode_pwd,acquiescence_usrpwd, strlen(acquiescence_usrpwd));
+    inet_pton(AF_INET,"192.168.11.53",&para_net.dwManageHostIP);//需修改
+    para_net.dwManageHostIP = ntohl(para_net.dwManageHostIP);
+
+    para_net.wManageHostPort = SERVER_PORT_TCP;
+
+    memcpy(para_net.active_mode_name,"admin" ,5);
+
+    memcpy(para_net.active_mode_pwd,"admin", 5);
 
     gatewayip = htonl(para_net.dwGatewayIP);
     inet_ntop(AF_INET,&gatewayip,gateway_buf,INET_ADDRSTRLEN); 
@@ -3288,37 +3324,8 @@ int acquiescent_para_recovery(int fd)
     {
         err_print("set the netmask fail\n");
     }
-    //entrance_guard_data = {.entrance_guard_serial_pamater  = {ENTRANCE_GUARD_SERIAL_PORT,{0,0,0},{LINK_DEV_DOOR_CLT,1,DOOR_CTL_PROTOCOL_COSON},{ENTRANCE_GUARD_BOARD,ENTRANCE_GUARD_UART_DATA_BIT,ENTRANCE_GUARD_UART_STOP_BIT,ENTRANCE_GUARD_UART_CHECK_BIT,0,{0,0}},{0}}};
-   
-    /*
-    ret = system("rm dev_config_file.config");
-    if(NETTRANSFERFAIL == ret )
-    {
-        err_print("%s-%d--rm dev_config_file.config Fail:%d:%s....\n", __FILE__, __LINE__, errno, strerror(errno));
-        return NETTRANSFERFAIL;
-    }
-    else 
-    {
-        if (WIFEXITED(ret))
-        {  
-            if (0 == WEXITSTATUS(ret))
-            {  
-                printf_debug("run shell script successfully.\n");
-            }  
-            else
-            {  
-                printf_debug("run shell script fail, script exit code: %d,ret=%d\n", WEXITSTATUS(ret),ret);
-                return NETTRANSFERFAIL;
-            }  
-        }  
-        else
-        {  
-            printf_debug("exit status = [%d]\n", WEXITSTATUS(ret));
-            return NETTRANSFERFAIL;
-        }  
-    } */ 
-    return send_act_cmd(QULIFIED,fd,SXC_PARA_RESTORE,fd);
-    
+
+    return send_act_cmd(QULIFIED,fd,SXC_PARA_RESTORE,fd);;
 }
 
 /*******************************************************************************
@@ -3415,7 +3422,7 @@ int com_baudrate_set(int rate)
 }
 
 /*******************************************************************************
- * 功能:     手动获取报警上传
+ * 功能:     s手动获取报警上传
  * 调用者:          
  * 调用:      
  * 数据访问: 
@@ -3443,158 +3450,11 @@ int alarm_upload_get(char *recv_buf,int fd)
     }
     else if(recv_para->byAlmType == 2)
     {
-         alarm_upload(t,SWITCH_ALARM_UPLOAD,NO);
+        return alarm_upload(t,SWITCH_ALARM_UPLOAD,NO);
     }
     else
     {	
         return send_act_cmd(NOSUPPORT,fd,SXC_ALARM_UPLOAD_MANU,fd);
     }
     return 1;
-}
-
-/*******************************************************************************
- * 功能:    服务器程序升级
- * 调用者:          
- * 调用:      
- * 数据访问: 
- * 数据更新:  
- * 输入:          
- * 输出:         
- * 返回值:          1--表示成功，NETTRANSFERFAIL表示失败 
- *******************************************************************************/
-int program_update(char *recv_buf,int fd)
-{
-    return send_act_cmd(QULIFIED,fd,SXC_START_UPGRDE,fd);
-}
-
-/*******************************************************************************
- * 功能:    服务器程序升级数据接收
- * 调用者:          
- * 调用:      
- * 数据访问: 
- * 数据更新:  
- * 输入:          
- * 输出:         
- * 返回值:    1表示返回接收状态成功，NETTRANSFERFAIL表示失败    
- *******************************************************************************/
-int program_update_deal(char *recv_buf,int fd,int len,int status)//异常处理没做
-{
-	FILE *fp_program;
-    int ret = 0;
-    char MD5_str[32] = {0};
-	//printf("content is %s\n",recv_buf);
-	//文件以追加的方式打开
-    
-    printf_debug("status =%d\n",status);
-    if(status == SXC_ST_UPGRADEHEAD)   //头
-    {
-        
-        SX_AV_UPDATE_VERIFY_HEAD *verify_head = (SX_AV_UPDATE_VERIFY_HEAD *)recv_buf;
-        
-        verify_head->language = htonl(verify_head->language);
-        device_update_now = YES; 
-        
-        //此处进行MD5 校验
-      
-        MD5String2(para_net.active_mode_pwd,MD5_str,strlen(para_net.active_mode_pwd));
-        if(strncmp(verify_head->ARM_MD5,MD5_str,32) == 0)
-        {
-            printf_debug("the update_file MD5 code is wright\n");
-            ret = system("rm /root/program/arm.bin");
-            if(NETTRANSFERFAIL == ret    )
-            {
-                err_print("%s-%d--gateway_set Fail:%d:%s....\n", __FILE__, __LINE__, errno, strerror(errno));
-                return NETTRANSFERFAIL;
-            }
-            else 
-            {
-                if (WIFEXITED(ret))
-                {  
-                    if (0 == WEXITSTATUS(ret))
-                    {  
-                        printf_debug("run shell script successfully.\n");
-                    }  
-                    else
-                    {  
-                        printf_debug("run shell script fail, script exit code: %d,ret=%d\n", WEXITSTATUS(ret),ret);
-                        //删除文件失败时，应该用"wb+"打开文件进行文件的初始化
-                        return NETTRANSFERFAIL;
-                    }  
-                }  
-                else
-                {  
-                    printf_debug("exit status = [%d]\n", WEXITSTATUS(ret));
-                    return NETTRANSFERFAIL;
-                }  
-            }  
-            return send_act_cmd(UPGRADING,fd,SXD_UPGRDE_ST_DATA,fd);
-        }
-        else
-        {
-            err_print("the update_file MD5 code is wrong\n");
-            return send_act_cmd(ERRORDATA ,fd,SXD_UPGRDE_ST_DATA,fd);
-        }
-    }
-    if(!(fp_program = fopen("/root/program/arm.bin","ab+")))
-    {
-         err_print("open file fail\n");
-         return send_act_cmd(NOSUPPORT,fd,SXC_PROGRAM_UPDATE_START,fd);
-    }
-    fwrite(recv_buf,1,len,fp_program);
-    fclose(fp_program);
-    if(SXC_ST_UPGRADING == status)
-    {
-        package_num++;
-    }
-    if(((package_num%100) == 0)&&(status != SXC_ST_UPGRADSUCCESS))
-	{ 
-		device_update_now = YES;
-        return send_act_cmd(UPGRADING,fd,SXD_UPGRDE_ST_DATA,fd);
-	}
-	else if((status == SXC_ST_UPGRADSUCCESS )||(len  < 1024))  //升级完成
-	{
-        
-        send_act_cmd(DOWNFLASH,fd,SXD_UPGRDE_ST_DATA,fd);
-        
-        sleep(2); 
-        device_update_now = NO;
-
-	    return send_act_cmd(UPGADE_OVER,fd,SXD_UPGRDE_ST_DATA,fd);
-	}
-	return 1;
-}
-
-void *pthread_watchdog(void *arg)
-{
-     int wdt_fd = 0;
-     wdt_fd = open(WDT,O_RDWR);
-     perror("open wdt_fd");
-     while(1)
-     {
-        if(wdt_fd != -1)
-        {
-            //ioctl(wdt_fd, WDIOC_SETTIMEOUT, &timeout);
-            write(wdt_fd,"a",1);    
-            fsync((int)wdt_fd);
-             sleep(10);
-        }
-        else
-        {
-            printf_debug("**********open the watchdog fail*********\n");
-            sleep(20);
-        }
-     }
-     close(wdt_fd);
-}
-
-void *led_closed_delay(void *arg)
-{
-    int ret =0;
-    sleep(1);
-    if ((ret = open_LED_light(led_driver_fd, AT91_LED3)) < 0)
-    {
-        printf("FUNC[%s] LINE[%d]\tioctl error!\n",__FUNCTION__, __LINE__);
-        exit(1);
-    }
-    return NULL;
 }

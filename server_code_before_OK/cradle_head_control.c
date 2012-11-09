@@ -8,7 +8,7 @@
 #include "cradle_head_control.h"
 #include "net_server.h"
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define printf_debug(fmt, arg...) printf(fmt, ##arg)
 #else
@@ -25,7 +25,7 @@
 #define CRADLE_HEAD_DEFAULT_PRESET_POINT        0x01
 
 cradle_head_control_arg cradle_head_control_data = {0, 
-CRADLE_HEAD_CONTROL_NO_VALID_COMMAND,CRADLE_HEAD_DEFAULT_PROTOCOL_TYPE,CRADLE_HEAD_DEFAULT_ADDRESS,CRADLE_HEAD_DEFAULT_MOVE_SPEED,CRADLE_HEAD_DEFAULT_PRESET_POINT,{CRADLE_HEAD_SERIAL_PORT,{0,0,0},{LINK_DEV_CRADLE_HEAD,1,0},{CRADLE_HEAD_UART_BOARD,CRADLE_HEAD_UART_DATA_BIT,CRADLE_HEAD_UART_STOP_BIT,CRADLE_HEAD_UART_CHECK_BIT,0,{0,0}},{0}}};
+    CRADLE_HEAD_CONTROL_NO_VALID_COMMAND,CRADLE_HEAD_DEFAULT_PROTOCOL_TYPE,CRADLE_HEAD_DEFAULT_ADDRESS,CRADLE_HEAD_DEFAULT_MOVE_SPEED,CRADLE_HEAD_DEFAULT_PRESET_POINT,{CRADLE_HEAD_SERIAL_PORT,{0,0,0},{LINK_DEV_CRADLE_HEAD,1,0},{CRADLE_HEAD_UART_BOARD,CRADLE_HEAD_UART_DATA_BIT,CRADLE_HEAD_UART_STOP_BIT,CRADLE_HEAD_UART_CHECK_BIT,0,{0,0}},{0}}};
 
 unsigned char CRADLE_HEAD_UP[8] = {0xa0,0x00,0x00,0x08,0x00,0x0f,0xaf,0x08};   //…œ
 unsigned char CRADLE_HEAD_DOWN[8] = {0xa0,0x00,0x00,0x10,0x00,0x0f,0xaf,0x10}; //œ¬
@@ -171,14 +171,14 @@ int cradle_head_handshake_and_contorl(int *com_fd)
     //cradle_head_control_data.setup_command_set = PTZ_APERTURE_SMALL;
     //cradle_head_control_data.setup_command_set = PTZ_SET_PTZBIT;
     //cradle_head_control_data.setup_command_set = PTZ_CLE_PTZBIT;
-    
+
     while (1) 
     {
         //0xa0,0x01,0x00,0x08,0x00,0x30,0xaf 
         /*
-        if (cradle_head_control_data.setup_command_set != CRADLE_HEAD_CONTROL_NO_VALID_COMMAND)
-        	printf_debug("FUNC[%s] LINE[%d]\tcradle_head_control_data.setup_command_set = %d\n",__FUNCTION__, __LINE__, cradle_head_control_data.setup_command_set);
-       */
+           if (cradle_head_control_data.setup_command_set != CRADLE_HEAD_CONTROL_NO_VALID_COMMAND)
+           printf_debug("FUNC[%s] LINE[%d]\tcradle_head_control_data.setup_command_set = %d\n",__FUNCTION__, __LINE__, cradle_head_control_data.setup_command_set);
+           */
         if (cradle_head_control_data.cradle_head_protocol_type == Palco_P) 
         {
             PELCO_P_Table[cradle_head_control_data.setup_command_set-1][1] = cradle_head_control_data.cradle_head_address;
@@ -186,12 +186,12 @@ int cradle_head_handshake_and_contorl(int *com_fd)
 
             switch(cradle_head_control_data.setup_command_set)
             {
-		case PTZ_APERTURE_BIG: 
-		case PTZ_APERTURE_SMALL: 
-			cradle_head_control_data.setup_command_set = CRADLE_HEAD_CONTROL_NO_VALID_COMMAND;
-			usleep(10000);
-			break;
-		case CRADLE_HEAD_CONTROL_NO_VALID_COMMAND: 
+                case PTZ_APERTURE_BIG: 
+                case PTZ_APERTURE_SMALL: 
+                    cradle_head_control_data.setup_command_set = CRADLE_HEAD_CONTROL_NO_VALID_COMMAND;
+                    usleep(10000);
+                    break;
+                case CRADLE_HEAD_CONTROL_NO_VALID_COMMAND: 
                     usleep(10000);
                     break;
                 case PTZ_UP:            //…œ
@@ -222,7 +222,7 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                     {
                         //printf("FUNC[%s] LINE[%d]\tSet or call cradle head preset point successfully !\n",__FUNCTION__, __LINE__);
                         PELCO_P_Table[cradle_head_control_data.setup_command_set][5] = cradle_head_control_data.cradle_head_preset_point;
-                    if_send_cradle_head_control_command = YES;
+                        if_send_cradle_head_control_command = YES;
                     }
                     else
                     {
@@ -238,15 +238,15 @@ int cradle_head_handshake_and_contorl(int *com_fd)
             //if (cradle_head_control_data.setup_command_set != CRADLE_HEAD_CONTROL_NO_VALID_COMMAND) 
             if (if_send_cradle_head_control_command == YES) 
             {
-		        printf_debug("FUNC[%s] LINE[%d]\tcradle_head_control_data.setup_command_set = %d\n",__FUNCTION__, __LINE__, cradle_head_control_data.setup_command_set);
-		        for (i = 0; i < 7; i++) 
+                printf_debug("FUNC[%s] LINE[%d]\tcradle_head_control_data.setup_command_set = %d\n",__FUNCTION__, __LINE__, cradle_head_control_data.setup_command_set);
+                for (i = 0; i < 7; i++) 
                 {
                     PELCO_P_Table[cradle_head_control_data.setup_command_set-1][7] ^= PELCO_P_Table[cradle_head_control_data.setup_command_set-1][i];
                 }
 
-                #ifdef DEBUG
+#ifdef DEBUG
                 print_string(" ", PELCO_P_Table[cradle_head_control_data.setup_command_set-1], PELCO_P_UART_MAX_SNED_SIZE);
-                #endif
+#endif
                 if (SendDataToCom(*com_fd, PELCO_P_Table[cradle_head_control_data.setup_command_set-1], PELCO_P_UART_MAX_SNED_SIZE) == -1)
                 {
                     printf("FUNC[%s] LINE[%d]\tSend data to com error!\n",__FUNCTION__, __LINE__);
@@ -310,7 +310,7 @@ int cradle_head_handshake_and_contorl(int *com_fd)
             //if (cradle_head_control_data.setup_command_set != CRADLE_HEAD_CONTROL_NO_VALID_COMMAND) 
             if (if_send_cradle_head_control_command == YES) 
             {
-               for (i = 0; i < 6; i++) 
+                for (i = 0; i < 6; i++) 
                 {
                     PELCO_D_Table[cradle_head_control_data.setup_command_set-1][6] += PELCO_D_Table[cradle_head_control_data.setup_command_set-1][i];
                 }
@@ -325,8 +325,8 @@ int cradle_head_handshake_and_contorl(int *com_fd)
                 cradle_head_control_data.setup_command_set = CRADLE_HEAD_CONTROL_NO_VALID_COMMAND;
                 if_send_cradle_head_control_command = NO;
 
-		  //∑¢ÀÕ±®æØ∆˜øÿ÷∆ ß∞‹◊¥Ã¨ªÿ∏¥-------------------------------------------------------------12.9.6  frank added
-		//  send_act_cmd(NOSUPPORT, cradle_head_control_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, cradle_head_control_data.current_fd);
+                //∑¢ÀÕ±®æØ∆˜øÿ÷∆ ß∞‹◊¥Ã¨ªÿ∏¥-------------------------------------------------------------12.9.6  frank added
+                //  send_act_cmd(NOSUPPORT, cradle_head_control_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, cradle_head_control_data.current_fd);
             }
         }
         else if (cradle_head_control_data.cradle_head_protocol_type == YAAN) 

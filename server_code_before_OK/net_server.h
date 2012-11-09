@@ -1,15 +1,7 @@
 #ifndef _NET_SERVER_H_
 #define _NET_SERVER_H_
-#include "update.h"
 
 /*------------命令宏定义-----------------*/
-#define DEVICEIP -1463244608        //服务器IP
-#define NETMASKIP 16777215          //子网掩码
-#define GETWAYIP  29927616          //服务器网关
-#define CLIENTIP  1460381888        //主动连接时远程IP
-
-#define USERLOGOUT -2               //用户注销
-#define NETTRANSFERFAIL -1          //网络传输故障
 
 #define   MAX_DAYS                              7
 #define   MAX_TIMESEGMENT                4
@@ -26,7 +18,7 @@
 #define LOWPRI 					3 					//权限不足 
 #define VERSIONNOMATCH 			4 					//版本不匹配 
 #define NOSPECCHANNEL 			5	   			        //没有指定的通道
-#define SXC_LOG_IN 	    			0xF10000 	        // 客户端登录 客户端退出登陆命令：
+#define SXC_LOG_IN 	    			0xF10000 	                        // 客户端登录 客户端退出登陆命令：
 #define CURRENT_NOALIVE  			  57 				 	//设备不在线
 #define SXC_LOG_OUT				 0xF10001	                        // 客户端退出 
 #define SDK_VERSION                   		   1                                   //版本号
@@ -96,23 +88,23 @@
 #define SXC_RESET_ALARM_LINKAGE_AND_TIMEPARA 	0xD40004	//恢复报警输入输出默认参数
 
 //------------------------------------------------------------------------------------------------设置获取网络参数
-#define SXC_GET_NETCFG		         0xF20100				// 获取网络参数 
-#define SXC_SET_NETCFG 	                 0xF20101			// 设置网络参数
-#define IPMISMATCH 				        18					//IP地址不匹配 
-#define MACMISMATCH 				    19					//MAC地址不匹配 
+#define SXC_GET_NETCFG		         0xF20100					// 获取网络参数 
+#define SXC_SET_NETCFG 	                 0xF20101					// 设置网络参数
+#define IPMISMATCH 				18						//IP地址不匹配 
+#define MACMISMATCH 				19						//MAC地址不匹配 
 //----------------------------------------------------------------------------------------------------开关量输入输出
-#define  SXC_GET_ALARMOUTCFG 	0xF20420 					//获取开关量输出参数
-#define  SXC_SET_ALARMOUTCFG 	0xF20421 					//设置开关量输出参数
+#define  SXC_GET_ALARMOUTCFG 	0xF20420 						//获取开关量输出参数
+#define  SXC_SET_ALARMOUTCFG 	0xF20421 						//设置开关量输出参数
 
 #define SXC_GET_ALARMINCFG	0xE20410					 	//获取报警输入参数
-#define SXC_SET_ALARMINCFG	0xE20411 						//设置报警输入参数
+#define SXC_SET_ALARMINCFG	0xE20411 						 //设置报警输入参数
 
 //-----------------------------------------------------------------------------------------------------串口属性
 #define SXC_GET_CONNECT_PAMA  0xE0C000						//获取串口连接设备参数
 #define SXC_SET_CONNECT_PAMA  0xE0C001						//设置串口连接设备参数
 #define SXC_DOOR_ALMIN_V2	 0xE300A0						// 门磁报警输出
 
-#define SXC_DEV_NOALIVE 	0xD1001 						//设备不在线
+#define SXC_DEV_NOALIVE 		0xE20502 						//设备不在线
 //---------------------------------------------------------------------------- 获取多功能服务器工作状态
 #define	SXC_GET_ICC_DEV_PARAM		0xE70C00
 
@@ -129,21 +121,6 @@
 #define SXC_SET_TIMECFG 		0xF20501 			//设置设备时间
 
 #define SXC_PARA_RESTORE 		0xF30901 			//恢复默认参数
-
-#define SXC_START_UPGRDE      0xF30B00			//程序升级
-
-#define SXC_PROGRAM_UPDATE_START      0xF30B02			//程序升级数据传输
-#define SXD_UPGRDE_ST_DATA	          0xF30b03 		//设备给客户端的升级状态指令
-#define SXC_STOP_UPGRDE 		      0xF30b01 		//取消升级
-
-#define SXC_ST_UPGRADEHEAD			5			//升级头	
-#define SXC_ST_UPGRADING			6			//升级中
-#define SXC_ST_UPGRADSUCCESS		7			//升级完成
-#define UPGRADING 					15		    //升级中，升级处于数据传输状态
-#define UPGADE_OVER	                24	        //升级正常；
-#define MEMORY_ABN			     	44			//内存分配失败
-#define FLASH_ABN					45			//写flash失败
-#define DOWNFLASH                   46	        //网络数据传输完成，写FLASH
 
 #ifdef __WINDOWS_
 #include <winsock2.h>
@@ -832,48 +809,6 @@ typedef struct
     char  Second;	// 秒。范围： 0~59
     char	rev[2];	// 保留。
 }INTER_TIME,*LPINTER_TIME;
-//-------------------------------------------------------------------程序升级 开始 数据包
-
-typedef struct
-{
-	DWORD dwHardVersion;   	//硬件版本号。高16位是主版本,低16位是次版本 当前版本 0x00010002（v1.2），客户端显示为v1.2的形式
-	DWORD dwSoftVersion;  	
-	DWORD dwRev;       				//保留，软件版本扩展
-	DWORD dwARMVersion;      //ARM软件版本，版本定义格式同软件主版本定义
-	DWORD dwEncodeDSPVersion; //编码DSP软件版本，版本定义格式同软件主版本定义
-	DWORD dwDecodeDSPVersion; //解码DSP软件版本，版本定义格式同软件主版本定义
-	DWORD ARM_length;   				//ARM升级文件长度，用于比对相同版本的文件的长度是否一致，如果不一致说明版本文件存在问题。
-	DWORD EncodeDSP_length;   			//编码DSP升级文件长度
-	DWORD DecodeDSP_length;   			//解码DSP升级文件长度
-} SX_INTER_UPHead;
-
-typedef struct 
-{
-    INTER_SXD_HEAD sxdHeader;
-    SX_INTER_UPHead data;
-} SX_DEVICE_UPDATE_INFO_PACKAGE;
-
-//设备不在线通知
-typedef enum  
-{
-	LINK_DEV_UNDEFAULT_TYPE = 0,
-	LINK_DEV_ALARM_TYPE,		// 报警控制器
-	LINK_DEV_DOOR_TYPE,			// 门禁控制器
-   	LINK_DEV_TYPE_NUM_TYPE, 
-}DEV_TYPE_NOALIVE_TYPE;
-
-typedef struct
-{
-	char dev_num;                 //设备号
-	char dev_type;					//设备类型  取值参考
-	char recv[2];						//保留字
-} DEV_TYPE_NOALIVE;
-
-typedef struct 
-{
-    INTER_SXD_HEAD sxdHeader;
-    DEV_TYPE_NOALIVE dev_offline;
-} SX_DEVICE_OFFLINE_INFO_PACKAGE;
 
 /*---------------变量声明-----------------------------------------------------------------*/
 extern int server_listen_fd ,server_connect_fd ;
@@ -885,19 +820,11 @@ extern  FILE *fp_dev_config_file;
 
 /*---------------函数声明-----------------------------------------------------------------*/
 void *pthread_server_passive(void *arg);     //被动通信模式线程
-
 void *pthread_server_active(void *arg);        //主动模式通信线程
-
 void *pthread_handshake(void *arg);            //双向握手线程
-
-void *pthread_watchdog(void *arg);            //看门狗线程函数
-
 int  net_para_init(char *file_path,int len);
-
 int send_act_cmd(int status, int client_fd, int request_id, int usr_id);
-
 int send_data_intime_over(int client_fd, int timeout, char *src_buf, int src_len);
-
 int ck2316_user_password_setup(unsigned int user_password[4]);
 
 extern int enable_net_listen();
@@ -1021,13 +948,6 @@ extern int com_dwBaudRate_get(int rate);
 extern int com_baudrate_set(int rate);
 
 extern int alarm_upload_get(char *recv_buf,int fd);
-
-extern int program_update(char *recv_buf,int fd);//程序升级
-
-extern int program_update_deal(char *recv_buf,int fd,int len,int status);//程序升级处理
-
-extern void init_serial_dev_parameter(void);//串口初始化
-
 
 #endif
 

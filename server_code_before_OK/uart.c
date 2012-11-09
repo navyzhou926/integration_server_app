@@ -112,7 +112,6 @@ int InitCom_ck2316(char *UART_DEVICE_ttySx, int speed)
 int SendDataToCom(int Device ,unsigned char * DataBuf ,int DataLen)
 {
     //  ClrCom(Device);
-
     if (write(Device, &DataBuf[0], DataLen) == DataLen)
         return 0;
     return -1;

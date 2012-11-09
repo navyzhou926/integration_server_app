@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <time.h>
-#include<sys/types.h>
-#include<sys/stat.h>
-#include<fcntl.h> 
 #include "ck2316_alarm.h"
 #include "global.h"
 #include "uart.h"
@@ -101,11 +98,7 @@ int send_handshake_packet(int *com_fd);
 int verify_ck2316_data(unsigned char *recv_buffer, unsigned int len);
 int ck2316_user_password_setup(unsigned int user_password[4]);
 int ck2316_alarm_init(void);
-int led_driver_fd;
 extern int if_have_net_client_connect;
-//报警控制器不在线上传标示符
-int ck2316_alarm_offline_flag = -1;
-int led_status = 1; 
 void *pthread_ck2316_alarm(void *arg)
 {
     int com_fd;
@@ -144,7 +137,7 @@ void *pthread_ck2316_alarm(void *arg)
             continue;
         }
         ClrCom(com_fd);
-        
+
         recv_ret = ck2316_alarm_handshake_and_setup(&com_fd);
         if (recv_ret == -1) 
         {
@@ -170,8 +163,6 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
     time_t tm;
     struct tm *t;
     int temp = 0;
-    
-    int ret = 0;
     //2012.09.17  frank added
 
     //ck2316_alarm_data.setup_command_set = CK2316_SYSTEM_DEFENCE;
@@ -189,97 +180,42 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
     //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_ADDRESS_SETUP;
     //ck2316_alarm_data.setup_command_set = CK2316_SIMULATE_KEYBOARD_PASSWORD_SETUP;
 
-    led_driver_fd = open(GPIO_DEVICE_NAME, O_WRONLY | O_NONBLOCK);
-    if (led_driver_fd < 0)
-    {
-            printf("FUNC[%s] LINE[%d]\t\n",__FUNCTION__, __LINE__);
-            perror(GPIO_DEVICE_NAME);
-    }
-    if ((ret = open_LED_light(led_driver_fd, AT91_LED3)) < 0)
-    {
-        printf("FUNC[%s] LINE[%d]\tioctl error!\n",__FUNCTION__, __LINE__);
-        exit(1);
-    }
-    
-    while (1)
+    while (1) 
     {
         recv_ret = read_uart_data(*com_fd, recv_buffer, CK2316_MAX_RECV_SIZE, CK2316_RECV_TIMEOUT); 
-        //printf_debug("recv_data_length is :%d\n",recv_ret);
-#ifdef DEBUG
-        if(ck2316_alarm_data.setup_command_set != CK2316_NO_VALID_COMMAND)
-            print_string("\n ", recv_buffer, CK2316_MAX_RECV_SIZE);
-#endif
         switch (recv_ret)
         {
-            case 0:         
+            case 0:
+#ifdef DEBUG
+                //print_string("\n ", recv_buffer, CK2316_MAX_RECV_SIZE);
+                //printf_debug("\n");
+#endif
                 if (capture_address_count++ > 4) 
                 {
                     capture_address_count = 0;
                     //navy 网络发送 地址设置错误或没有捕获报警主机的地址码
                     printf_debug("FUNC[%s] LINE[%d]\tKeyboard address set error or did not capture CK2316 address code!\n",__FUNCTION__, __LINE__);
-                    
                     ck2316_alarm_data.if_ck2316_alive = NO;
                     if (ck2316_alarm_data.setup_command_set != CK2316_NO_VALID_COMMAND) 
                     {
                         //navy 网络发送 报警主机不在线
                         ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                        send_act_cmd(NOSUPPORT, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                         printf_debug("FUNC[%s] LINE[%d]\tWarning ! Timeout, ck2316 is not alive !\n",__FUNCTION__, __LINE__);
                     }
                     //ClrCom(*com_fd);
                     //发送报警器控制失败状态回复---------------------------------------------------------------------12.9.6  frank added
                     //send_act_cmd(NOSUPPORT, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                 }
-                //frank added(2012.10.23)
-
-                if(((ck2316_alarm_offline_flag == -1)&&(ck2316_alarm_data.if_ck2316_alive == NO))||((ck2316_alarm_offline_flag == 1)&&(ck2316_alarm_data.if_ck2316_alive == NO)))
-                {
-                    dev_offline_upload(LINK_DEV_ALARM_TYPE);
-                    /*
-                    if ((ret = open_LED_light(fd, AT91_LED3)) < 0)
-                    {
-                        printf("FUNC[%s] LINE[%d]\tioctl error!\n",__FUNCTION__, __LINE__);
-                        exit(1);
-                    }
-                    */
-                }
-
-                ck2316_alarm_offline_flag = ck2316_alarm_data.if_ck2316_alive;
                 break;
-            case -1: 
+            case -1:
                 if (ck2316_alarm_data.setup_command_set != CK2316_NO_VALID_COMMAND) 
                 {
                     //navy 网络发送 报警主机不在线
                     ck2316_alarm_data.setup_command_set = CK2316_NO_VALID_COMMAND;
-                    send_act_cmd(NOSUPPORT, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                     printf_debug("FUNC[%s] LINE[%d]\tWarning ! Timeout, ck2316 is not alive !\n",__FUNCTION__, __LINE__);
                 }
                 printf_debug("FUNC[%s] LINE[%d]\tTimeout, ck2316 is not alive ! recv_ret = %d\n",__FUNCTION__, __LINE__,recv_ret);
                 ck2316_alarm_data.if_ck2316_alive = NO;
-                 //frank added(2012.10.23)
-                 //printf_debug("ck2316_alarm_offline_flag =%d\n",ck2316_alarm_offline_flag);
-                 /*
-                 if(((ck2316_alarm_offline_flag == -1)&&(ck2316_alarm_data.if_ck2316_alive == NO))||((led_status < 2)&&(ck2316_alarm_data.if_ck2316_alive == NO)))
-                 {
-                    //指示灯灭
-                    led_status++;
-                    if ((ret = open_LED_light(fd, AT91_LED3)) < 0)
-                    {
-                        printf("FUNC[%s] LINE[%d]\tioctl error!\n",__FUNCTION__, __LINE__);
-                        exit(1);
-                    }
-                 }
-                 */
-                if(if_have_net_client_connect != 0)
-                {
-                     //frank added(2012.10.23)
-                     if(((ck2316_alarm_offline_flag == -1)&&(ck2316_alarm_data.if_ck2316_alive == NO))||((ck2316_alarm_offline_flag == 1)&&(ck2316_alarm_data.if_ck2316_alive == NO)))
-                     {
-                        dev_offline_upload(LINK_DEV_ALARM_TYPE);
-                        //保证客户端一上线后 设备不在线通知一次  并且指示灯灭
-                     }
-                        ck2316_alarm_offline_flag = ck2316_alarm_data.if_ck2316_alive;
-                }
                 if_search_keyboard = YES;
 
                 //发送报警器控制失败状态回复---------------------------------------------------------------------12.9.6  frank added
@@ -288,29 +224,15 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                 //ClrCom(*com_fd);
                 break;
             case -2:
-                //frank added(2012.10.23)
-                if(((ck2316_alarm_offline_flag == -1)&&(ck2316_alarm_data.if_ck2316_alive == NO))||((ck2316_alarm_offline_flag == 1)&&(ck2316_alarm_data.if_ck2316_alive == NO)))
-                {
-                    dev_offline_upload(LINK_DEV_ALARM_TYPE);
-                    /*
-                    if ((ret = open_LED_light(fd, AT91_LED3)) < 0)
-                    {
-                        printf("FUNC[%s] LINE[%d]\tioctl error!\n",__FUNCTION__, __LINE__);
-                        exit(1);
-                    }
-                    */
-                }
-                
                 printf("FUNC[%s] LINE[%d]\tRecv data error!\n",__FUNCTION__, __LINE__);
                 return -1;
-            default: //navy2         
-            
+            default: //navy2
                 if (if_search_keyboard == YES) 
                 {
-                    for (i = 0; i < 0; i++) //3
+                    for (i = 0; i < 0; i++) //0
                         write(*com_fd, temp_test, CK2316_HANDSHAKE_SIZE);
                     //for (i = 0; i < 7; i++) 
-                    for (i = 0; i < 20; i++) //7 
+                    for (i = 0; i < 20; i++) //20
                         write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
                     if_search_keyboard = NO;
                     if (ck2316_check_command_setup_successful_flag == CK2316_ALARM_HOST_RESET) 
@@ -327,31 +249,12 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                 else
                 {
                     if (verify_ck2316_data(recv_buffer, recv_ret) == 0)
-                    {   
+                    {
                         switch(ck2316_alarm_data.setup_command_set)
                         {
                             case CK2316_NO_VALID_COMMAND:  //没有合法的命令，则发送握手码   
                                 write(*com_fd, ck2316_handshake_code, CK2316_HANDSHAKE_SIZE);
                                 ck2316_alarm_data.if_ck2316_alive = YES;
-                                //Frank
-                                //若挂载成功指示灯亮
-                                //printf("ck2316_alarm_offline_flag =%d\n",ck2316_alarm_offline_flag);
-                                if(((ck2316_alarm_offline_flag == -1)&&(ck2316_alarm_data.if_ck2316_alive == YES))||((ck2316_alarm_offline_flag == NO)&&(ck2316_alarm_data.if_ck2316_alive == YES)))
-                                {
-                                    led_status = 1;
-                                    if ((ret = close_LED_light(led_driver_fd, AT91_LED3)) < 0)
-                                    {
-                                        printf("FUNC[%s] LINE[%d]\tioctl error!\n",__FUNCTION__, __LINE__);
-                                    }
-                                    usleep(300*1000);
-                                    if ((ret = open_LED_light(led_driver_fd, AT91_LED3)) < 0)
-                                    {
-                                        printf("FUNC[%s] LINE[%d]\tioctl error!\n",__FUNCTION__, __LINE__);
-                                        exit(1);
-                                    }
-                                }
-                                                                
-                                ck2316_alarm_offline_flag = ck2316_alarm_data.if_ck2316_alive;
                                 break;
                             case CK2316_SYSTEM_DEFENCE: //系统布防
                                 if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
@@ -392,7 +295,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                     }
                                 }
                                 //发送报警器控制成功状态回复------------------------------------------------------------12.9.6  frank added
-                               // send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
 
                                 break;
                             case CK2316_SYSTEM_ABANDON://系统撤防
@@ -416,7 +319,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                     }
                                 }
                                 //发送报警器控制成功状态回复------------------------------------------------------------12.9.6  frank added
-                               // send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
 
                                 break;
                             case CK2316_ELIMINATE_ALARM_MEMORY://消除报警记忆
@@ -430,7 +333,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                     ck2316_check_command_setup_successful_flag = CK2316_ELIMINATE_ALARM_MEMORY;
                                 }
                                 //发送报警器控制成功状态回复------------------------------------------------------------12.9.6  frank added
-                               // send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+                                send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                 break;
                             case CK2316_BYPASS_DEFENCE_AREA: //系统旁路
                                 if (ck2316_alarm_data.ck2316_defence_status == IS_DEFENCED) 
@@ -463,7 +366,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                     }
 
                                     //发送报警器控制成功状态回复------------------------------------------------------------12.9.6  frank added
-                                   // send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+                                    send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
 
                                 }
                                 break;
@@ -479,7 +382,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                     if_search_keyboard = YES;
 
                                     //发送报警器控制成功状态回复------------------------------------------------------------12.9.6  frank added
-                                   // send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
+                                    send_act_cmd(QULIFIED, ck2316_alarm_data.current_fd, SXC_ALARMCTL_DEV_CTL_CMD_V2, ck2316_alarm_data.current_fd);
                                 }
                                 break;
                                 /*
@@ -602,8 +505,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                            FE 04 03 A5 11 00 00 00 00 00 00 0F 03 
                            FE 04 03 A5 12 00 00 00 00 00 00 0F 03 
                            FE 04 03 FF 09 00 00 00 00 00 08 0F 03 */
-                        if (recv_buffer[recv_ret-8] == CK2316_HIGH_DEFENCE_AREA_HEAD && recv_buffer[recv_ret-9] == 0xff)
-                        //if (recv_buffer[recv_ret-8] == CK2316_HIGH_DEFENCE_AREA_HEAD)    //高防区 
+                        if (recv_buffer[recv_ret-8] == CK2316_HIGH_DEFENCE_AREA_HEAD)    //高防区 
                         {
                             //获取高防区报警记忆状态
                             ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] = recv_buffer[recv_ret-7];
@@ -613,8 +515,7 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                             //获取高防区旁路状态
                             ck2316_alarm_data.ck2316_defence_area_bypass_value[1] = recv_buffer[recv_ret-4];
                         }
-                        else if (recv_buffer[recv_ret-9] == CK2316_LOW_DEFENCE_AREA_HEAD && recv_buffer[recv_ret-10] == 0xff)
-                        //else if (recv_buffer[recv_ret-9] == CK2316_LOW_DEFENCE_AREA_HEAD) //低防区
+                        else if (recv_buffer[recv_ret-9] == CK2316_LOW_DEFENCE_AREA_HEAD) //低防区
                         {
                             //获取布撤防状态（布防，撤防）
                             if (recv_buffer[recv_ret-4] & CK2316_IS_DEFENCED_OR_ABANDONED_MASK) 
@@ -622,8 +523,8 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                             else
                                 ck2316_alarm_data.ck2316_defence_status = IS_ABANDONED;
 
-                            //printf_debug("ck2316_defence_status = 0x%02x\t",ck2316_alarm_data.ck2316_defence_status);
-                            //printf_debug("keyboard_address = 0x%02X\n",ck2316_alarm_data.ck2316_simulate_keyboard_address);
+                            printf_debug("ck2316_defence_status = 0x%02x\t",ck2316_alarm_data.ck2316_defence_status);
+                            printf_debug("keyboard_address = 0x%02X\n",ck2316_alarm_data.ck2316_simulate_keyboard_address);
 
                             //获取低防区报警记忆状态
                             ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] = recv_buffer[recv_ret-8];
@@ -645,8 +546,10 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                         break;
                                     }
                                 case NORMAL_ALARM:
-                                case EMERGENCY_ALARM:					
+                                case EMERGENCY_ALARM:						
                                 case NORMAL_AND_EMERGENCY_ALARM:
+                                    //printf_debug("test 111111111111111111111111111111111111\n");
+
 
                                     //实现报警只上传一次
                                     if (temp != ((ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1] <<8) |ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0] ))
@@ -669,7 +572,6 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                         if (YES == if_have_net_client_connect) 
                                             //navy 报警上传
                                         {
-                                            printf("test55555555555555555555555\n");
                                             tm = time(NULL);
                                             t = localtime(&tm);
                                             //fprintf(fp_normal_message_file, "%04d-%02d-%02d %02d:%02d:%02d %02d\n",t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, 1);
@@ -681,6 +583,10 @@ int ck2316_alarm_handshake_and_setup(int *com_fd)
                                             ck2316_alarm_data.upload_time.Second =  t->tm_sec;
 
                                             alarm_upload(t,ALARM_DEV_UPLOAD,YES);
+
+#ifdef DEBUG_DATA
+                                            printf("upload the alarm\n");
+#endif	
                                             printf_debug("Warning ! Defence area alarm\t0x%02X%02X 0x%02X%02X 0x%02X%02X 0x%02X 0x%02X\n",ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[1], ck2316_alarm_data.ck2316_defence_area_alarm_memory_value[0], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[1], ck2316_alarm_data.ck2316_defence_area_real_time_alarm_value[0], ck2316_alarm_data.ck2316_defence_area_bypass_value[1], ck2316_alarm_data.ck2316_defence_area_bypass_value[0], ck2316_alarm_data.ck2316_defence_status, ck2316_alarm_data.ck2316_defence_area_alarm_status);
                                         }
                                         else
@@ -908,15 +814,13 @@ int alarm_upload(struct tm *t,int alarm_type,int flag)
     INTER_DOOR_ALMOUT_SEND send_buf;
     int check_ret = 1,len = 0;
     user_info * pb=head;
-    int ret =0;
-    pthread_t led_sleep;
-    
+
     memset(&send_buf,0,sizeof(INTER_DOOR_ALMOUT_SEND));
 
     //暂时没有，测试需要
     send_buf.alarm_para.byDevID = 1;
 
-    printf_debug("alarm_type:::::%d\n",alarm_type);
+    printf("alarm_type:::::%d\n",alarm_type);
     //门禁报警:0    报警主机报警 :1    开关量报警:2
     if(ALARM_DEV_UPLOAD == alarm_type)
     {
@@ -928,6 +832,7 @@ int alarm_upload(struct tm *t,int alarm_type,int flag)
         send_buf.alarm_para.Day =  ck2316_alarm_data.upload_time.Day;
         send_buf.alarm_para.byAlmType = ALARM_DEV_UPLOAD;
 
+        printf("test2222222222222222222222222222222222222:%d\n",ck2316_alarm_data.last_alarm_status);
         if (ck2316_alarm_data.last_alarm_status == 0)
         {
             send_buf.alarm_para.alarmCtl.sAlarmHost.byHostAlmType = 2;     //无报警
@@ -940,7 +845,7 @@ int alarm_upload(struct tm *t,int alarm_type,int flag)
         {
             send_buf.alarm_para.alarmCtl.sAlarmHost.byHostAlmType = 0;    //紧急报警
         }
-        send_buf.alarm_para.alarmCtl.sAlarmHost.byAlarmCtlID = 1;
+
         send_buf.alarm_para.alarmCtl.sAlarmHost.dwAlarmID = htonl(ck2316_alarm_data.last_alarm_memory_channle);
     }
     else if(ENTRANCE_ALARM_UPLOAD == alarm_type)
@@ -1006,58 +911,17 @@ int alarm_upload(struct tm *t,int alarm_type,int flag)
     {
         printf_debug("no user on-line\n");
     }
-    if ((ret = close_LED_light(led_driver_fd, AT91_LED3)) < 0)
-    {
-        printf("FUNC[%s] LINE[%d]\tioctl error!\n",__FUNCTION__, __LINE__);
-    }
-#if 1
-    if (pthread_create(&led_sleep, NULL, led_closed_delay,NULL) != 0) 
-    {
-        printf("FUNC[%s] LINE[%d]\tCan't create server passive thread !\n",__FUNCTION__, __LINE__);
-        exit(1);
-    }
-#endif
     while(pb!=NULL)
     {
         if(send_data_intime_over(pb->sockfd_client, MAX_TIME_OUT_MS, (char *)&send_buf, len))
         {
 #ifdef DEBUG_DATA
-            printf("****************************successful alarm_upload to****************** :%d\n",pb->sockfd_client);
+            printf("successful alarm_upload to :%d\n",pb->sockfd_client);
 #endif
         }
         pb=pb->next;
     }
     return 1;
 
-}
-
-//设备不在线通知
-int dev_offline_upload(int dev_type)
-{
-    SX_DEVICE_OFFLINE_INFO_PACKAGE send_buf;
-    int check_ret;
-    user_info * pb=head;
-    memset(&send_buf,0,sizeof(SX_DEVICE_OFFLINE_INFO_PACKAGE));
-    //send_buf.dev_offline.dev_num = 0;
-    send_buf.dev_offline.dev_type = dev_type;
-
-    check_ret =1;
-    send_buf.sxdHeader.version = htonl(SDK_VERSION);
-    send_buf.sxdHeader.checkSum=htonl(check_ret);
-    send_buf.sxdHeader.requestID = htonl(SXC_DEV_NOALIVE);
-    send_buf.sxdHeader.status = htonl(0); 
-    send_buf.sxdHeader.length = htonl(sizeof(SX_DEVICE_OFFLINE_INFO_PACKAGE));
-
-    while(pb!=NULL)
-        {
-            if(send_data_intime_over(pb->sockfd_client, MAX_TIME_OUT_MS, (char *)&send_buf, sizeof(SX_DEVICE_OFFLINE_INFO_PACKAGE)))
-            {
-              //  #ifdef DEBUG_DATA
-                printf("***************successful dev_offline to************ :%d\n",pb->sockfd_client);
-               // #endif
-            }
-            pb=pb->next;
-        }
-    return 1;
 }
 
